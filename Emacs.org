@@ -29,15 +29,15 @@ Setup [[https://github.com/jwiegley/use-package][use-package]] to install from e
 ** Gui
 No distractions in the gui, install [[https://github.com/domtronn/all-the-icons.el][icons]]
 #+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
-     (scroll-bar-mode -1) ; Disable scroll bar
-     (tool-bar-mode -1) ; Disable toolbar
-     (tooltip-mode -1) ; Disable tooltips
-     (set-fringe-mode 10)
-     (menu-bar-mode -1) ; Disable menu bar
+  (scroll-bar-mode -1) ; Disable scroll bar
+  (tool-bar-mode -1) ; Disable toolbar
+  (tooltip-mode -1) ; Disable tooltips
+  (set-fringe-mode 10)
+  (menu-bar-mode -1) ; Disable menu bar
 
-     (set-face-attribute 'default nil :font "UbuntuMono Nerd Font" :height 110)
-     (use-package all-the-icons
-       :init)
+  (set-face-attribute 'default nil :font "UbuntuMono Nerd Font" :height 110)
+  (use-package all-the-icons
+    :init)
 #+end_src
 ** Modeline
 Use [[https://github.com/TheBB/spaceline][spaceline]], or [[https://github.com/domtronn/spaceline-all-the-icons.el][spaceline-all-the-icons]] for the modeline
@@ -84,6 +84,7 @@ Use [[https://github.com/hlissner/emacs-doom-theme][doom-themes]] or spacemacs-d
 
      (dolist (mode '(term-mode-hook
                      eshell-mode-hook
+                    vterm-mode-hook
                      elfeed-search-mode
                      elfeed-show-mode
                      org-mode-hook))
@@ -203,21 +204,73 @@ Commonly used bindings for different purposes; Prefix: SPC
 | SPC-/      | Music prefix        |
 | SPC-TAB    | Last buffer         |
 #+begin_src emacs-lisp  :tangle ~/.emacs.d/Emacs.el
-       (mf/leader-keys
-        "a" '(:ignore t :which-key "Applications")
-        "b" '(:ignore t :which-key "Buffers")
-        "f"  '(:ignore t :which-key "Files")
-        "h" '(:ignore t :which-key "Help")
-        "i" '(:ignore t :which-key "Insert")
-        "l" '(:ignore t :which-key "Layouts")
-        "m" '(:ignore t :which-key "Major mode")
-        "o" '(:ignore t :which-key "Org")
-        "q" '(:ignore t :which-key "Quit")
-        "w" '(:ignore t :which-key "Windows")
-        "/" '(:ignore t :which-key "Music")
+  (mf/leader-keys
+   "a" '(:ignore t :which-key "Applications")
+   "b" '(:ignore t :which-key "Buffers")
+   "c" '(:ignore t :which-key "Code")
+   "f"  '(:ignore t :which-key "Files")
+   "g" '(:ignore t :which-key "Git")
+   "h" '(:ignore t :which-key "Help")
+   "i" '(:ignore t :which-key "Insert")
+   "l" '(:ignore t :which-key "Layouts")
+   "m" '(:ignore t :which-key "Major mode")
+   "o" '(:ignore t :which-key "Org")
+   "r" '(:ignore t :which-key "Register/Rings/Resume")
+   "q" '(:ignore t :which-key "Quit")
+   "t" '(:ignore t :which-key "Toggle")
+   "w" '(:ignore t :which-key "Windows")
+   "/" '(:ignore t :which-key "Music")
 
-        "TAB" '(evil-switch-to-windows-last-buffer :which-key "Last buffer")
-        "qq" '(save-buffers-kill-terminal :which-key "Exit Emacs")
+   "TAB" '(evil-switch-to-windows-last-buffer :which-key "Last buffer")
+   ";" '(evilnc-comment-or-uncomment-lines :which-key "Comment line")
+   "qq" '(save-buffers-kill-terminal :which-key "Exit Emacs")
+#+end_src
+**** Applications
+Movement between windows and buffers; Prefix: SPC-g
+| Keybinding | Action  |
+| SPC-a-e    | Email   |
+| SPC-a-m    | Music   |
+| SPC-a-f    | Firefox |
+| SPC-a-y    | Youtube |
+#+begin_src emacs-lisp  :tangle ~/.emacs.d/Emacs.el
+        "ae" '(mu4e :which-key "Email")
+        "af" '(browse-url-firefox :which-key "Firefox")
+        "am" '(emms-browser :which-key "Music")
+       "ap" '(mf/pavucontrol :which-key "Pavucontrol")
+        "ay" '(mf/browse-youtube :which-key "Youtube")
+#+end_src
+**** Buffer management
+Quick bookmarks; Prefix: SPC-b
+| Keybinding | Action        |
+|------------+---------------|
+| SPC-b-d    | Delete buffer |
+| SPC-b-h    | Home buffer   |
+| SPC-b-r    | Rename buffer |
+#+begin_src emacs-lisp  :tangle ~/.emacs.d/Emacs.el
+        "bd"  '(kill-current-buffer :which-key "Delete buffer")
+        "bh" '(mf/focus-dashboard :which-key "Home")
+        "br" '(rename-buffer :which-key "Rename buffer")
+#+end_src
+**** Code
+#+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/Emacs.el
+"cc" '(compile :which-key "Compile")
+"ce" '(eval-buffer :which-key "Eval buffer")
+"cr" '(recompile :which-key "Recompile")
+"cE" '(eval-region :which-key "Eval region")
+#+END_SRC
+**** File management
+Movement in the filesystem; Prefix: SPC-f
+| Keybinding | Action                   |
+|------------+--------------------------|
+| SPC-f-s    | Save buffer              |
+| SPC-f-e    | Emacs prefix             |
+| SPC-f-e-d  | Edit emacs configuration |
+| SPC-f-e-R  | Reload emacs configuration |
+#+begin_src emacs-lisp  :tangle ~/.emacs.d/Emacs.el
+            "fs" '(save-buffer :which-key "Save buffer")
+            "fe" '(:ignore t :which-key "Emacs")
+            "fed" '(mf/edit-configuration :which-key "Emacs configuration")
+            "feR" '(mf/reload-configuration :which-key "Reload configuration")
 #+end_src
 **** Help
 | Keybindings | Action                |
@@ -264,46 +317,17 @@ Commonly used bindings for different purposes; Prefix: SPC
 "hS" '(info-lookup-symbol :which-key "Info symbol")
 "h?" '(help-for-help :which-key "Help")
 #+END_SRC
-**** File management
-Movement in the filesystem; Prefix: SPC-f
-| Keybinding | Action                   |
-|------------+--------------------------|
-| SPC-f-s    | Save buffer              |
-| SPC-f-e    | Emacs prefix             |
-| SPC-f-e-d  | Edit emacs configuration |
-| SPC-f-e-R  | Reload emacs configuration |
-#+begin_src emacs-lisp  :tangle ~/.emacs.d/Emacs.el
-            "fs" '(save-buffer :which-key "Save buffer")
-            "fe" '(:ignore t :which-key "Emacs")
-            "fed" '(mf/edit-configuration :which-key "Emacs configuration")
-            "feR" '(mf/reload-configuration :which-key "Reload configuration")
-#+end_src
-**** Applications
-Movement between windows and buffers; Prefix: SPC-g
-| Keybinding | Action  |
-| SPC-a-e    | Email   |
-| SPC-a-m    | Music   |
-| SPC-a-f    | Firefox |
-| SPC-a-y    | Youtube |
-#+begin_src emacs-lisp  :tangle ~/.emacs.d/Emacs.el
-        "ae" '(mu4e :which-key "Email")
-        "af" '(browse-url-firefox :which-key "Firefox")
-        "am" '(emms-browser :which-key "Music")
-       "ap" '(mf/pavucontrol :which-key "Pavucontrol")
-        "ay" '(mf/browse-youtube :which-key "Youtube")
-#+end_src
-**** Buffer management
-Quick bookmarks; Prefix: SPC-b
-| Keybinding | Action        |
-|------------+---------------|
-| SPC-b-d    | Delete buffer |
-| SPC-b-h    | Home buffer   |
-| SPC-b-r    | Rename buffer |
-#+begin_src emacs-lisp  :tangle ~/.emacs.d/Emacs.el
-        "bd"  '(kill-current-buffer :which-key "Delete buffer")
-        "bh" '(mf/focus-dashboard :which-key "Home")
-        "br" '(rename-buffer :which-key "Rename buffer")
-#+end_src
+**** Registers/Rings/Resume
+     #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/Emacs.el
+       "re" '(evil-show-registers :which-key "Show registers")
+;; (...)
+     #+END_SRC
+**** Toggle
+#+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/Emacs.el
+  "tr" '(read-only-mode :which-key "Read only mode")
+  "tw" '(visual-line-mode :which-key "Soft line wrapping")
+;; Define functions to toggle auto-completion, smartparens, yasnippet...
+#+END_SRC
 **** Windows
 Manage windows; Prefix: SPC-w
 | Keybinding | Action           |
@@ -412,39 +436,45 @@ Use [[https://github.com/abo-abo/swiper][ivy]] as a completion framework, [[http
 Use [[https://github.com/abo-abo/swiper][counsel]] to complement ivy
 #+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
 (use-package recentf
-:defer 2)
+  :defer 2)
 
-               (use-package counsel
-                 :defer 1
-                 :commands (counsel-M-x counsel-find-file counsel-ibuffer counsel-recentf)
-                 :bind (("M-x" . counsel-M-x)
-                        ("C-x b" . counsel-ibuffer)
-                        ("C-x C-f" . counsel-find-file)
-                        :map minibuffer-local-map
-                        ("C-r" . 'counsel-minibuffer-history))
-                 :general (mf/leader-keys 
-                            "SPC" '(counsel-M-x :which-key "M-x")
-                            "bb" '(counsel-ibuffer :which-key "By name")
-                            "ff" '(counsel-find-file :which-key "Find file")
-                            "fr" '(counsel-recentf :which-key "Recent file")
-                            "hf" '(counsel-describe-function :which-key "Function")
-                            "hv" '(counsel-describe-variable :which-key "Variable")
-                            "hb" '(counsel-descbinds :which-key "Bindings")
-                            ";" '(counsel-linux-app :which-key "Linux app"))
-                 :config
-(message "Loading counsel")
-                 (counsel-mode 1)
-                 (setq ivy-initial-inputs-alist nil)) ;; Don't start searches with ^
+(use-package counsel
+  :defer 1
+  :commands (counsel-M-x counsel-find-file counsel-ibuffer counsel-recentf)
+  :bind (("M-x" . counsel-M-x)
+         ("C-x b" . counsel-ibuffer)
+         ("C-x C-f" . counsel-find-file)
+         :map minibuffer-local-map
+         ("C-r" . 'counsel-minibuffer-history))
+  :general (mf/leader-keys
+"RET" '(counsel-bookmark :which-key "Jump to bookmark")
+            "SPC" '(counsel-M-x :which-key "M-x")
+            "." '(counsel-find-file :which-key "Find file")
+            "bb" '(counsel-ibuffer :which-key "By name")
+            "fd" '(counsel-dired :which-key "Dired")
+            "ff" '(counsel-find-file :which-key "Find file")
+            "fl" '(counsel-locate :which-key "Locate file")
+            "fr" '(counsel-recentf :which-key "Recent file")
+            "hf" '(counsel-describe-function :which-key "Function")
+            "hv" '(counsel-describe-variable :which-key "Variable")
+            "hb" '(counsel-descbinds :which-key "Bindings")
+            ";" '(counsel-linux-app :which-key "Linux app"))
+  :config
+  (message "Loading counsel")
+  (counsel-mode 1)
+  (setq ivy-initial-inputs-alist nil)) ;; Don't start searches with ^
 #+end_src
 ** Which key
 Use [[https://github.com/justbur/emacs-which-key][which-key]] to get information about keybindings while pressing them
 #+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
-     (use-package which-key
-        :defer 1
-        :after dashboard
-        :config
-        (which-key-mode)
-        (setq which-key-idle-delay 0.5))
+       (use-package which-key
+          :defer 1
+          :after dashboard
+          :config
+          (which-key-mode)
+          (setq which-key-idle-delay 0.5
+                which-key-order 'which-key-prefix-then-key-order
+                which-key-min-display-lines 3))
 #+end_src
 ** Helpful
 Use [[https://github.com/Wilfred/helpful][helpful]] to get better help, highlighting and references to the
@@ -824,9 +854,14 @@ On the fly syntax checking and error count with [[http://www.flycheck.org][flych
 #+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
       (use-package flycheck
         :defer t
-        :hook 
+:commands flycheck-mode
+        :hook
 (lsp-mode . flycheck-mode)
-(prog-mode . flycheck-mode))
+(prog-mode . flycheck-mode)
+:general (mf/leader-keys
+          "fx" '(flycheck-list-errors :which-key "List errors")
+          "fn" '(flycheck-next-error :which-key "Next error")
+          "fN" '(flycheck-previous-error :which-key "Previous error")))
 #+end_src
 *** Nice UI
 Get references and info in popup windows instead of separate buffers,
@@ -903,22 +938,62 @@ Use yasnippets for comfortable templates
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/Emacs.el
     (use-package yasnippet
       :defer 2
-      :hook
+      :hook(
       (prog-mode . yas-minor-mode)
       (c-c++-mode-hook . yas-minor-mode)
-      (org-mode . yas-minor-mode)
+      (org-mode . yas-minor-mode))
       :config
       (yas-reload-all))
   (use-package yasnippet-snippets
-:defer t
-:after yasnippet)
+        :defer t
+        :after yasnippet)
+#+END_SRC
+** Smart parentheses
+#+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/Emacs.el
+  (use-package smartparens
+    :defer t
+    :commands smartparens-mode
+    :hook
+    ((prog-mode . smartparens-mode)
+    (emacs-lisp-mode . smartparens-mode)
+    (org-mode . smartparens-mode)
+    (scheme-mode . smartparens-mode))
+    :config
+    (require 'smartparens-config))
+  (use-package evil-smartparens
+    :defer t
+    :after smartparens
+    :commands evil-smartparens-mode
+    :hook
+    (smartparens-enabled-hook . evil-smartparens-mode))
 #+END_SRC
 * Git
 Use magit to handle git repositories
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/Emacs.el
       (use-package magit
     :defer t
-  :commands magit)
+  :commands magit
+  :general (mf/leader-keys
+            "gb" '(magit-branch-checkout :which-key "Switch branch")
+            "gc" '(:ignore t :which-key "Create")
+            "gcb" '(magit-branch-and-checkout :which-key "Branch")
+            "gcc" '(magit-commit-create :which-key "Commit")
+            "gcr" '(magit-init :which-key "Initialize repository")
+            "gcR" '(magit-clone :which-key "Clone")
+            "gf" '(:ignore t :which-key "Find")
+            "gfc" '(magit-show-commit :which-key "Commit")
+            "gfg" '(magit-find-git-config-file :which-key "Gitconfig file")
+            "gg" '(magit-status :which-key "Status")
+            "gt" '(git-timemachine-toggle :which-key "Timemachine")
+            "gB" '(magit-blame-addition :which-key "Blame")
+            "gC" '(magit-clone :which-key "Clone")
+            "gD" '(magit-file-delete :which-key "Delete file")
+            "gF" '(magit-fetch :which-key "Fetch")
+            "gG" '(magit-status-here :which-key "Status here")
+            "gL" '(magit-log :which-key "Log")
+            "gS" '(magit-stage-file :which-key "Stage file")
+            "gU" '(magit-unstage-file :which-key "Unstage file")
+            ))
 #+END_SRC
 * Shell
 *** term-mode
@@ -959,6 +1034,14 @@ Use magit to handle git repositories
           (setq eshell-destroy-buffer-when-process-dies t)
           (setq eshell-visual-commands '("htop" "pulsemixer" "zsh"))
           (eshell-git-prompt-use-theme 'powerline)))
+#+end_src
+*** vterm
+#+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
+        (use-package vterm
+      :defer t
+    :commands vterm
+  :config
+(setq vterm-shell "/bin/zsh"))
 #+end_src
 * Org mode
 ** Setup
@@ -1079,7 +1162,9 @@ author are used to display the title
        :after org
        :commands org-tree-slide-mode
        :custom
-       (org-image-actual-width nil))
+       (org-image-actual-width nil)
+       :general (mf/leader-keys
+                 "tp" '(org-tree-slide-mode :which-key "Org presentation")))
      (general-define-key
       :keymaps 'org-tree-slide-mode-map
       :prefix ""
@@ -1093,6 +1178,14 @@ author are used to display the title
     :after org
     :hook
     (org-mode . org-fragtog-mode))
+#+END_SRC
+* Dired
+#+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/Emacs.el
+  (use-package all-the-icons-dired
+    :defer t
+    :after all-the-icons
+    :commands (all-the-icons-dired-mode dired counsel-dired)
+    :hook (dired-mode . all-the-icons-dired-mode))
 #+END_SRC
 * Miscellaneous
 ** Telegram
@@ -1149,43 +1242,47 @@ Pretty and well organized startup [[https://github.com/emacs-dashboard/emacs-das
        :config
        (auth-source-pass-enable))
 #+end_src
-** Elfeed
+** RSS
 RSS [[https://github.com/skeeto/elfeed][reader]] for Emacs
 #+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
-               (use-package elfeed
-                 :defer t
-                 :commands elfeed
-                 :config
-                 (setq elfeed-feeds
-                       '(("https://trisquel.info/en/node/feed" trisquel freesw)
-                         ("https://www.fsf.org/static/fsforg/rss/news.xml" freesw)
-                         ("https://planet.gnu.org/rss20.xml" freesw)
-                         ;; ("https://rss.nytimes.com/services/xml/rss/nyt/World.xml" world)
-                         ;; ("https://feeds.a.dj.com/rss/RSSWorldNews.xml" world)
-                         ;; ("http://xml2.corriereobjects.it/rss/homepage.xml" italia)
-                         ;; ("http://xml2.corriereobjects.it/rss/politica.xml" italia)
-                         ;; ("http://www.repubblica.it/rss/homepage/rss2.0.xml" italia)
-                         ;; ("http://www.repubblica.it/rss/economia/rss2.0.xml" italia)
-                         ;; ("https://www.ansa.it/sito/ansait_rss.xml" italia)
-                         ;; ("https://www.ansa.it/sito/notizie/politica/politica_rss.xml" italia)
-                         ;; ("https://www.independent.co.uk/news/uk/rss" uk)
-                         ;; ("https://www.independent.co.uk/news/world/rss" uk)
-                         ;; "https://www.wired.com/feed/rss"
-                         ;; "https://www.wired.com/feed/category/science/latest/rss"
-                         ;; "http://rss.slashdot.org/Slashdot/slashdotMain"
-                         "http://www.salute.gov.it/portale/news/RSS_comunicati.xml"
-                         "http://www.governo.it/feed/rss"
-                         ("https://lukesmith.xyz/rss.xml" youtube)
-                         ("https://videos.lukesmith.xyz/feeds/videos.xml?accountId=3" youtube)
-                         ("https://www.youtube.com/feeds/videos.xml?channel_id=UC2eYFnH61tmytImy1mTYvhA" youtube)
-                         ("https://www.youtube.com/feeds/videos.xml?channel_id=UCVls1GmFKf6WlTraIb_IaJg" youtube)
-                         ("https://www.youtube.com/feeds/videos.xml?user=MentalOutlawStudios" youtube)
-                         ("https://www.youtube.com/feeds/videos.xml?user=OmegaDungeon" youtube)
-                         ("https://www.youtube.com/feeds/videos.xml?channel_id=UCAiiOTio8Yu69c3XnR7nQBQ" youtube)
-                         ))
-                 (define-key elfeed-search-mode-map (kbd "C-c C-u") 'elfeed-update)
-                 :general (mf/leader-keys
-                           "ar" '(elfeed :which-key "RSS")))
+                     (use-package elfeed
+                       :defer t
+                       :commands elfeed
+                       :config
+                       (setq elfeed-feeds
+                             '(("https://trisquel.info/en/node/feed" trisquel freesw)
+                               ("https://www.fsf.org/static/fsforg/rss/news.xml" freesw)
+                               ("https://planet.gnu.org/rss20.xml" freesw)
+                               ;; ("https://rss.nytimes.com/services/xml/rss/nyt/World.xml" world)
+                               ;; ("https://feeds.a.dj.com/rss/RSSWorldNews.xml" world)
+                               ;; ("http://xml2.corriereobjects.it/rss/homepage.xml" italia)
+                               ;; ("http://xml2.corriereobjects.it/rss/politica.xml" italia)
+                               ;; ("http://www.repubblica.it/rss/homepage/rss2.0.xml" italia)
+                               ;; ("http://www.repubblica.it/rss/economia/rss2.0.xml" italia)
+                               ;; ("https://www.ansa.it/sito/ansait_rss.xml" italia)
+                               ;; ("https://www.ansa.it/sito/notizie/politica/politica_rss.xml" italia)
+                               ;; ("https://www.independent.co.uk/news/uk/rss" uk)
+                               ;; ("https://www.independent.co.uk/news/world/rss" uk)
+                               ;; "https://www.wired.com/feed/rss"
+                               ;; "https://www.wired.com/feed/category/science/latest/rss"
+                               ;; "http://rss.slashdot.org/Slashdot/slashdotMain"
+                               "http://www.salute.gov.it/portale/news/RSS_comunicati.xml"
+                               "http://www.governo.it/feed/rss"
+                               ("https://lukesmith.xyz/rss.xml" youtube)
+                               ("https://videos.lukesmith.xyz/feeds/videos.xml?accountId=3" youtube)
+                               ("https://www.youtube.com/feeds/videos.xml?channel_id=UC2eYFnH61tmytImy1mTYvhA" youtube)
+                               ("https://www.youtube.com/feeds/videos.xml?channel_id=UCVls1GmFKf6WlTraIb_IaJg" youtube)
+                               ("https://www.youtube.com/feeds/videos.xml?user=MentalOutlawStudios" youtube)
+                               ("https://www.youtube.com/feeds/videos.xml?user=OmegaDungeon" youtube)
+                               ("https://www.youtube.com/feeds/videos.xml?channel_id=UCAiiOTio8Yu69c3XnR7nQBQ" youtube)
+                               ))
+                       (define-key elfeed-search-mode-map (kbd "C-c C-u") 'elfeed-update)
+                       :general (mf/leader-keys
+                                 "ar" '(elfeed :which-key "RSS")))
+      (use-package elfeed-goodies
+      :defer t
+    :after elfeed
+  :hook (elfeed-search-mode . elfeed-goodies/setup))
 
 #+end_src
 ** Video link handling with mpv
@@ -1231,6 +1328,12 @@ RSS [[https://github.com/skeeto/elfeed][reader]] for Emacs
 ("k" . previous-line))
     )
 #+END_SRC
+** Sudo editing
+#+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/Emacs.el
+(use-package sudo-edit
+  :defer t
+  :commands (sudo-edit))
+#+END_SRC
 * Startup time
 Display information about startup time
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/Emacs.el
@@ -1254,14 +1357,10 @@ Use [[https://gitlab.com/koral/gcmh][gcmh]] to manage garbage collection
 #+END_SRC
 
 * Next
-*org-fragtog* toggle latex fragment previews in org mode DONE
-*Rotate* to rotate layout
 *org-graph-view* To display graphs from org mode buffers
 *org-roam* *org-roam-server* 
 *org-present* Presentations in org-mode
 ** From doom
-*ophints* highlight the region an operation acts on
-*file-templates* auto-snippets for empty files
 *fold* universal code folding
 *snippets* snippets with yasnippet
 *ein* Jupyter notebooks
