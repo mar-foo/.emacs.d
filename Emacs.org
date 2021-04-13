@@ -1,5 +1,12 @@
 #+TITLE: Emacs configuration
 #+AUTHOR: Mario Forzanini
+* System settings
+#+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/Emacs.el
+      (setq mf/is-guix-system (and (eq system-type 'gnu/linux)
+      (require 'f)
+    (string-equal (f-read "/etc/issue")
+  "\nThis is the GNU system. Welcome.\n")))
+#+END_SRC
 * Startup time
 Raise garbage collection threshold to speed up startup time
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/Emacs.el
@@ -22,7 +29,7 @@ Setup [[https://github.com/jwiegley/use-package][use-package]] to install from e
       (package-install 'use-package))
 
     (require 'use-package)
-    (setq use-package-always-ensure t)
+    (setq use-package-always-ensure (not mf/is-guix-system))
     (setq package-native-compile t)
 #+end_src
 * Look and Feel
@@ -1334,6 +1341,13 @@ RSS [[https://github.com/skeeto/elfeed][reader]] for Emacs
   :defer t
   :commands (sudo-edit))
 #+END_SRC
+** Guix
+#+BEGIN_SRC emacs-lisp ~/.emacs.d/Emacs.el
+        (if (eq mf/is-guix-system t)
+      (use-package guix
+      :defer t
+    :commands guix))
+#+END_SRC
 * Startup time
 Display information about startup time
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/Emacs.el
@@ -1366,3 +1380,7 @@ Use [[https://gitlab.com/koral/gcmh][gcmh]] to manage garbage collection
 *ein* Jupyter notebooks
 *rgb* create color strings
 *smartparens*
+
+
+TODO Add guix packages that tangle into a separate manifest file (see
+[[https://github.com/daviwil/dotfiles][daviwil github]])
