@@ -51,7 +51,7 @@
  ;; If there is more than one, they won't work right.
  '(global-emojify-mode t)
  '(package-selected-packages
-   '(guix elfeed-goodies all-the-icons-dired dired evil-smartparens smartparens magit yasnippet-snippets yasnippet emojify ytdious rotate org-fragtog org-wild-notifier xterm-color with-editor use-package treemacs-evil pkg-info ivy-prescient eshell-git-prompt async)))
+   '(org-mime ivy-posframe guix elfeed-goodies all-the-icons-dired dired evil-smartparens smartparens magit yasnippet-snippets yasnippet emojify ytdious rotate org-fragtog org-wild-notifier xterm-color with-editor use-package treemacs-evil pkg-info ivy-prescient eshell-git-prompt async)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

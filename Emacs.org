@@ -219,6 +219,7 @@ Commonly used bindings for different purposes; Prefix: SPC
    "g" '(:ignore t :which-key "Git")
    "h" '(:ignore t :which-key "Help")
    "i" '(:ignore t :which-key "Insert")
+"j" '(:ignore t :which-key "Jump")
    "l" '(:ignore t :which-key "Layouts")
    "m" '(:ignore t :which-key "Major mode")
    "o" '(:ignore t :which-key "Org")
@@ -383,6 +384,18 @@ Use swiper to search in normal mode
        "md" '(lsp-ui-peek-find-definitions :which-key "Peek definitions")
        "me" '(lsp-treemacs-errors-list :which-key "List errors")))
 #+end_src
+** Jumping with Avy
+#+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/Emacs.el
+  (use-package avy
+               :defer t
+               :commands (avy-goto-char avy-goto-char-2 avy-goto-word-0 avy-goto-line avy-goto-word-1)
+               :general (mf/leader-keys
+                          "jj" '(avy-goto-char-2 :which-key "Goto char 2")
+                          "jJ" '(avy-goto-char :which-key "Goto char")
+                          "jw" '(avy-goto-word-1 :which-key "Goto word")
+                          "jW" '(avy-goto-word-0 :which-key "Goto any word")
+                          "jl" '(avy-goto-line :which-key "Goto line")))
+#+END_SRC
 * Vim keybindings
 Use [[https://github.com/emacs-evil/evil][evil]] keybindings to make my life better, [[https://github.com/emacs-evil/evil-collection][evil-collection]] to use
 vim keybindings in many modes and [[https://github.com/Alexander-Miller/treemacs][treemacs-evil]] to use vim keybindings
@@ -404,40 +417,40 @@ in treemacs navigation
 ** Ivy
 Use [[https://github.com/abo-abo/swiper][ivy]] as a completion framework, [[https://github.com/Yevgnen/ivy-rich][ivy-rich]] to extend it,[[https://github.com/raxod502/prescient.el][ivy-prescient]] for sane suggestions and history
 #+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
-     (use-package ivy
-       :defer t
-       :commands (counsel-M-x counsel-find-file counsel-ibuffer counsel-recentf)
-       :bind (("C-s" . swiper)
-              :map ivy-minibuffer-map
-              ("TAB" . ivy-alt-done)
-              ("C-l" . ivy-alt-done)
-              ("C-j" . ivy-next-line)
-              ("C-k" . ivy-previous-line)
-              :map ivy-switch-buffer-map
-              ("C-k" . ivy-previous-line)
-              ("C-d" . ivy-switch-buffer-kill)
-              :map ivy-reverse-i-search-map
-              ("C-k" . ivy-previous-line))
-       :config 
-(message "Loading ivy")
-(ivy-mode 1))
+       (use-package ivy
+         :defer t
+         :commands (counsel-M-x counsel-find-file counsel-ibuffer counsel-recentf)
+         :bind (("C-s" . swiper)
+                :map ivy-minibuffer-map
+                ("TAB" . ivy-alt-done)
+                ("C-l" . ivy-alt-done)
+                ("C-j" . ivy-next-line)
+                ("C-k" . ivy-previous-line)
+                :map ivy-switch-buffer-map
+                ("C-k" . ivy-previous-line)
+                ("C-d" . ivy-switch-buffer-kill)
+                :map ivy-reverse-i-search-map
+                ("C-k" . ivy-previous-line))
+         :config 
+  (message "Loading ivy")
+  (ivy-mode 1))
 
-     (use-package ivy-rich
-       :defer t
-       :commands (counsel-M-x counsel-find-file counsel-ibuffer counsel-recentf)
-       :after ivy
-       :config
-       (ivy-rich-mode))
+       (use-package ivy-rich
+         :defer t
+         :commands (counsel-M-x counsel-find-file counsel-ibuffer counsel-recentf)
+         :after ivy
+         :config
+         (ivy-rich-mode))
 
-     (use-package ivy-prescient
-       :defer t
-       :after (counsel ivy)
-       :commands (counsel-M-x counsel-find-file counsel-ibuffer counsel-recentf)
-       :custom
-       (ivy-prescient-enable-filtering nil)
-       :config
-       (prescient-persist-mode 1)
-       (ivy-prescient-mode 1))
+       (use-package ivy-prescient
+         :defer t
+         :after (counsel ivy)
+         :commands (counsel-M-x counsel-find-file counsel-ibuffer counsel-recentf)
+         :custom
+         (ivy-prescient-enable-filtering nil)
+         :config
+         (prescient-persist-mode 1)
+         (ivy-prescient-mode 1))
 #+end_src
 ** Counsel
 Use [[https://github.com/abo-abo/swiper][counsel]] to complement ivy
@@ -502,56 +515,62 @@ source files
 * Mail
 ** Mu4e and smtpmail
 #+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
-         ;; Mail with mu4e
-         (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu/")
-(use-package mu4e
+  ;; Mail with mu4e
+  ;; (if (not mf/is-guix-system)
+  ;;          (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu/")
+  ;; (add-to-list 'load-path "~/.guix-profile/usr/share/emacs/site-lisp/mu/"))
+
+  (use-package mu4e
+    ;; (if (not mf/is-guix-system)
+        ;; (:load-path "/usr/share/emacs/site-list/mu/")
+      ;; (:load-path "~/.guix-profile/usr/share/emacs/site-lisp/mu/"))
 :load-path "/usr/share/emacs/site-list/mu/"
-:defer t
-:commands (mu4e)
-:config
-  (require 'smtpmail)
-           (setq user-mail-address "mario.forzanini@studenti.unimi.it"
-                 user-full-name "Mario Forzanini"
-                 mu4e-get-mail-command "mbsync -c ~/.mbsyncrc -a mario.forzanini@studenti.unimi.it"
-                 mu4e-update-interval 300
-                 mu4e-compose-signature
-                 (concat
-                  "Mario Forzanini\n"
-                  "https://marioforzanini.com")
-                 message-send-mail-function 'smtpmail-send-it
-                 starttls-use-gnutls nil
-                 smtpmail-auth-credentials '(("smtp.unimi.it" 465 "mario.forzanini@studenti.unimi.it" nil))
-                 smtpmail-default-smtp-server "smtp.unimi.it"
-                 smtpmail-smtp-server "smtp.unimi.it"
-                 smtpmail-smtp-service 465
-                 smtpmail-stream-type 'ssl
-                 mu4e-sent-folder "/Sent"
-                 mu4e-drafts-folder "/Drafts"
-                 mu4e-trash-folder "/Trash")
-:general (mf/leader-keys 
-"ae" '(mu4e :which-key "Email")))
-         ;; (autoload 'mu4e "/usr/share/emasc/site-lisp/mu/mu4e.elc" nil t)
+    :defer t
+    :commands (mu4e)
+    :config
+    (require 'smtpmail)
+    (setq user-mail-address "mario.forzanini@studenti.unimi.it"
+          user-full-name "Mario Forzanini"
+          mu4e-get-mail-command "mbsync -c ~/.mbsyncrc -a mario.forzanini@studenti.unimi.it"
+          mu4e-update-interval 300
+          mu4e-compose-signature
+          (concat
+           "Mario Forzanini\n"
+           "https://marioforzanini.com")
+          message-send-mail-function 'smtpmail-send-it
+          starttls-use-gnutls nil
+          smtpmail-auth-credentials '(("smtp.unimi.it" 465 "mario.forzanini@studenti.unimi.it" nil))
+          smtpmail-default-smtp-server "smtp.unimi.it"
+          smtpmail-smtp-server "smtp.unimi.it"
+          smtpmail-smtp-service 465
+          smtpmail-stream-type 'ssl
+          mu4e-sent-folder "/Sent"
+          mu4e-drafts-folder "/Drafts"
+          mu4e-trash-folder "/Trash")
+    :general (mf/leader-keys 
+               "ae" '(mu4e :which-key "Email")))
+  ;; (autoload 'mu4e "/usr/share/emasc/site-lisp/mu/mu4e.elc" nil t)
   ;; (defun mf/mail-configuration ()
   ;; (interactive)
   ;; (require 'smtpmail)
-           ;; (setq user-mail-address "mario.forzanini@studenti.unimi.it"
-                 ;; user-full-name "Mario Forzanini"
-                 ;; mu4e-get-mail-command "mbsync -c ~/.mbsyncrc -a mario.forzanini@studenti.unimi.it"
-                 ;; mu4e-update-interval 300
-                 ;; mu4e-compose-signature
-                 ;; (concat
-                  ;; "Mario Forzanini\n"
-                  ;; "https://marioforzanini.com")
-                 ;; message-send-mail-function 'smtpmail-send-it
-                 ;; starttls-use-gnutls nil
-                 ;; smtpmail-auth-credentials '(("smtp.unimi.it" 465 "mario.forzanini@studenti.unimi.it" nil))
-                 ;; smtpmail-default-smtp-server "smtp.unimi.it"
-                 ;; smtpmail-smtp-server "smtp.unimi.it"
-                 ;; smtpmail-smtp-service 465
-                 ;; smtpmail-stream-type 'ssl
-                 ;; mu4e-sent-folder "/Sent"
-                 ;; mu4e-drafts-folder "/Drafts"
-                 ;; mu4e-trash-folder "/Trash"))
+  ;; (setq user-mail-address "mario.forzanini@studenti.unimi.it"
+  ;; user-full-name "Mario Forzanini"
+  ;; mu4e-get-mail-command "mbsync -c ~/.mbsyncrc -a mario.forzanini@studenti.unimi.it"
+  ;; mu4e-update-interval 300
+  ;; mu4e-compose-signature
+  ;; (concat
+  ;; "Mario Forzanini\n"
+  ;; "https://marioforzanini.com")
+  ;; message-send-mail-function 'smtpmail-send-it
+  ;; starttls-use-gnutls nil
+  ;; smtpmail-auth-credentials '(("smtp.unimi.it" 465 "mario.forzanini@studenti.unimi.it" nil))
+  ;; smtpmail-default-smtp-server "smtp.unimi.it"
+  ;; smtpmail-smtp-server "smtp.unimi.it"
+  ;; smtpmail-smtp-service 465
+  ;; smtpmail-stream-type 'ssl
+  ;; mu4e-sent-folder "/Sent"
+  ;; mu4e-drafts-folder "/Drafts"
+  ;; mu4e-trash-folder "/Trash"))
   ;; (eval-after-load "mu4e" 'mf/mail-configuration)
 #+end_src
 ** Notifications
@@ -564,6 +583,19 @@ Use [[https://github.com/iqbalansari/mu4e-alert][mu4e-alert]] to receive notific
        (mu4e-alert-set-default-style 'libnotify)
        :hook (mu4e-mode . mu4e-alert-enable-notifications))
 #+end_src
+** Org
+Write emails in org-mode and convert them to html with
+=org-mime-htmlize=, to edit mail in org-mode use
+=org-mime-edit-mail-in-org-mode=, to automatically convert it to html 
+#+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/Emacs.el
+    (use-package org-mime
+      :defer t
+      :commands (mu4e compose-mail mu4e-compose-new)
+      :config (setq org-mime-export-options '(:section-numbers nil
+                                                               :with-author nil
+                                                               :with-toc nil)))
+  (add-hook 'message-send-hook 'org-mime-htmlize)
+#+END_SRC
 * Music
 ** Custom functions
 *** Run mpd from emacs
@@ -1188,11 +1220,31 @@ author are used to display the title
 #+END_SRC
 * Dired
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/Emacs.el
+  (use-package dired
+    :ensure nil
+    :defer t
+    :commands (counsel-dired dired dired-jump)
+    :hook (dired-mode . dired-hide-details-mode))
   (use-package all-the-icons-dired
     :defer t
-    :after all-the-icons
+    :after (all-the-icons dired)
     :commands (all-the-icons-dired-mode dired counsel-dired)
     :hook (dired-mode . all-the-icons-dired-mode))
+  (use-package dired-single
+    :defer t
+    :after dired
+    :commands (dired dired-jump counsel-dired)
+    :config
+    (evil-collection-define-key 'normal 'dired-mode-map
+      "h" 'dired-single-up-directory
+      "l" 'dired-single-buffer))
+  (use-package dired-open
+    :defer t
+    :commands (dired counsel-dired dired-jump)
+    :config (setq dired-open-extensions '(("png" . "sxiv")
+                                          ("mkv" . "mpd")
+                                          ("mp4" . "mpd")
+                                          ("pdf" . "zathura"))))
 #+END_SRC
 * Miscellaneous
 ** Telegram
