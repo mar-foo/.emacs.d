@@ -41,16 +41,17 @@ No distractions in the gui, install [[https://github.com/domtronn/all-the-icons.
   (tooltip-mode -1) ; Disable tooltips
   (set-fringe-mode 10)
   (menu-bar-mode -1) ; Disable menu bar
+(fset #'yes-or-no-p #'y-or-n-p) ;;y or n instead of yes or no
 
   (set-face-attribute 'default nil :font "UbuntuMono Nerd Font" :height 110)
   (use-package all-the-icons
     :init)
 #+end_src
 ** Modeline
-Use [[https://github.com/TheBB/spaceline][spaceline]], or [[https://github.com/domtronn/spaceline-all-the-icons.el][spaceline-all-the-icons]] for the modeline
+Use doom-modeline because it loads faster then [[https://github.com/TheBB/spaceline][spaceline]] and [[https://github.com/domtronn/spaceline-all-the-icons.el][spaceline-all-the-icons]]
 #+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
-  (use-package doom-modeline
-  :init (doom-modeline-mode 1))
+   (use-package doom-modeline
+   :init (doom-modeline-mode 1))
     ;; (use-package spaceline
     ;;   :config
     ;;   (setq powerline-default-separator 'slant)
@@ -70,13 +71,13 @@ Use [[https://github.com/TheBB/spaceline][spaceline]], or [[https://github.com/d
 ** Theme
 Use [[https://github.com/hlissner/emacs-doom-theme][doom-themes]] or spacemacs-dark theme
 #+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
-       (use-package doom-themes
-         :init (load-theme 'doom-one t))
-      ;; (require 'spacemacs-dark-theme)
-      ;; (load-theme 'spacemacs-dark t)
-    ;; (use-package sexy-monochrome-theme
-      ;; :init
-      ;; (load-theme 'sexy-monochrome))
+        ;; (use-package doom-themes
+        ;; :init (load-theme 'doom-one t))
+        ;; (require 'spacemacs-dark-theme)
+        ;; (load-theme 'spacemacs-dark t)
+    (use-package modus-vivendi-theme
+    :init
+  (load-theme 'modus-vivendi t))
 #+end_src
 ** Wallpaper
 #+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
@@ -140,25 +141,41 @@ Use [[https://github.com/Fanael/rainbow-delimiters][rainbow-delimiters]] for nic
 ** Leader key definitions
 *** Helper functions
 #+begin_src emacs-lisp  :tangle ~/.emacs.d/Emacs.el
-      (defun mf/browse-youtube ()
-        "Prompts for keywords and outputs youtube search results"
-        (interactive)
-        (start-process-shell-command "Youtube" nil "/home/mario/.local/bin/scripts/myyt -r"))
-      (defun mf/pavucontrol ()
-        "Starts pavucontrol"
-        (interactive)
-        (start-process-shell-command "Pavucontrol" nil "pavucontrol"))
-(defun mf/reload-configuration ()
-"Reloads configuration"
-(interactive)
-(org-babel-load-file "~/.emacs.d/Emacs.org"))
-(defun mf/edit-configuration ()
-"Edit emacs configuration"
-(interactive)
-(find-file "~/.emacs.d/Emacs.org"))
-(defun mf/focus-dashboard ()
-(interactive)
-(switch-to-buffer "*dashboard*"))
+  (defun mf/browse-youtube ()
+    "Prompts for keywords and outputs youtube search results"
+    (interactive)
+    (start-process-shell-command "Youtube" nil "/home/mario/.local/bin/scripts/myyt -r"))
+  (defun mf/pavucontrol ()
+    "Starts pavucontrol"
+    (interactive)
+    (start-process-shell-command "Pavucontrol" nil "pavucontrol"))
+
+  (defun mf/reload-configuration ()
+    "Reloads configuration"
+    (interactive)
+    (org-babel-load-file "~/.emacs.d/Emacs.org"))
+
+  (defun mf/edit-configuration ()
+    "Edit emacs configuration"
+    (interactive)
+    (find-file "~/.emacs.d/Emacs.org"))
+
+  (defun mf/focus-dashboard ()
+    (interactive)
+    (switch-to-buffer "*dashboard*"))
+
+  (defun mf/find-recentf ()
+    "Open a recent file"
+    (interactive)
+    (find-file (completing-read "Recent File: " recentf-list nil t)))
+
+  (setq mf/site-bookmarks-list '("https://ariel.unimi.it" "https://mail.protonmail.com" "https://duckduckgo.com/html?q=" "http://unimia.unimi.it/" "https://meet.jit.si/Mecc_Quant" "https://meet.jit.si/Mario_Mate"))
+
+  (defun mf/browse-url-firefox ()
+    "Browse bookmarks defined in mf/site-bookmarks-list"
+    (interactive)
+    (browse-url-firefox 
+     (completing-read "Firefox: " mf/site-bookmarks-list nil nil)))
 #+end_src
 *** Leader key
 Use [[https://github.com/noctuid/general.el][general]] to setup space bar as leader key in normal mode, C-SPC in
@@ -199,25 +216,26 @@ Commonly used bindings for different purposes; Prefix: SPC
 | SPC-TAB    | Last buffer         |
 #+begin_src emacs-lisp  :tangle ~/.emacs.d/Emacs.el
   (mf/leader-keys
-   "a" '(:ignore t :which-key "Applications")
-   "b" '(:ignore t :which-key "Buffers")
-   "c" '(:ignore t :which-key "Code")
-   "f"  '(:ignore t :which-key "Files")
-   "g" '(:ignore t :which-key "Git")
-   "h" '(:ignore t :which-key "Help")
-   "i" '(:ignore t :which-key "Insert")
-"j" '(:ignore t :which-key "Jump")
-   "l" '(:ignore t :which-key "Layouts")
-   "o" '(:ignore t :which-key "Org")
-   "r" '(:ignore t :which-key "Register/Rings/Resume")
-   "q" '(:ignore t :which-key "Quit")
-   "t" '(:ignore t :which-key "Toggle")
-   "w" '(:ignore t :which-key "Windows")
-   "/" '(:ignore t :which-key "Music")
+    "a" '(:ignore t :which-key "Applications")
+    "b" '(:ignore t :which-key "Buffers")
+    "c" '(:ignore t :which-key "Code")
+    "f"  '(:ignore t :which-key "Files")
+    "g" '(:ignore t :which-key "Git")
+    "h" '(:ignore t :which-key "Help")
+    "i" '(:ignore t :which-key "Insert")
+    "j" '(:ignore t :which-key "Jump")
+    "l" '(:ignore t :which-key "Layouts")
+    "o" '(:ignore t :which-key "Org")
+    "r" '(:ignore t :which-key "Register/Rings/Resume")
+    "q" '(:ignore t :which-key "Quit")
+    "t" '(:ignore t :which-key "Toggle")
+    "w" '(:ignore t :which-key "Windows")
+    "/" '(:ignore t :which-key "Music")
 
-   "TAB" '(evil-switch-to-windows-last-buffer :which-key "Last buffer")
-   ";" '(evilnc-comment-or-uncomment-lines :which-key "Comment line")
-   "qq" '(save-buffers-kill-terminal :which-key "Exit Emacs")
+    "SPC" '(execute-extended-command :which-key "M-x")
+    "TAB" '(evil-switch-to-windows-last-buffer :which-key "Last buffer")
+    ";" '(evilnc-comment-or-uncomment-lines :which-key "Comment line")
+    "qq" '(save-buffers-kill-terminal :which-key "Exit Emacs")
 #+end_src
 **** Applications
 Movement between windows and buffers; Prefix: SPC-g
@@ -228,11 +246,12 @@ Movement between windows and buffers; Prefix: SPC-g
 | SPC-a-f    | Firefox |
 | SPC-a-y    | Youtube |
 #+begin_src emacs-lisp  :tangle ~/.emacs.d/Emacs.el
-        "ae" '(mu4e :which-key "Email")
-        "af" '(browse-url-firefox :which-key "Firefox")
-        "am" '(emms-browser :which-key "Music")
-       "ap" '(mf/pavucontrol :which-key "Pavucontrol")
-        "ay" '(ytdious :which-key "Youtube")
+  "ae" '(mu4e :which-key "Email")
+  "af" '(mf/browse-url-firefox :which-key "Firefox")
+  "am" '(emms-browser :which-key "Music")
+  "ap" '(mf/pavucontrol :which-key "Pavucontrol")
+  "aw" '(eww :which-key "Eww")
+  "ay" '(ytdious :which-key "Youtube")
 #+end_src
 **** Buffer management
 Quick bookmarks; Prefix: SPC-b
@@ -242,9 +261,10 @@ Quick bookmarks; Prefix: SPC-b
 | SPC-b-h    | Home buffer   |
 | SPC-b-r    | Rename buffer |
 #+begin_src emacs-lisp  :tangle ~/.emacs.d/Emacs.el
-        "bd"  '(kill-current-buffer :which-key "Delete buffer")
-        "bh" '(mf/focus-dashboard :which-key "Home")
-        "br" '(rename-buffer :which-key "Rename buffer")
+"bb" '(switch-to-buffer :which-key "Switch buffer")
+  "bd"  '(kill-current-buffer :which-key "Delete buffer")
+  "bh" '(mf/focus-dashboard :which-key "Home")
+  "br" '(rename-buffer :which-key "Rename buffer")
 #+end_src
 **** Code
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/Emacs.el
@@ -262,10 +282,13 @@ Movement in the filesystem; Prefix: SPC-f
 | SPC-f-e-d  | Edit emacs configuration |
 | SPC-f-e-R  | Reload emacs configuration |
 #+begin_src emacs-lisp  :tangle ~/.emacs.d/Emacs.el
-            "fs" '(save-buffer :which-key "Save buffer")
-            "fe" '(:ignore t :which-key "Emacs")
-            "fed" '(mf/edit-configuration :which-key "Emacs configuration")
-            "feR" '(mf/reload-configuration :which-key "Reload configuration")
+  "fd" '(dired :which-key "Dired")
+  "ff" '(find-file :which-key "Find-file") 
+  "fe" '(:ignore t :which-key "Emacs")
+  "fed" '(mf/edit-configuration :which-key "Emacs configuration")
+  "feR" '(mf/reload-configuration :which-key "Reload configuration")
+  "fr" '(mf/find-recentf :which-key "Recent files")
+  "fs" '(save-buffer :which-key "Save buffer")
 #+end_src
 **** Help
 | Keybindings | Action                |
@@ -292,9 +315,11 @@ Movement in the filesystem; Prefix: SPC-f
 | SPC-h-?     | Help                  |
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/Emacs.el
 "ha" '(apropos-command :which-key "Apropos")
+"hb" '(describe-bindings :which-key "Bindings")
 "hc" '(describe-key-briefly :which-key "Key briefly")
 "hd" '(apropos-documentation :which-key "Apropos documentation")
 "he" '(about-emacs :which-key "Emacs")
+"hf" '(describe-function :which-key "Function")
 "hi" '(info :which-key "Info")
 "hk" '(describe-key :which-key "Key")
 "hl" '(view-lossage :which-key "Lossage")
@@ -303,6 +328,7 @@ Movement in the filesystem; Prefix: SPC-f
 "hq" '(help-quit :which-key "Quit")
 "hr" '(info-emacs-manual :which-key "Info emacs")
 "hs" '(describe-syntax :which-key "Syntax")
+"hv" '(describe-variable :which-hey "Variable")
 "hC" '(describe-coding-system :which-key "Coding system")
 "hF" '(Info-goto-emacs-command-node :which-key "Info command")
 "hI" '(describe-input-method :which-key "Input method")
@@ -360,10 +386,10 @@ Manage windows; Prefix: SPC-w
 **** Swiper
 Use swiper to search in normal mode
 #+begin_src emacs-lisp 
-       (general-define-key
-        :states 'normal
-        :prefix ""
-        "/" '(swiper :which-key "Swiper"))
+  ;; (general-define-key
+  ;;  :states 'normal
+  ;;  :prefix ""
+  ;;  "/" '(swiper :which-key "Swiper"))
 #+end_src
 ** Jumping with Avy
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/Emacs.el
@@ -394,103 +420,283 @@ in treemacs navigation
       :commands (treemacs))
 #+end_src
 * Completion framework
-** Ivy
-Use [[https://github.com/abo-abo/swiper][ivy]] as a completion framework, [[https://github.com/Yevgnen/ivy-rich][ivy-rich]] to extend it,[[https://github.com/raxod502/prescient.el][ivy-prescient]] for sane suggestions and history
+** Icomplete
 #+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
-       (use-package ivy
-         :defer t
-         :commands (counsel-M-x counsel-find-file counsel-ibuffer counsel-recentf)
-         :bind (("C-s" . swiper)
-                :map ivy-minibuffer-map
-                ("TAB" . ivy-alt-done)
-                ("C-l" . ivy-alt-done)
-                ("C-j" . ivy-next-line)
-                ("C-k" . ivy-previous-line)
-                :map ivy-switch-buffer-map
-                ("C-k" . ivy-previous-line)
-                ("C-d" . ivy-switch-buffer-kill)
-                :map ivy-reverse-i-search-map
-                ("C-k" . ivy-previous-line))
-         :config 
-  (message "Loading ivy")
-  (ivy-mode 1))
-
-       (use-package ivy-rich
-         :defer t
-         :commands (counsel-M-x counsel-find-file counsel-ibuffer counsel-recentf)
-         :after ivy
-         :config
-         (ivy-rich-mode))
-
-       (use-package ivy-prescient
-         :defer t
-         :after (counsel ivy)
-         :commands (counsel-M-x counsel-find-file counsel-ibuffer counsel-recentf)
-         :custom
-         (ivy-prescient-enable-filtering nil)
-         :config
-         (prescient-persist-mode 1)
-         (ivy-prescient-mode 1))
+  (use-package icomplete-vertical
+    :disabled
+    :demand t
+    :custom
+    (completion-styles '(partial-completion substring))
+    (read-file-name-completion-ignore-case t)
+    (read-buffer-completion-ignore-case t)
+    (completion-ignore-case t)
+    :init
+    (icomplete-mode 1)
+    :bind (:map icomplete-minibuffer-map
+                ("RET" . minibuffer-complete-and-exit)
+                ("<down>" . icomplete-forward-completions)
+                ("C-n" . icomplete-forward-completions)
+                ("<up>" . icomplete-backward-completions)
+                ("C-p" . icomplete-backward-completions))
+    :config
+    (setq icomplete-vertical-prospects-height 8)
+    (icomplete-vertical-mode 1)
+    :general (mf/leader-keys
+               "SPC" '(execute-extended-command :which-key "M-x")
+               "bb" '(switch-to-buffer :which-key "Switch buffer")
+               "fd" '(dired :which-key "Dired")
+               "ff" '(find-file :which-key "Find-file") 
+               "fr" '(mf/find-recentf :which-key "Recent files")))
+  (use-package prescient
+    :defer t
+    :after icomplete-vertical
+    :hook (icomplete-vertical-mode . prescient-persistent-mode))
 #+end_src
-** Counsel
-Use [[https://github.com/abo-abo/swiper][counsel]] to complement ivy
+** Make use of the Emacs default minibuffer
 #+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
-(use-package recentf
-  :defer 2)
+      (use-package marginalia
+        :init
+        (marginalia-mode))
 
-(use-package counsel
-  :defer 1
-  :commands (counsel-M-x counsel-find-file counsel-ibuffer counsel-recentf)
-  :bind (("M-x" . counsel-M-x)
-         ("C-x b" . counsel-ibuffer)
-         ("C-x C-f" . counsel-find-file)
-         :map minibuffer-local-map
-         ("C-r" . 'counsel-minibuffer-history))
-  :general (mf/leader-keys
-"RET" '(counsel-bookmark :which-key "Jump to bookmark")
-            "SPC" '(counsel-M-x :which-key "M-x")
-            "." '(counsel-find-file :which-key "Find file")
-            "bb" '(counsel-ibuffer :which-key "By name")
-            "fd" '(counsel-dired :which-key "Dired")
-            "ff" '(counsel-find-file :which-key "Find file")
-            "fl" '(counsel-locate :which-key "Locate file")
-            "fr" '(counsel-recentf :which-key "Recent file")
-            "hf" '(counsel-describe-function :which-key "Function")
-            "hv" '(counsel-describe-variable :which-key "Variable")
-            "hb" '(counsel-descbinds :which-key "Bindings")
-            ";" '(counsel-linux-app :which-key "Linux app"))
-  :config
-  (message "Loading counsel")
-  (counsel-mode 1)
-  (setq ivy-initial-inputs-alist nil)) ;; Don't start searches with ^
+      (use-package orderless
+        :config
+        (defun my-orderless-initialism-dispatcher (pattern _index _total)
+          "Leading initialism dispatcher using the comma suffix.
+                                       It matches PATTERN _INDEX and _TOTAL according to how Orderless parses it input."
+          (when (string-suffix-p "," pattern)
+            `(orderless-strict-leading-initialism . ,(substring pattern 0 -1))))
+        (defun my-orderless-literal-dispatcher (pattern _index _total)
+          "Literal style dispatcher using the equal sign as a suffix. 
+                                       It matches PATTERN _INDEX and _TOTAL according to how Orderless parses it input."
+          (when (string-suffix-p "=" pattern )
+            `(orderless-literal . ,(substring pattern 0 -1))))
+        (defun my-orderless-flex-dispatcher (pattern _index _total)
+          "Flex dispatcher using the tilde suffix.
+                         It matches PATTERN _INDEX and _TOTAL according to how Orderless
+                         parses its input."
+          (when (string-suffix-p "~" pattern)
+            `(orderless-flex . ,(substring pattern 0 -1))))
+        (setq my-orderless-default-styles
+              '(orderless-strict-leading-initialism
+                orderless-flex
+                orderless-prefixes
+                orderless-regexp)
+              orderless-component-separator "[ &]"      ; Completion at point using & as a separator, SPC automatically exits completion
+              orderless-matching-styles my-orderless-default-styles
+              orderless-style-dispatchers
+              '(my-orderless-literal-dispatcher
+                my-orderless-initialism-dispatcher
+                my-orderless-flex-dispatcher)
+              completion-styles '(orderless))
+        (let ((map minibuffer-local-completion-map))
+          ;; SPC should never complete, use it for orderless groups'
+          (define-key map (kbd "SPC") nil)
+          (define-key map (kbd "?") nil)))
 #+end_src
 ** Which key
 Use [[https://github.com/justbur/emacs-which-key][which-key]] to get information about keybindings while pressing them
 #+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
-       (use-package which-key
-          :defer 1
-          :after dashboard
-          :config
-          (which-key-mode)
-          (setq which-key-idle-delay 0.5
-                which-key-order 'which-key-prefix-then-key-order
-                which-key-min-display-lines 3))
+  (use-package which-key
+    :defer t
+    :commands (which-key-mode)
+    :config
+    (setq which-key-idle-delay 10000
+          which-key-show-early-on-C-h t
+          which-key-order 'which-key-prefix-then-key-order
+          which-key-idle-secondar-delay 0.05
+          which-key-min-display-lines 3))
+#+end_src
+** Embark
+Contextually relevant keybindings under a simple prefix key
+#+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
+  (use-package embark
+    :defer t
+    :commands (embark-act)
+    :init
+    (define-key global-map (kbd "C-,") #'embark-act)
+    (evil-define-key '(normal insert visual emacs) 'global (kbd "C-,") 'embark-act)
+    (let ((map minibuffer-local-completion-map))
+      (define-key map (kbd "C-,") #'embark-act)
+      (define-key map (kbd "C->") #'embark-become)
+      (define-key map (kbd "M-q") #'embark-collect-toggle-view))
+    :config
+    (setq embark-collect-initial-view-alist
+          '((file . list)
+            (buffer . list)
+            (symbol . list)
+            (line . list)
+            (xref-location . list)
+            (kill-ring . zebra)
+            (t . list))
+          embark-quit-after-action t
+          embark-collect-live-update-delay 0.5
+          embark-collect-live-initial-delay 0.8
+          embark-prompter 'embark-keymap-prompter)
+    ;;      embark-action-indicator 	; Integration with which key
+    ;;       (lambda (map _target)
+    ;;         (which-key--show-keymap "Embark" map nil nil 'no-paging)
+    ;;         #'which-key--hide-popup-ignore-command)
+    ;;       embark-become-indicator embark-action-indicator)
+    (let ((map embark-collect-mode-map))
+      (define-key map (kbd "C-,") #'embark-act)
+      (define-key map (kbd ",") #'embark-act)
+      (define-key map (kbd "M-q") #'embark-collect-toggle-view))
+    (let ((map embark-region-map))
+      (define-key map (kbd "a") #'align-regexp)
+      (define-key  map (kbd "s") #'sort-lines))
+    (let ((map embark-symbol-map))
+      (define-key map (kbd ".") #'embark-find-definition)
+      (define-key map (kbd "k") #'describe-keymap)))
+#+end_src
+From protesilaos config
+#+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
+    (defun prot-minibuffer-focus-minibuffer ()
+      "Focus the active minibuffer."
+      (interactive)
+      (let ((mini (active-minibuffer-window)))
+        (when mini
+          (select-window mini))))
+
+    (defun prot-minibuffer--fit-completions-window ()
+      "Fit Completions' buffer to its window."
+      (fit-window-to-buffer (get-buffer-window "*Completions*")
+                            (floor (frame-height) 2) 1))
+
+    (defun prot-common-number-negative ( n )
+      "Make N negative."
+      (if (and (numberp n) (> n 0))
+          (* -1 n)
+        (error "%s is not a valid positive number" n)))
+
+    (defun prot-minibuffer--switch-to-completions ()
+      "Subroutine for switching to the completions' buffer."
+      (unless (get-buffer-window "*Completions*" 0)
+        (minibuffer-completion-help))
+      (switch-to-completions)
+      (prot-minibuffer--fit-completions-window))
+
+    (defun prot-minibuffer-switch-to-completions-top ()
+      "Switch to the top of the completions' buffer.
+                  Meant to be bound in `minibuffer-local-completion-map'."
+      (interactive)
+      (prot-minibuffer--switch-to-completions)
+      (goto-char (point-min))
+      (next-completion 1))
+
+    (defun prot-minibuffer-switch-to-completions-bottom ()
+      "Switch to the bottom of the completions' buffer.
+                  Meant to be bound in `minibuffer-local-completion-map'."
+      (interactive)
+      (prot-minibuffer--switch-to-completions)
+      (goto-char (point-max))
+      (next-completion -1)
+      (goto-char (point-at-bol))
+      (recenter
+       (- -1
+          (min (max 0 scroll-margin)
+               (truncate (/ (window-body-height) 4.0))))
+       t))
+
+    (defun prot-minibuffer-next-completion-or-mini (&optional arg)
+      "Move to the next completion or switch to the minibuffer.
+                  This performs a regular motion for optional ARG lines, but when
+                  point can no longer move in that direction it switches to the
+                  minibuffer."
+      (interactive "p")
+      (cond
+       ((and (bobp)   ; see hack in `prot-minibuffer--clean-completions'
+             (get-text-property (point) 'invisible))
+        (forward-char 1)
+        (next-completion (or arg 1)))
+       ((or (eobp)
+            (eq (point-max)
+                (save-excursion (forward-line 1) (point))))
+        (prot-minibuffer-focus-minibuffer))
+       (t
+        (next-completion (or arg 1))))
+      (setq this-command 'next-line))
+
+    (defun prot-minibuffer-previous-completion-or-mini (&optional arg)
+      "Move to the next completion or switch to the minibuffer.
+                  This performs a regular motion for optional ARG lines, but when
+                  point can no longer move in that direction it switches to the
+                  minibuffer."
+      (interactive "p")
+      (let ((num (prot-common-number-negative arg)))
+        (if (or (bobp)
+                (eq (point) (1+ (point-min)))) ; see hack in `prot-minibuffer--clean-completions'
+            (prot-minibuffer-focus-minibuffer)
+          (next-completion (or num 1)))))
+;; Copied from icomplete.el
+(defun prot-minibuffer--field-beg ()
+  "Determine beginning of completion."
+  (if (window-minibuffer-p)
+      (minibuffer-prompt-end)
+    (nth 0 completion-in-region--data)))
+  (defun prot-minibuffer--completion-category ()
+    "Return completion category."
+    (let* ((beg (prot-minibuffer--field-beg))
+           (md (completion--field-metadata beg)))
+      (alist-get 'category (cdr md))))
+  (defun prot-minibuffer-backward-updir ()
+    "Delete char before point or go up a directory.
+  Must be bound to `minibuffer-local-filename-completion-map'."
+    (interactive)
+    (if (and (eq (char-before) ?/)
+             (eq (prot-minibuffer--completion-category) 'file))
+        (save-excursion
+          (goto-char (1- (point)))
+          (when (search-backward "/" (point-min) t)
+            (delete-region (1+ (point)) (point-max))))
+      (call-interactively 'backward-delete-char)))
+#+end_src
+** Minibuffer completions
+#+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
+  (setq completion-styles '(orderless partial-completion))
+  (setq completion-category-overrides
+        '((buffer (styles . (substring flex orderless)))
+          (file (styles . (partial-completion orderless)))))
+  (setq completion-cycle-threshold nil)
+  (setq completion-flex-nospace nil)
+  (setq completion-pcm-complete-word-inserts-delimiters t)
+  (setq completion-show-help nil)
+  (setq completion-auto-help t)
+  (setq completion-ignore-case t)
+  (setq-default case-fold-search t)
+
+  (setq completions-format 'vertical)
+  (setq completions-detailed t)
+
+  (setq read-buffer-completion-ignore-case t)
+  (setq read-file-name-completion-ignore-case t)
+
+  (setq resize-mini-windows nil)
+  (setq minibuffer-eldef-shorten-default t)
+  (setq echo-keystrokes 0.25)
+
+  (file-name-shadow-mode 1)
+  (minibuffer-electric-default-mode 1)
+  (let ((map completion-list-mode-map))
+    (define-key map (kbd "C-n") #'prot-minibuffer-next-completion-or-mini)
+    (define-key map (kbd "C-p") #'prot-minibuffer-previous-completion-or-mini))
+  (let ((map minibuffer-local-completion-map))
+    (define-key map (kbd "C-n") #'prot-minibuffer-switch-to-completions-top)
+    (define-key map (kbd "C-p") #'prot-minibuffer-switch-to-completions-bottom)
+    (define-key map (kbd "RET") #'minibuffer-force-complete-and-exit))
+  (let ((map minibuffer-local-filename-completion-map))
+    (define-key map (kbd "<M-backspace>") #'prot-minibuffer-backward-updir))
 #+end_src
 ** Helpful
 Use [[https://github.com/Wilfred/helpful][helpful]] to get better help, highlighting and references to the
 source files
 #+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
-     (use-package helpful
-       :defer 2
-       :commands (helpful-callable helpful-variable helpful-comand helpful-key)
-       :custom
-       (counsel-describe-function-function #'helpful-callable)
-       (counsel-describe-variable-function #'helpful-variable)
-       :bind
-       ([remap describe-function] . counsel-describe-function)
-       ([remap describe-command] . helpful-command)
-       ([remap describe-variabl] . counsel-describe-variable)
-       ([remap describe-key] . helpful-key))
+  (use-package helpful
+    :defer t
+    :commands (helpful-callable helpful-variable helpful-comand helpful-key)
+    :bind
+([remap describe-variable] . helpful-variable)
+    ([remap describe-command] . helpful-command)
+    ([remap describe-key] . helpful-key))
 #+end_src
 * Mail
 ** Mu4e and smtpmail
@@ -571,6 +777,7 @@ Write emails in org-mode and convert them to html with
     (use-package org-mime
       :defer t
       :commands (mu4e compose-mail mu4e-compose-new)
+      :hook (message-mode . org-mime-edit-mail-in-org-mode)
       :config (setq org-mime-export-options '(:section-numbers nil
                                                                :with-author nil
                                                                :with-toc nil)))
@@ -618,38 +825,30 @@ Prefix: SPC-/
 | SPC-/-s    | Stop playing         |
 | SPC-/- /   | Browse the music dir |
 #+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
-               (use-package emms
-                 :defer t
-                 :commands (emms-browser mpd/start-music-daemon mpd/update-database)
-                 :config
-                 (require 'emms-setup)
-                 (require 'emms-player-mpd)
-                 (emms-all)
-                 (setq emms-seek-seconds 5
-                  emms-player-list '(emms-player-mpd)
-                  emms-info-functions '(emms-info-mpd)
-                  emms-player-mpd-server-name "localhost"
-                  emms-player-mpd-server-port "6601"
-                  mpc-host "localhost:6601")
-                 :bind
-                 ("C-x C-/ /" . emms-browser)
-                 :general (mf/leader-keys
-            "/m" '(mpd/start-music-daemon :which-key "Start mpd")
-            "/k" '(mpd/kill-music-daemon :which-key "Kill mpd")
-            "/u" '(mpd/update-database :which-key "Update mpd")
-            "/p" '(emms-pause :which-key "Toggle pause")
-            "/s" '(emms-stop :which-key "Stop music")
-            "/b" '(emms-browser :which-key "Open music dir")))
-#+end_src
-** Ivy integration
-Choose songs using ivy completion for emms with [[https://github.com/franburstall/ivy-emms][ivy-emms]]
-#+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
-               (use-package ivy-emms
-                 :defer t
-                 :after emms
-                 :commands ivy-emms
-                 :general (mf/leader-keys
-                           "//" 'ivy-emms))
+  (use-package emms
+    :defer t
+    :commands (emms-browser mpd/start-music-daemon mpd/update-database)
+    :config
+    (require 'emms-setup)
+    (require 'emms-player-mpd)
+    (emms-all)
+    (setq emms-seek-seconds 5
+          emms-player-list '(emms-player-mpd)
+          emms-info-functions '(emms-info-mpd)
+          emms-player-mpd-server-name "localhost"
+          emms-player-mpd-server-port "6601"
+          mpc-host "localhost:6601")
+    (define-key emms-browser-mode-map (kbd "q") 'kill-current-buffer)
+    (evil-define-key 'normal emms-browser-map  "q" 'kill-current-buffer)
+    :bind
+    ("C-x C-/ /" . emms-browser)
+    :general (mf/leader-keys
+               "/m" '(mpd/start-music-daemon :which-key "Start mpd")
+               "/k" '(mpd/kill-music-daemon :which-key "Kill mpd")
+               "/u" '(mpd/update-database :which-key "Update mpd")
+               "/p" '(emms-pause :which-key "Toggle pause")
+               "/s" '(emms-stop :which-key "Stop music")
+               "/b" '(emms-browser :which-key "Open music dir")))
 #+end_src
 * EXWM
 ** Buffer name
@@ -669,7 +868,6 @@ Choose songs using ivy completion for emms with [[https://github.com/franburstal
 Use [[https://github.com/ch11ng/exwm][exwm]] to manage X windows in Emacs buffers
 #+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
      (use-package exwm
-       :ensure nil
        :config
        (setq exwm-workspace-number 1)
        ;; When window class updates, use it to set buffer name
@@ -770,87 +968,97 @@ Use [[https://github.com/ch11ng/exwm][exwm]] to manage X windows in Emacs buffer
        (exwm-enable))
 #+end_src
 ** Automatic buffer management
-Display org agenda buffers in the frame you are currently focused on
+Specify window rules
 #+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
-     (setq display-buffer-base-action
-           '(display-buffer-same-window . ((mode . (org-agenda)))))
+(setq switch-to-buffer-obey-display-actions t)  ;; Make switch-to-buffer obey display-buffer-alist rules (override for example EMMS' way to focus the browser buffer)
+  (setq display-buffer-alist
+        '(("\\*\\(Backtrace\\|Warnings\\|Compile-Log\\|Messages\\)\\*"
+           (display-buffer-in-side-window)
+           (window-height . 0.2)
+           (side . left)
+           (slot . 0))
+          ("\\*\\([Hh]elp\\|helpful.*\\)\\*"
+           (display-buffer-in-side-window)
+           (window-width . 0.3)
+           (side . left)
+           (slot  . 0))
+          ("\\*Org Select\\*"
+           (display-buffer-in-side-window)
+           (side . left)
+           (window-width . 0.2)
+           (slot . 1))
+          ("\\*Capture\\*"
+           (display-buffer-in-side-window)
+           (side . left)
+           (window-width . 0.2)
+           (slot . 1))
+          ("\\*Calendar\\*"
+           (display-buffer-in-side-window)
+           (side . bottom)
+           (window-height . 0.2)
+           (slot . 1))
+          ("\\*Occur\\*"
+           (display-buffer-in-side-window)
+           (side . bottom)
+           (window-height . 0.3)
+           (slot . 2))
+          ("\\*Emms Playlist\\*"
+           (display-buffer-in-side-window)
+           (side . left)
+           (window-width . 0.2)
+           (slot . 1))
+          ("Browsing by: artist"
+           (display-buffer-in-side-window)
+           (side . left)
+           (window-width . 0.2)
+           (slot . 1))
+          ("\\*\\(Embark\\)?.*Completions.*"
+           (display-buffer-in-side-window)
+           (side . bottom)
+           (slot . 0)
+           (window-parameters . ((no-other-window . t)
+                                 (mode-line-format . none))))
+          ("\\*Embark Collect Live\\*"
+           (display-buffer-in-side-window)
+           (side . bottom)
+           (slot . 0)
+           (window-parameters . ((no-other-window . t)
+                                 (mode-line-format . none))))
+          ("\\(e?shell\\|v?term\\).*"
+           (display-buffer-in-side-window)
+           (side . bottom)
+           (window-height . 0.25)
+           (slot . 2))))
 #+end_src
+*** Agenda window management
+For some reason org agenda doesn't respect display-buffer-alist and
+requires ad hoc customization
+#+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/Emacs.el
+(setq org-agenda-restore-windows-after-quit t)
+(setq org-agenda-window-setup 'current-window)
+#+END_SRC
 ** Autostart
 #+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
      (start-process-shell-command "xmodmap" nil "xmodmap ~/.Xmodmap")
      (start-process-shell-command "picom" nil "picom")
      (start-process-shell-command "dunst" nil "dunst")
-     (start-process-shell-command "xsettingsd" nil "xsettingsd --config=/home/mario/.config/xsettingsd/xsettingsd.conf")
-     (start-process-shell-command "xcape" nil "xcape -e 'Super_L=Escape'")
-#+end_src
-** Centaur tabs
-Group buffers in tab groups based on mode, name ...  with [[https://github.com/ema2159/centaur-tabs][centaur-tabs]]
-(clashing with color theme and temporarily switched back to tab-bar-mode)
-#+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
-     ;; (use-package centaur-tabs
-       ;; :defer t
-       ;; :config                         
-       ;; (defun centaur-tabs-buffer-groups ()
-         ;; "`centaur-tabs-buffer-groups' control buffers' group rules.
-;; 
-        ;; Group centaur-tabs with mode if buffer is derived from `eshell-mode'
-        ;; All buffer names starting with * will group to \"Emacs\"."
-         ;; (list
-          ;; (cond
-           ;; ( (string-equal "*" (substring (buffer-name) 0 1))
-             ;; "Emacs")
-           ;; ((derived-mode-p 'prog-mode)
-            ;; "Editing")
-           ;; ((derived-mode-p 'dired-mode)
-            ;; "Dired")
-           ;; ((memq major-mode '(helpful-mode
-                               ;; help-mode))
-            ;; "Help")
-           ;; ((memq major-mode '(org-mode
-                               ;; org-agenda-mode
-                               ;; org-src-mode
-                               ;; org-agenda-clockreport-mode
-                               ;; org-beamer-mode
-                               ;; org-bullets-mode
-                               ;; org-indent-mode
-                               ;; org-cdlatex-mode
-                               ;; org-agenda-log-mode
-                               ;; diary-mode))
-            ;; "OrgMode")
-           ;; ((memq major-mode '(html-mode
-                               ;; css-mode))
-            ;; "Html")
-           ;; ((memq major-mode '(c-mode
-                               ;; c++-mode))
-            ;; "Code")
-           ;; ((memq major-mode '(exwm-mode))
-            ;; "EXWM")
-           ;; ((string-equal "/home/mario/.emacs.d/Emacs.org" (buffer-file-name))
-            ;; "Emacs Configuration")
-           ;; ((string-equal "/home/mario/.emacs.d/keybindings.org" (buffer-file-name))
-            ;; "Emacs Configuration")
-           ;; (t
-            ;; (centaur-tabs-get-group-name (current-buffer))))))
-       ;; (setq centaur-tabs-style 'slant
-             ;; centaur-tabs-set-icons t    
-             ;; centaur-tabs-set-bar 'over  
-             ;; centaur-tabs-gray-out-icons 'buffer
-             ;; centaur-tabs-set-modified-marker t
-             ;; centaur-tabs-modified-marker "*"
-             ;; centaur-tabs-set-close-button nil)
-       ;; (centaur-tabs-mode 1)        
-       ;; (centaur-tabs-headline-match)
-       ;; (add-hook 'dashboard-mode 'centaur-tabs-local-mode)
-       ;; (add-hook 'exwm-mode 'centaur-tabs-local-mode))
+     ;; (start-process-shell-command "xsettingsd" nil "xsettingsd --config=/home/mario/.config/xsettingsd/xsettingsd.conf")
+     (start-process-shell-command "xcape" nil "xcape -e 'Control_L=Escape;Shift_L=BackSpace'")
 #+end_src
 ** Window management
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/Emacs.el
-(use-package rotate
-:defer t
-:commands (rotate-window rotate-layout )
-:general (mf/leader-keys
-"wr" '(rotate-window :which-key "Rotate")
-"wL" '(rotate-layout :which-key "Layout")))
+        (use-package rotate
+        :defer t
+        :commands (rotate-window rotate-layout )
+        :general (mf/leader-keys
+        "wr" '(rotate-window :which-key "Rotate")
+        "wL" '(rotate-layout :which-key "Layout")))
+        (use-package ace-window
+        :config
+      (ace-window-display-mode)
+    (setq aw-keys '(?h ?j ?k ?l ?f ?d ?s ?a))
+  :general (mf/leader-keys
+  "wo" '(ace-window :which-key "Ace window")))
 #+END_SRC
 * Programming
 ** Lsp mode
@@ -888,24 +1096,24 @@ also get information about errors runtime at the end of the current
 line with [[https://github.com/emacs-lsp/lsp-ui][lsp-ui]], get a nice view of the project with [[https://github.com/emacs-lsp/lsp-treemacs][lsp-treemacs]],
 find references faster with [[https://github.com/emacs-lsp/lsp-ivy][lsp-ivy]]
 #+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
-      (use-package lsp-ui
-        :defer t
-        :after lsp-mode
-        :hook (lsp-mode . lsp-ui-mode)
-        :custom
-        (lsp-ui-peek-enable))
+  (use-package lsp-ui
+    :disabled
+    :defer t
+    :after lsp-mode
+    :hook (lsp-mode . lsp-ui-mode)
+    :custom
+    (lsp-ui-peek-enable))
 
-      (use-package lsp-treemacs
-        :defer t
-        :after lsp-mode)
+  (use-package lsp-treemacs
+    :defer t
+    :after lsp-mode)
 
-      (use-package lsp-ivy
-        :defer t
-        :commands lsp-ivy-workspace-symbol
-        :after lsp-mode)
+  (use-package lsp-ivy
+    :defer t
+    :commands lsp-ivy-workspace-symbol
+    :after lsp-mode)
 #+end_src
-*** C-C++ auto completion
-**** Language server
+*** C-C++ Language server
 Install c/c++ [[https://github.com/MaskRay/emacs-ccls][language server]] to use with lsp-mode
 #+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
        (use-package ccls
@@ -918,19 +1126,37 @@ Install c/c++ [[https://github.com/MaskRay/emacs-ccls][language server]] to use 
          :hook ((c-mode c++-mode objc-mode cuda-mode) .
                 (lambda () (require 'ccls) (lsp))))
 #+end_src
-**** Company autocompletion
-Get [[http://company-mode.github.io/][autocompletion]]
+** Autocompletion
+Get [[http://company-mode.github.io/][autocompletion]]. Edit: try to use Emacs' built in completion-at-point
 #+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
-       (use-package company
-         :defer t
-         :hook (prog-mode . company-mode)
-         :bind (:map company-active-map
-                     ("<tab>" . company-complete-selection))
-         (:map lsp-mode-map
-               ("<tab>" . company-indent-or-complete-common))
-         :custom
-         (company-minimum-prefix-length 1)
-         (company-idle-delay 0.0))
+      ;; (use-package company
+        ;; :defer t
+        ;; :hook (prog-mode . company-mode)
+        ;; :bind (:map company-active-map
+                    ;; ("<tab>" . company-complete-selection))
+        ;; :custom
+        ;; (company-minimum-prefix-length 100)
+        ;; (company-idle-delay 0.3))
+      ;; (use-package company-box
+        ;; :after company
+        ;; :defer t
+        ;; :hook (company-mode . company-box-mode))
+    (setq tab-always-indent 'complete)
+    (autoload 'ffap-file-at-point "ffap")
+    (defun complete-path-at-point+ ()
+      "Return completion data for UNIX path at point."
+      (let ((fn (ffap-file-at-point))
+            (fap (thing-at-point 'filename)))
+        (when (and (or fn (equal "/" fap))
+                   (save-excursion
+                     (search-backward fap (line-beginning-position) t)))
+          (list (match-beginning 0)
+                (match-end 0)
+                #'completion-file-name-table :exclusive 'no))))
+
+    (add-hook 'completion-at-point-functions
+              #'complete-path-at-point+
+              'append)
 #+end_src
 ** Scheme
 Use [[http://www.nongnu.org/geiser/][geiser]] to run a scheme REPL
@@ -958,17 +1184,18 @@ Use [[http://www.nongnu.org/geiser/][geiser]] to run a scheme REPL
 ** Snippets
 Use yasnippets for comfortable templates
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/Emacs.el
-    (use-package yasnippet
-      :defer 2
-      :hook(
-      (prog-mode . yas-minor-mode)
-      (c-c++-mode-hook . yas-minor-mode)
-      (org-mode . yas-minor-mode))
-      :config
-      (yas-reload-all))
+  (use-package yasnippet
+    :defer t
+    :hook
+    (prog-mode . yas-minor-mode)
+    (c-c++-mode-hook . yas-minor-mode)
+    :config
+    (message "Loading yasnippet")
+    (yas-reload-all))
+
   (use-package yasnippet-snippets
-        :defer t
-        :after yasnippet)
+    :defer t
+    :after yasnippet)
 #+END_SRC
 ** Smart parentheses
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/Emacs.el
@@ -1036,7 +1263,6 @@ Use magit to handle git repositories
       (defun mf/configure-eshell ()
         (add-hook 'eshell-pre-command-hook 'eshell-save-some-history)
         (add-to-list 'eshell-output-filter-functions 'eshell-truncate-buffer)
-        (evil-define-key '(normal insert visual) eshell-mode-map (kbd "C-r") 'counsel-esh-history)
         (evil-normalize-keymaps)
 
 
@@ -1099,7 +1325,7 @@ Use magit to handle git repositories
      org-log-into-drawer t
 
      org-todo-keywords
-          '(( sequence "TODO(t)" "NEXT(n)" "|" "UNDONE(u)" "NO(n)" "DONE(d!)"))
+          '(( sequence "TODO(t)" "NEXT(n)" "|" "UNDONE(u)" "NO(x)" "DONE(d!)"))
      org-ellipsis " "
           org-hide-emphasis-markers t)
   (defun mf/mark-done-and-archive ()
@@ -1117,44 +1343,45 @@ subject, from, fromname, fromaddress ...)
 You can use %t to schedule it today, or %() to eval an arbitrary expression, using org-insert-time-stamp we can schedule it on another day, in this case two days in the future
 We add :immediate-finish t not to be prompted for modifications in the mail file
 #+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
-  ;; Org helpers
-  (setq org-capture-templates
-        '(("t" "TODO")			; Todo
-          ("tt" "Today" entry
-           (file+olp+datetree "~/org/schedule.org")
-           "* TODO %^{Action}\n SCHEDULED:%t\n")
-          ("td" "Date" entry
-           (file+olp+datetree "~/org/schedule.org")
-           "* TODO %^{Action}\n SCHEDULED:%^T\n" :time-prompt t)
-          ("tn" "Next" entry
-           (file+olp+datetree "~/org/schedule.org" )
-           "* NEXT %^{Action}\n SCHEDULED:%T\n" :time-prompt t)
-          ("r" "Ripetizioni")
-          ("rc" "Chiara")
-          ("rcr" "Ripetzioni" entry
-           (file+headline "~/org/schedule.org" "Chiara")
-           "* TODO Ripetizioni Chiara Matematica\n SCHEDULED:%^T\n" :time-prompt t)
-          ("rco" "Ore" table-line
-           (file "~/Documents/Personal/Ripetizioni/Chiara/ore/ore.org"))
-          ("rm" "Migara")
-          ("rmr" "Ripetizioni" entry
-           (file+headline "~/org/schedule.org" "Migara")
-           "* TODO Ripetizioni Migara %^{Materia|Matematica|Fisica}\n SCHEDULED: %^T\n%?" :time-prompt t)
-          ("rmo" "Ore" table-line
-           (file "~/Documents/Personal/Ripetizioni/Migara/ore/ore.org")
-           "| %^t | %^{Ore} |")
-          ("rM" "Marco Buzzetti")
-          ("rMr" "Ripetizioni" entry
-           (file+headline "~/org/schedule.org" "Marco")
-           "* TODO Ripetizioni Marco Buzzetti %^{Materia|Matematica|Fisica}\nArgomento: %^{Argomento}%?\n SCHEDULED: %^T\n" :time-prompt t)
-          ("rMo" "Ore" table-line
-           (file "~/Documents/Personal/Ripetizioni/Marco_B/ore/ore.org")
-           "| %^t | %^{Ore} |")))
-  (global-set-key (kbd "C-c c") 'org-capture)
-  (global-set-key (kbd "C-c a") 'org-agenda)
+    ;; Org helpers
+    (setq org-capture-templates
+          '(("t" "TODO")			; Todo
+            ("tt" "Today" entry
+             (file+olp+datetree "~/org/schedule.org")
+             "* TODO %^{Action}\n SCHEDULED:%t\n")
+            ("td" "Date" entry
+             (file+olp+datetree "~/org/schedule.org")
+             "* TODO %^{Action}\n SCHEDULED:%^T\n" :time-prompt t)
+            ("tn" "Next" entry
+             (file+olp+datetree "~/org/schedule.org" )
+             "* NEXT %^{Action}\n SCHEDULED:%T\n" :time-prompt t)
+            ("r" "Ripetizioni")
+            ("rc" "Chiara")
+            ("rcr" "Ripetzioni" entry
+             (file+headline "~/org/schedule.org" "Chiara")
+             "* TODO Ripetizioni Chiara Matematica\n SCHEDULED:%^T\n" :time-prompt t)
+            ("rco" "Ore" table-line
+             (file "~/Documents/Personal/Ripetizioni/Chiara/ore/ore.org")
+  "| %^t | %^{Ore} |")
+            ("rm" "Migara")
+            ("rmr" "Ripetizioni" entry
+             (file+headline "~/org/schedule.org" "Migara")
+             "* TODO Ripetizioni Migara %^{Materia|Matematica|Fisica}\n SCHEDULED: %^T\n%?" :time-prompt t)
+            ("rmo" "Ore" table-line
+             (file "~/Documents/Personal/Ripetizioni/Migara/ore/ore.org")
+             "| %^t | %^{Ore} |")
+            ("rM" "Marco Buzzetti")
+            ("rMr" "Ripetizioni" entry
+             (file+headline "~/org/schedule.org" "Marco")
+             "* TODO Ripetizioni Marco Buzzetti %^{Materia|Matematica|Fisica}\nArgomento: %^{Argomento}%?\n SCHEDULED: %^T\n" :time-prompt t)
+            ("rMo" "Ore" table-line
+             (file "~/Documents/Personal/Ripetizioni/Marco_B/ore/ore.org")
+             "| %^t | %^{Ore} |")))
+    (global-set-key (kbd "C-c c") 'org-capture)
+    (global-set-key (kbd "C-c a") 'org-agenda)
 
-  ;; Begin in insert mode
-  (add-hook 'org-capture-mode-hook 'evil-insert-state))
+    ;; Begin in insert mode
+    (add-hook 'org-capture-mode-hook 'evil-insert-state))
 #+end_src
 ** Bullets
 Prettify [[https://github.com/integral-dw/org-bullets][org bullets]]
@@ -1164,15 +1391,7 @@ Prettify [[https://github.com/integral-dw/org-bullets][org bullets]]
        :after org
        :hook (org-mode . org-bullets-mode)
        :custom
-       (org-bullets-bullet-list '("" "" "" "" "" ""))
-       :config
-#+end_src
-** Lists
-#+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
-     ;; Replace list hyphen with dot
-     (font-lock-add-keywords 'org-mode
-                             '(("^ *\\([-]\\) "
-                                (0 (prog1  () (compose-region (match-beginning 1) (match-end 1) "·")))))))
+       (org-bullets-bullet-list '("" "" "" "" "" "")))
 #+end_src
 ** Look and feel
 #+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
@@ -1228,12 +1447,12 @@ author are used to display the title
     (use-package dired
       :ensure nil
       :defer t
-      :commands (counsel-dired dired dired-jump)
+      :commands ( dired dired-jump) ;counsel-dired
       :hook (dired-mode . dired-hide-details-mode))
     (use-package all-the-icons-dired
       :defer t
       :after (all-the-icons dired)
-      :commands (all-the-icons-dired-mode dired counsel-dired)
+      :commands (all-the-icons-dired-mode dired) ;counsel-dired
       :hook (dired-mode . all-the-icons-dired-mode))
     (use-package dired-single
       :defer t
@@ -1244,7 +1463,7 @@ author are used to display the title
         "l" 'dired-single-buffer))))
     (use-package dired-open
       :defer t
-      :commands (dired counsel-dired dired-jump)
+      :commands (dired  dired-jump) ;counsel-dired
       :config (setq dired-open-extensions '(("png" . "sxiv")
                                             ("mkv" . "mpd")
                                             ("mp4" . "mpd")
@@ -1255,18 +1474,19 @@ author are used to display the title
 Telegram [[https://github.com/zevlg/telega.el][client]] for Emacs
 #+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
   (defun mf/telega-chat-hook  ()
-(define-key telega-msg-button-map (kbd "k") 'evil-previous-line)
-  (hl-line-mode 0)
-  (display-line-numbers-mode 0))
-       (use-package telega
-         :defer t
-         :commands telega
-         :hook
-         (telega-chat-mode . mf/telega-chat-hook)
-         (telega-root-mode . telega-notifications-mode)
-         (telega-root-mode . telega-mode-line-mode)
-         :general (mf/leader-keys
-                          "at" '(telega :which-key "Telegram")))
+    (define-key telega-msg-button-map (kbd "k") 'evil-previous-line)
+    (hl-line-mode 0)
+    (set-input-method 'english-dvorak t)
+    (display-line-numbers-mode 0))
+  (use-package telega
+    :defer t
+    :commands telega
+    :hook
+    (telega-chat-mode . mf/telega-chat-hook)
+    (telega-root-mode . telega-notifications-mode)
+    (telega-root-mode . telega-mode-line-mode)
+    :general (mf/leader-keys
+               "at" '(telega :which-key "Telegram")))
 #+end_src
 ** Mastodon
 [[https://github.com/jdenen/mastodon.el][Mastodon]] client for Emacs
@@ -1282,29 +1502,29 @@ Telegram [[https://github.com/zevlg/telega.el][client]] for Emacs
 ** Dashboard
 Pretty and well organized startup [[https://github.com/emacs-dashboard/emacs-dashboard][dashboard]]
 #+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
-         (use-package page-break-lines
-           :defer t)
-         (use-package dashboard
-           :defer t
-           :init
-           (dashboard-setup-startup-hook)
-           (setq dashboard-banner-logo-title "Welcome to EXWM"
-            dashboard-startup-banner 'logo
-            dashboard-set-heading-icons t
-            dashboard-set-file-icons t
-  dashboard-center-content t))
+  (use-package page-break-lines
+    :defer t)
+  (use-package dashboard
+    :defer t
+    :init
+    (dashboard-setup-startup-hook)
+    (setq dashboard-banner-logo-title "Emacs is more than a text editor!"
+          dashboard-startup-banner 'logo
+          dashboard-set-heading-icons t
+          dashboard-set-file-icons t
+          dashboard-center-content t))
 #+end_src
 ** Password management
 #+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
-     (use-package password-store
-       :defer t
-       :commands (password-store-copy password-store-edit password-store-insert))
+  (use-package password-store
+    :defer t
+    :commands (password-store-copy password-store-edit password-store-insert))
 
-     (use-package auth-source-pass
-       :defer t
-       :after password-store
-       :config
-       (auth-source-pass-enable))
+  (use-package auth-source-pass
+    :defer t
+    :after password-store
+    :config
+    (auth-source-pass-enable))
 #+end_src
 ** RSS
 RSS [[https://github.com/skeeto/elfeed][reader]] for Emacs
@@ -1359,39 +1579,38 @@ RSS [[https://github.com/skeeto/elfeed][reader]] for Emacs
 #+end_src
 ** IRC
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/Emacs.el
-               (use-package erc
-                 :defer t
-                 :commands (erc)
-                 :general (mf/leader-keys
-                           "ai" '(erc :which-key "IRC")))
+  (use-package erc
+    :defer t
+    :commands (erc)
+    :general (mf/leader-keys
+               "ai" '(erc :which-key "IRC")))
 #+END_SRC
 ** Youtube
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/Emacs.el
-        (use-package ytdious
-          :defer t
-          :commands ytdious
-          :general (mf/leader-keys
-                     "ay" '(ytdious :which-key "Youtube"))
-          :config
-          ;; (setq ytdious-invidious-api-url "https://www.invidiou.site")
-          (setq ytdious-invidious-api-url "https://www.yewtu.be")
-          (defun mf/ytdious-watch ()
-            "Stream video at point in mpv"
-            (interactive)
-            (let* ((video (ytdious-get-current-video))
-                   (id (ytdious-video-id-fun video)))
-              (start-process "ytdious mpv" nil
-                             "mpv"
-                             (concat "https://www.youtube.com/watch?v=" id))
-              "--ytdl-format=bestvideo+bestaudio/best")
-            (message "Starting streaming..."))
-          :hook
-          (ytdious-mode . evil-emacs-state)
-      :bind (:map ytdious-mode-map
-("y" . mf/ytdious-watch)
-  ("j" . next-line)
-("k" . previous-line))
-    )
+  (use-package ytdious
+    :defer t
+    :commands ytdious
+    :general (mf/leader-keys
+               "ay" '(ytdious :which-key "Youtube"))
+    :config
+    ;; (setq ytdious-invidious-api-url "https://www.invidiou.site")
+    (setq ytdious-invidious-api-url "https://invidious.ethibox.fr")
+    (defun mf/ytdious-watch ()
+      "Stream video at point in mpv"
+      (interactive)
+      (let* ((video (ytdious-get-current-video))
+             (id (ytdious-video-id-fun video)))
+        (start-process "ytdious mpv" nil
+                       "mpv"
+                       (concat "https://www.youtube.com/watch?v=" id))
+        "--ytdl-format=bestvideo+bestaudio/best")
+      (message "Starting streaming..."))
+    :hook
+    (ytdious-mode . evil-emacs-state)
+    :bind (:map ytdious-mode-map
+                ("y" . mf/ytdious-watch)
+                ("j" . next-line)
+                ("k" . previous-line)))
 #+END_SRC
 ** Sudo editing
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/Emacs.el
@@ -1401,10 +1620,10 @@ RSS [[https://github.com/skeeto/elfeed][reader]] for Emacs
 #+END_SRC
 ** Guix
 #+BEGIN_SRC emacs-lisp ~/.emacs.d/Emacs.el
-        (if (eq mf/is-guix-system t)
+  (if (eq mf/is-guix-system t)
       (use-package guix
-      :defer t
-    :commands guix))
+        :defer t
+        :commands guix))
 #+END_SRC
 * Startup time
 Display information about startup time
@@ -1422,22 +1641,21 @@ Display information about startup time
 Use [[https://gitlab.com/koral/gcmh][gcmh]] to manage garbage collection
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/Emacs.el
   (use-package gcmh
-    :defer 1
+    :defer t
+:hook (after-init-hook . gcmh-mode)
     :config
-    (setq gcmh-high-cons-threshold 16777216)
-    (gcmh-mode 1))
+    (setq gcmh-high-cons-threshold 16777216))
 #+END_SRC
 * Next
 *org-graph-view* To display graphs from org mode buffers
 *org-roam* *org-roam-server* 
 *org-present* Presentations in org-mode
+*ace-window* 
+Completion framework: *orderless* *selectrum* *marginalia embark* *consult 
 ** From doom
 *fold* universal code folding
-*snippets* snippets with yasnippet
 *ein* Jupyter notebooks
 *rgb* create color strings
-*smartparens*
-
 
 TODO Add guix packages that tangle into a separate manifest file (see
 [[https://github.com/daviwil/dotfiles][daviwil github]])
