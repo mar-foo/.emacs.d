@@ -61,7 +61,7 @@
  '(jdee-db-spec-breakpoint-face-colors (cons "#131033" "#546A90"))
  '(objed-cursor-color "#e61f44")
  '(package-selected-packages
-   '(modus-vivendi-theme company-box esup minibuffer embark window orderless marginalia almost-mono-themes sexy-monochrome-theme vscdark-theme sublime-themes stimmung-themes quasi-monochrome-theme org-mime ivy-posframe guix elfeed-goodies all-the-icons-dired dired evil-smartparens smartparens magit yasnippet-snippets yasnippet emojify ytdious rotate org-fragtog org-wild-notifier xterm-color with-editor use-package treemacs-evil pkg-info ivy-prescient eshell-git-prompt async))
+   '(spice-mode modus-vivendi-theme company-box esup minibuffer embark window orderless marginalia almost-mono-themes sexy-monochrome-theme vscdark-theme sublime-themes stimmung-themes quasi-monochrome-theme org-mime ivy-posframe guix elfeed-goodies all-the-icons-dired dired evil-smartparens smartparens magit yasnippet-snippets yasnippet emojify ytdious rotate org-fragtog org-wild-notifier xterm-color with-editor use-package treemacs-evil pkg-info ivy-prescient eshell-git-prompt async))
  '(pdf-view-midnight-colors (cons "#f2f3f7" "#0c0a20"))
  '(rustic-ansi-faces
    ["#0c0a20" "#e61f44" "#a7da1e" "#ffd400" "#1ea8fc" "#ff2afc" "#42c6ff" "#f2f3f7"])

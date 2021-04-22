@@ -73,8 +73,6 @@ Use [[https://github.com/hlissner/emacs-doom-theme][doom-themes]] or spacemacs-d
 #+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
         ;; (use-package doom-themes
         ;; :init (load-theme 'doom-one t))
-        ;; (require 'spacemacs-dark-theme)
-        ;; (load-theme 'spacemacs-dark t)
     (use-package modus-vivendi-theme
     :init
   (load-theme 'modus-vivendi t))
@@ -115,13 +113,6 @@ Use [[https://github.com/Fanael/rainbow-delimiters][rainbow-delimiters]] for nic
             :hook
             (org-mode . rainbow-delimiters-mode)
             (prog-mode . rainbow-delimiters-mode))
-#+end_src
-** Tab bar mode
-#+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
-     ;; (setq tab-bar-close-button-show nil
-     ;;       tab-bar-new-tab-to 'rightmost
-     ;;       tab-bar-new-button-show nil)
-     ;; (tab-bar-mode)
 #+end_src
 ** Custom variables
 #+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
@@ -176,6 +167,13 @@ Use [[https://github.com/Fanael/rainbow-delimiters][rainbow-delimiters]] for nic
     (interactive)
     (browse-url-firefox 
      (completing-read "Firefox: " mf/site-bookmarks-list nil nil)))
+
+  (defun mf/toggle-vterm ()
+    "Toggle vterm window (positioned at the bottom of the screen with current buffer-display-alist configuration)"
+    (interactive)
+    (if (get-buffer-window "*vterm*")
+        (delete-window (get-buffer-window "*vterm*"))
+      (vterm)))
 #+end_src
 *** Leader key
 Use [[https://github.com/noctuid/general.el][general]] to setup space bar as leader key in normal mode, C-SPC in
@@ -369,18 +367,18 @@ Manage windows; Prefix: SPC-w
 | SPC-w-=    | Balance windows  |
 | SPC-w-w    | Other-window     |
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/Emacs.el
-                "wh" '(evil-window-left :which-key "Focus left")
-                "wl" '(evil-window-right :which-key "Focus-right")
-                "wj" '(evil-window-down :which-key "Focus Down")
-                "wk" '(evil-window-top :which-key "Focus Up")
-            "wc" '(evil-window-delete :which-key "Close")
-        "wq" '(evil-window-delete :which-key "Close")
-            "wv" '(evil-window-vsplit :which-key "Vertical-split")
-            "ws" '(evil-window-split :which-key "Horizontal split")
-            "wm" '(maximize-window :which-key "Maximize")
-            "w=" '(balance-windows :which-key "Balance windows")
-            "ww" '(other-window :which-key "Other window")
-       ))
+  "wh" '(evil-window-left :which-key "Focus left")
+  "wl" '(evil-window-right :which-key "Focus-right")
+  "wj" '(evil-window-down :which-key "Focus Down")
+  "wk" '(evil-window-top :which-key "Focus Up")
+  "wc" '(evil-window-delete :which-key "Close")
+  "wq" '(evil-window-delete :which-key "Close")
+  "wv" '(evil-window-vsplit :which-key "Vertical-split")
+  "ws" '(evil-window-split :which-key "Horizontal split")
+  "wm" '(maximize-window :which-key "Maximize")
+  "w=" '(balance-windows :which-key "Balance windows")
+  "ww" '(other-window :which-key "Other window")
+  ))
 #+END_SRC
 #+end_src
 **** Swiper
@@ -394,14 +392,14 @@ Use swiper to search in normal mode
 ** Jumping with Avy
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/Emacs.el
   (use-package avy
-               :defer t
-               :commands (avy-goto-char avy-goto-char-2 avy-goto-word-0 avy-goto-line avy-goto-word-1)
-               :general (mf/leader-keys
-                          "jj" '(avy-goto-char-2 :which-key "Goto char 2")
-                          "jJ" '(avy-goto-char :which-key "Goto char")
-                          "jw" '(avy-goto-word-1 :which-key "Goto word")
-                          "jW" '(avy-goto-word-0 :which-key "Goto any word")
-                          "jl" '(avy-goto-line :which-key "Goto line")))
+    :defer t
+    :commands (avy-goto-char avy-goto-char-2 avy-goto-word-0 avy-goto-line avy-goto-word-1)
+    :general (mf/leader-keys
+               "jj" '(avy-goto-char-2 :which-key "Goto char 2")
+               "jJ" '(avy-goto-char :which-key "Goto char")
+               "jw" '(avy-goto-word-1 :which-key "Goto word")
+               "jW" '(avy-goto-word-0 :which-key "Goto any word")
+               "jl" '(avy-goto-line :which-key "Goto line")))
 #+END_SRC
 ** Evil integrations
 Use [[https://github.com/emacs-evil/evil][evil]] keybindings to make my life better, [[https://github.com/emacs-evil/evil-collection][evil-collection]] to use
@@ -449,8 +447,7 @@ in treemacs navigation
                "fr" '(mf/find-recentf :which-key "Recent files")))
   (use-package prescient
     :defer t
-    :after icomplete-vertical
-    :hook (icomplete-vertical-mode . prescient-persistent-mode))
+    :hook (minibuffer-inactive-mode-hook . prescient-persistent-mode))
 #+end_src
 ** Make use of the Emacs default minibuffer
 #+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
@@ -694,23 +691,15 @@ source files
     :defer t
     :commands (helpful-callable helpful-variable helpful-comand helpful-key)
     :bind
-([remap describe-variable] . helpful-variable)
+    ([remap describe-variable] . helpful-variable)
     ([remap describe-command] . helpful-command)
     ([remap describe-key] . helpful-key))
 #+end_src
 * Mail
 ** Mu4e and smtpmail
 #+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
-  ;; Mail with mu4e
-  ;; (if (not mf/is-guix-system)
-  ;;          (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu/")
-  ;; (add-to-list 'load-path "~/.guix-profile/usr/share/emacs/site-lisp/mu/"))
-
   (use-package mu4e
-    ;; (if (not mf/is-guix-system)
-        ;; (:load-path "/usr/share/emacs/site-list/mu/")
-      ;; (:load-path "~/.guix-profile/usr/share/emacs/site-lisp/mu/"))
-:load-path "/usr/share/emacs/site-list/mu/"
+    :load-path "/usr/share/emacs/site-list/mu/"
     :defer t
     :commands (mu4e)
     :config
@@ -735,29 +724,6 @@ source files
           mu4e-trash-folder "/Trash")
     :general (mf/leader-keys 
                "ae" '(mu4e :which-key "Email")))
-  ;; (autoload 'mu4e "/usr/share/emasc/site-lisp/mu/mu4e.elc" nil t)
-  ;; (defun mf/mail-configuration ()
-  ;; (interactive)
-  ;; (require 'smtpmail)
-  ;; (setq user-mail-address "mario.forzanini@studenti.unimi.it"
-  ;; user-full-name "Mario Forzanini"
-  ;; mu4e-get-mail-command "mbsync -c ~/.mbsyncrc -a mario.forzanini@studenti.unimi.it"
-  ;; mu4e-update-interval 300
-  ;; mu4e-compose-signature
-  ;; (concat
-  ;; "Mario Forzanini\n"
-  ;; "https://marioforzanini.com")
-  ;; message-send-mail-function 'smtpmail-send-it
-  ;; starttls-use-gnutls nil
-  ;; smtpmail-auth-credentials '(("smtp.unimi.it" 465 "mario.forzanini@studenti.unimi.it" nil))
-  ;; smtpmail-default-smtp-server "smtp.unimi.it"
-  ;; smtpmail-smtp-server "smtp.unimi.it"
-  ;; smtpmail-smtp-service 465
-  ;; smtpmail-stream-type 'ssl
-  ;; mu4e-sent-folder "/Sent"
-  ;; mu4e-drafts-folder "/Drafts"
-  ;; mu4e-trash-folder "/Trash"))
-  ;; (eval-after-load "mu4e" 'mf/mail-configuration)
 #+end_src
 ** Notifications
 Use [[https://github.com/iqbalansari/mu4e-alert][mu4e-alert]] to receive notifications about incoming email
@@ -918,7 +884,7 @@ Use [[https://github.com/ch11ng/exwm][exwm]] to manage X windows in Emacs buffer
 | S-q           | Toggle floating                |
 | S-r           | Reset (line mode)              |
 | S-;           | Run prompt                     |
-| S-RET         | vterm                          |
+| S-RET         | Toggle vterm                   |
 | S-[0,...,9]   | Focus [0,...,9]-th workspace   |
 | C-S-[0,...,9] | Move to [0,...,9]-th workspace |
 #+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
@@ -956,7 +922,7 @@ Use [[https://github.com/ch11ng/exwm][exwm]] to manage X windows in Emacs buffer
                ([?\s-e] . exwm-layout-toggle-fullscreen)
 
                ;; Programs
-               ([s-return] . vterm)
+               ([s-return] . mf/toggle-vterm)
 
                ;; Move window to Nth workspace with s-C-N
                ,@(mapcar (lambda (i)
@@ -1042,23 +1008,22 @@ requires ad hoc customization
      (start-process-shell-command "xmodmap" nil "xmodmap ~/.Xmodmap")
      (start-process-shell-command "picom" nil "picom")
      (start-process-shell-command "dunst" nil "dunst")
-     ;; (start-process-shell-command "xsettingsd" nil "xsettingsd --config=/home/mario/.config/xsettingsd/xsettingsd.conf")
      (start-process-shell-command "xcape" nil "xcape -e 'Control_L=Escape;Shift_L=BackSpace'")
 #+end_src
 ** Window management
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/Emacs.el
-        (use-package rotate
-        :defer t
-        :commands (rotate-window rotate-layout )
-        :general (mf/leader-keys
-        "wr" '(rotate-window :which-key "Rotate")
-        "wL" '(rotate-layout :which-key "Layout")))
-        (use-package ace-window
-        :config
-      (ace-window-display-mode)
+  (use-package rotate
+    :defer t
+    :commands (rotate-window rotate-layout)
+    :general (mf/leader-keys
+               "wr" '(rotate-window :which-key "Rotate")
+               "wL" '(rotate-layout :which-key "Layout")))
+  (use-package ace-window
+    :config
+    (ace-window-display-mode)
     (setq aw-keys '(?h ?j ?k ?l ?f ?d ?s ?a))
-  :general (mf/leader-keys
-  "wo" '(ace-window :which-key "Ace window")))
+    :general (mf/leader-keys
+               "wo" '(ace-window :which-key "Ace window")))
 #+END_SRC
 * Programming
 ** Lsp mode
@@ -1216,6 +1181,10 @@ Use yasnippets for comfortable templates
     :hook
     (smartparens-enabled-hook . evil-smartparens-mode))
 #+END_SRC
+** Spice mode
+#+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
+(use-package spice-mode)
+#+end_src
 * Git
 Use magit to handle git repositories
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/Emacs.el
@@ -1285,11 +1254,11 @@ Use magit to handle git repositories
 #+end_src
 *** vterm
 #+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
-        (use-package vterm
-      :defer t
+  (use-package vterm
+    :defer t
     :commands vterm
-  :config
-(setq vterm-shell "/bin/zsh"))
+    :config
+    (setq vterm-shell "/bin/zsh"))
 #+end_src
 * Org mode
 ** Setup
