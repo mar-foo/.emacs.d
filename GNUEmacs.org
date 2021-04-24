@@ -1,35 +1,13 @@
-#+TITLE: Emacs configuration
+N#+TITLE: Emacs configuration
 #+AUTHOR: Mario Forzanini
 * Look and Feel
 ** Modeline
 Use doom-modeline because it loads faster than [[https://github.com/TheBB/spaceline][spaceline]] and [[https://github.com/domtronn/spaceline-all-the-icons.el][spaceline-all-the-icons]]
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
   (use-package all-the-icons)
-  ;; (use-package doom-modeline
-  ;;   :init (doom-modeline-mode 1)
-  ;;   :config (setq doom-modeline-height 20))
-  ;;     ;
-                                          ; (use-package spaceline
-      ;;   :config
-      ;;   (setq powerline-default-separator 'slant)
-      ;;   :init
-      ;;   (require 'spaceline)
-      ;;   (require 'spaceline-config)
-      ;;   (spaceline-spacemacs-theme)
-      ;;   (spaceline-toggle-minor-modes-off))
-
-      ;; (use-package spaceline-all-the-icons
-      ;;   :after spaceline
-      ;;   :config (spaceline-all-the-icons-theme))
 
   (setq display-time-default-load-average nil)
   (display-time-mode 1)
-#+end_src
-** Theme
-Use [[https://github.com/hlissner/emacs-doom-theme][doom-themes]] or spacemacs-dark theme
-#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-            ;;(use-package doom-themes
-            ;; :init (load-theme 'doom-one t))
 #+end_src
 ** Wallpaper
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
@@ -62,11 +40,6 @@ Use [[https://github.com/Fanael/rainbow-delimiters][rainbow-delimiters]] for nic
             :hook
             (org-mode . rainbow-delimiters-mode)
             (prog-mode . rainbow-delimiters-mode))
-#+end_src
-** Custom variables
-#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-     ;; (setq-default custom-file "~/.emacs.d/custom.el")
-     ;; (load-file "~/.emacs.d/custom.el")
 #+end_src
 * Keybindings
 ** Leader key definitions
@@ -120,7 +93,7 @@ Use [[https://github.com/Fanael/rainbow-delimiters][rainbow-delimiters]] for nic
         (start-process-shell-command "Pavucontrol" nil "pavucontrol")))
 #+end_src
 *** Leader key
-Use [[https://github.com/noctuid/general.el][general]] to setup space bar as leader key in normal mode, C-SPC in
+Use [[https://github.com/noctuid/general.el][general]] to setup my keybindings under C-c prefix
 other modes. SPC-m is the major-mode-specific leader
 #+begin_src emacs-lisp  :tangle ~/.emacs.d/GNUEmacs.el
   (use-package general
@@ -135,19 +108,19 @@ other modes. SPC-m is the major-mode-specific leader
 Commonly used bindings for different purposes; Prefix: SPC
 | Keybinding | Action              |
 |------------+---------------------|
-| SPC-a      | Applications prefix |
-| SPC-b      | Buffers prefix      |
-| SPC-f      | Files prefix        |
-| SPC-h      | Help prefix         |
-| SPC-i      | Insert prefix       |
-| SPC-l      | Layouts prefix      |
-| SPC-m      | Major mode prefix   |
-| SPC-O      | Org prefix          |
-| SPC-q      | Quit prefix         |
-| SPC-q-q    | Exit Emacs          |
-| SPC-w      | Window prefix       |
-| SPC-/      | Music prefix        |
-| SPC-TAB    | Last buffer         |
+| C-c-a      | Applications prefix |
+| C-c-b      | Buffers prefix      |
+| C-c-f      | Files prefix        |
+| C-c-h      | Help prefix         |
+| C-c-i      | Insert prefix       |
+| C-c-l      | Layouts prefix      |
+| C-c-m      | Major mode prefix   |
+| C-c-O      | Org prefix          |
+| C-c-q      | Quit prefix         |
+| C-c-q-q    | Exit Emacs          |
+| C-c-w      | Window prefix       |
+| C-c-/      | Music prefix        |
+| C-c-TAB    | Last buffer         |
 #+begin_src emacs-lisp  :tangle ~/.emacs.d/GNUEmacs.el
   (mf/leader-keys
     "a" '(:ignore t :which-key "Applications")
@@ -166,19 +139,19 @@ Commonly used bindings for different purposes; Prefix: SPC
     "O" '(:ignore t :which-key "Org")
     "/" '(:ignore t :which-key "Music")
 
-    "SPC" '(execute-extended-command :which-key "M-x")
+    "C-c" '(execute-extended-command :which-key "M-x")
     ;; "TAB" '(evil-switch-to-windows-last-buffer :which-key "Last buffer")
     ;; ";" '(evilnc-comment-or-uncomment-lines :which-key "Comment line")
     "qq" '(save-buffers-kill-terminal :which-key "Exit Emacs")
 #+end_src
 **** Applications
-Movement between windows and buffers; Prefix: SPC-g
+Movement between windows and buffers; Prefix: C-c-g
 | Keybinding | Action  |
 |------------+---------|
-| SPC-a-e    | Email   |
-| SPC-a-m    | Music   |
-| SPC-a-f    | Firefox |
-| SPC-a-y    | Youtube |
+| C-c-a-e    | Email   |
+| C-c-a-m    | Music   |
+| C-c-a-f    | Firefox |
+| C-c-a-y    | Youtube |
 #+begin_src emacs-lisp  :tangle ~/.emacs.d/GNUEmacs.el
   "ae" '(mu4e :which-key "Email")
   "af" '(mf/browse-url-firefox :which-key "Firefox")
@@ -188,12 +161,12 @@ Movement between windows and buffers; Prefix: SPC-g
   "ay" '(ytdious :which-key "Youtube")
 #+end_src
 **** Buffer management
-Quick bookmarks; Prefix: SPC-b
+Quick bookmarks; Prefix: C-c-b
 | Keybinding | Action        |
 |------------+---------------|
-| SPC-b-d    | Delete buffer |
-| SPC-b-h    | Home buffer   |
-| SPC-b-r    | Rename buffer |
+| C-c-b-d    | Delete buffer |
+| C-c-b-h    | Home buffer   |
+| C-c-b-r    | Rename buffer |
 #+begin_src emacs-lisp  :tangle ~/.emacs.d/GNUEmacs.el
   "bb" '(switch-to-buffer :which-key "Switch buffer")
     "bd"  '(kill-current-buffer :which-key "Delete buffer")
@@ -208,13 +181,13 @@ Quick bookmarks; Prefix: SPC-b
 "cE" '(eval-region :which-key "Eval region")
 #+END_SRC
 **** File management
-Movement in the filesystem; Prefix: SPC-f
+Movement in the filesystem; Prefix: C-c-f
 | Keybinding | Action                   |
 |------------+--------------------------|
-| SPC-f-s    | Save buffer              |
-| SPC-f-e    | Emacs prefix             |
-| SPC-f-e-d  | Edit emacs configuration |
-| SPC-f-e-R  | Reload emacs configuration |
+| C-c-f-s    | Save buffer              |
+| C-c-f-e    | Emacs prefix             |
+| C-c-f-e-d  | Edit emacs configuration |
+| C-c-f-e-R  | Reload emacs configuration |
 #+begin_src emacs-lisp  :tangle ~/.emacs.d/GNUEmacs.el
   "fd" '(dired :which-key "Dired")
   "ff" '(find-file :which-key "Find-file") 
@@ -227,26 +200,26 @@ Movement in the filesystem; Prefix: SPC-f
 **** Help
 | Keybindings | Action                |
 |-------------+-----------------------|
-| SPC-h-a     | Apropos               |
-| SPC-h-c     | Key briefly           |
-| SPC-h-d     | Apropos documentation |
-| SPC-h-e     | Emacs                 |
-| SPC-h-i     | Info                  |
-| SPC-h-k     | Key                   |
-| SPC-h-l     | Lossage               |
-| SPC-h-m     | Mode                  |
-| SPC-h-n     | Emacs news            |
-| SPC-h-q     | Quit                  |
-| SPC-h-r     | Info emacs            |
-| SPC-h-s     | Syntax                |
-| SPC-h-C     | Coding system         |
-| SPC-h-F     | Info command          |
-| SPC-h-I     | Input method          |
-| SPC-h-K     | Info key              |
-| SPC-h-L     | Language environment  |
-| SPC-h-P     | Package               |
-| SPC-h-S     | Symbol                |
-| SPC-h-?     | Help                  |
+| C-c-h-a     | Apropos               |
+| C-c-h-c     | Key briefly           |
+| C-c-h-d     | Apropos documentation |
+| C-c-h-e     | Emacs                 |
+| C-c-h-i     | Info                  |
+| C-c-h-k     | Key                   |
+| C-c-h-l     | Lossage               |
+| C-c-h-m     | Mode                  |
+| C-c-h-n     | Emacs news            |
+| C-c-h-q     | Quit                  |
+| C-c-h-r     | Info emacs            |
+| C-c-h-s     | Syntax                |
+| C-c-h-C     | Coding system         |
+| C-c-h-F     | Info command          |
+| C-c-h-I     | Input method          |
+| C-c-h-K     | Info key              |
+| C-c-h-L     | Language environment  |
+| C-c-h-P     | Package               |
+| C-c-h-S     | Symbol                |
+| C-c-h-?     | Help                  |
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
 "ha" '(apropos-command :which-key "Apropos")
 "hb" '(describe-bindings :which-key "Bindings")
@@ -288,20 +261,20 @@ Movement in the filesystem; Prefix: SPC-f
 ;; Define functions to toggle auto-completion, smartparens, yasnippet...
 #+END_SRC
 **** Windows
-Manage windows; Prefix: SPC-w
+Manage windows; Prefix: C-c-w
 | Keybinding | Action           |
 |------------+------------------|
-| SPC-w-h    | Focus left       |
-| SPC-w-l    | Focus right      |
-| SPC-w-j    | Focus down       |
-| SPC-w-k    | Focus up         |
-| SPC-w-c    | Close            |
-| SPC-w-q    | Close            |
-| SPC-w-v    | Vertical split   |
-| SPC-w-s    | Horizontal split |
-| SPC-w-m    | Maximize         |
-| SPC-w-=    | Balance windows  |
-| SPC-w-w    | Other-window     |
+| C-c-w-h    | Focus left       |
+| C-c-w-l    | Focus right      |
+| C-c-w-j    | Focus down       |
+| C-c-w-k    | Focus up         |
+| C-c-w-c    | Close            |
+| C-c-w-q    | Close            |
+| C-c-w-v    | Vertical split   |
+| C-c-w-s    | Horizontal split |
+| C-c-w-m    | Maximize         |
+| C-c-w-=    | Balance windows  |
+| C-c-w-w    | Other-window     |
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
   "wh" '(windmove-left :which-key "Focus left")
   "wl" '(windmove-right :which-key "Focus-right")
@@ -711,15 +684,15 @@ Write emails in org-mode and convert them to html with
 #+end_src
 ** Emms
 Use [[https://www.gnu.org/software/emms/][emms]] and mpd to manage music within emacs
-Prefix: SPC-/
+Prefix: C-c-/
 | Keybinding | Action               |
 |------------+----------------------|
-| SPC-/-m    | Start mpd            |
-| SPC-/-k    | Kill mpd             |
-| SPC-/-u    | Update mpd database  |
-| SPC-/-p    | Toggle pause         |
-| SPC-/-s    | Stop playing         |
-| SPC-/- /   | Browse the music dir |
+| C-c-/-m    | Start mpd            |
+| C-c-/-k    | Kill mpd             |
+| C-c-/-u    | Update mpd database  |
+| C-c-/-p    | Toggle pause         |
+| C-c-/-s    | Stop playing         |
+| C-c-//-b/  | Browse the music dir |
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
   (use-package emms
     :defer t
