@@ -1,8 +1,8 @@
-N#+TITLE: Emacs configuration
+#+TITLE: Emacs configuration
 #+AUTHOR: Mario Forzanini
 * Look and Feel
 ** Modeline
-Use doom-modeline because it loads faster than [[https://github.com/TheBB/spaceline][spaceline]] and [[https://github.com/domtronn/spaceline-all-the-icons.el][spaceline-all-the-icons]]
+# Use doom-modeline because it loads faster than [[https://github.com/TheBB/spaceline][spaceline]] and [[https://github.com/domtronn/spaceline-all-the-icons.el][spaceline-all-the-icons]]
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
   (use-package all-the-icons)
 
@@ -97,8 +97,6 @@ Use [[https://github.com/noctuid/general.el][general]] to setup my keybindings u
 other modes. SPC-m is the major-mode-specific leader
 #+begin_src emacs-lisp  :tangle ~/.emacs.d/GNUEmacs.el
   (use-package general
-    ;; :init
-    ;; (general-override-mode 1)
     :config
 
     (general-create-definer mf/leader-keys
@@ -258,6 +256,7 @@ Movement in the filesystem; Prefix: C-c-f
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
   "tr" '(read-only-mode :which-key "Read only mode")
   "tw" '(visual-line-mode :which-key "Soft line wrapping")
+  "tf" '(focus-mode :which-key "Focus mode")
 ;; Define functions to toggle auto-completion, smartparens, yasnippet...
 #+END_SRC
 **** Windows
@@ -583,6 +582,7 @@ Provide live completions using the simple [[https://github.com/oantolin/live-com
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
   (use-package live-completions
 	:load-path "/home/mario/.emacs.d/lisp/live-completions/"
+:custom (live-completions-columns 'single)
   :config
   (live-completions-mode))
 #+end_src
@@ -592,8 +592,9 @@ source files
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
   (use-package helpful
     :defer t
-    :commands (helpful-callable helpful-variable helpful-comand helpful-key)
+    :commands (helpful-callable helpful-variable helpful-command helpful-key)
     :bind
+    ([remap describe-function] . helpful-function)
     ([remap describe-variable] . helpful-variable)
     ([remap describe-command] . helpful-command)
     ([remap describe-key] . helpful-key))
@@ -919,7 +920,7 @@ requires ad hoc customization
      (start-process-shell-command "xmodmap" nil "xmodmap ~/.Xmodmap")
      (start-process-shell-command "picom" nil "picom")
      (start-process-shell-command "dunst" nil "dunst")
-     (start-process-shell-command "xcape" nil "xcape -e 'Control_L=Escape;Shift_L=BackSpace'")
+     (start-process-shell-command "xcape" nil "xcape -e 'Control_L=Escape'")
 #+end_src
 ** Window management
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
@@ -955,40 +956,24 @@ Interact with language servers to use Emacs as an intelligent IDE with
 ***  Syntax checking
 On the fly syntax checking and error count with [[http://www.flycheck.org][flycheck]]
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-      (use-package flycheck
-        :defer t
-:commands flycheck-mode
-        :hook
-(lsp-mode . flycheck-mode)
-(prog-mode . flycheck-mode)
-:general (mf/leader-keys
-          "fx" '(flycheck-list-errors :which-key "List errors")
-          "fn" '(flycheck-next-error :which-key "Next error")
-          "fN" '(flycheck-previous-error :which-key "Previous error")))
+  (use-package flycheck
+    :defer t
+    :commands flycheck-mode
+    :hook
+    (lsp-mode . flycheck-mode)
+    (prog-mode . flycheck-mode)
+    :general (mf/leader-keys
+               "fx" '(flycheck-list-errors :which-key "List errors")
+               "fn" '(flycheck-next-error :which-key "Next error")
+               "fN" '(flycheck-previous-error :which-key "Previous error")))
 #+end_src
 *** Nice UI
-Get references and info in popup windows instead of separate buffers,
-also get information about errors runtime at the end of the current
-line with [[https://github.com/emacs-lsp/lsp-ui][lsp-ui]], get a nice view of the project with [[https://github.com/emacs-lsp/lsp-treemacs][lsp-treemacs]],
-find references faster with [[https://github.com/emacs-lsp/lsp-ivy][lsp-ivy]]
+Get a nice view of the project with [[https://github.com/emacs-lsp/lsp-treemacs][lsp-treemacs]]
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-  (use-package lsp-ui
-    :disabled
-    :defer t
-    :after lsp-mode
-    :hook (lsp-mode . lsp-ui-mode)
-    :custom
-    (lsp-ui-peek-enable))
-
   (use-package lsp-treemacs
     :defer t
     :after lsp-mode)
-
-  (use-package lsp-ivy
-    :defer t
-    :commands lsp-ivy-workspace-symbol
-    :after lsp-mode)
-#+end_src
+  #+end_src
 *** C-C++ Language server
 Install c/c++ [[https://github.com/MaskRay/emacs-ccls][language server]] to use with lsp-mode
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
@@ -1005,19 +990,6 @@ Install c/c++ [[https://github.com/MaskRay/emacs-ccls][language server]] to use 
 ** Autocompletion
 Get [[http://company-mode.github.io/][autocompletion]]. Edit: try to use Emacs' built in completion-at-point
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-      ;; (use-package company
-        ;; :defer t
-        ;; :hook (prog-mode . company-mode)
-        ;; :bind (:map company-active-map
-                    ;; ("<tab>" . company-complete-selection))
-        ;; :custom
-        ;; (company-minimum-prefix-length 100)
-        ;; (company-idle-delay 0.3))
-      ;; (use-package company-box
-        ;; :after company
-        ;; :defer t
-        ;; :hook (company-mode . company-box-mode))
-    (setq tab-always-indent 'complete)
     (autoload 'ffap-file-at-point "ffap")
     (defun complete-path-at-point+ ()
       "Return completion data for UNIX path at point."
@@ -1089,46 +1061,45 @@ Use yasnippets for comfortable templates
 * Git
 Use magit to handle git repositories
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-      (use-package magit
+  (use-package magit
     :defer t
-  :commands magit
-  :general (mf/leader-keys
-            "gb" '(magit-branch-checkout :which-key "Switch branch")
-            "gc" '(:ignore t :which-key "Create")
-            "gcb" '(magit-branch-and-checkout :which-key "Branch")
-            "gcc" '(magit-commit-create :which-key "Commit")
-            "gcr" '(magit-init :which-key "Initialize repository")
-            "gcR" '(magit-clone :which-key "Clone")
-            "gf" '(:ignore t :which-key "Find")
-            "gfc" '(magit-show-commit :which-key "Commit")
-            "gfg" '(magit-find-git-config-file :which-key "Gitconfig file")
-            "gg" '(magit-status :which-key "Status")
-            "gt" '(git-timemachine-toggle :which-key "Timemachine")
-            "gB" '(magit-blame-addition :which-key "Blame")
-            "gC" '(magit-clone :which-key "Clone")
-            "gD" '(magit-file-delete :which-key "Delete file")
-            "gF" '(magit-fetch :which-key "Fetch")
-            "gG" '(magit-status-here :which-key "Status here")
-            "gL" '(magit-log :which-key "Log")
-            "gS" '(magit-stage-file :which-key "Stage file")
-            "gU" '(magit-unstage-file :which-key "Unstage file")
-            ))
+    :commands magit
+    :general (mf/leader-keys
+        "gb" '(magit-branch-checkout :which-key "Switch branch")
+        "gc" '(:ignore t :which-key "Create")
+        "gcb" '(magit-branch-and-checkout :which-key "Branch")
+        "gcc" '(magit-commit-create :which-key "Commit")
+        "gcr" '(magit-init :which-key "Initialize repository")
+        "gcR" '(magit-clone :which-key "Clone")
+        "gf" '(:ignore t :which-key "Find")
+        "gfc" '(magit-show-commit :which-key "Commit")
+        "gfg" '(magit-find-git-config-file :which-key "Gitconfig file")
+        "gg" '(magit-status :which-key "Status")
+        "gt" '(git-timemachine-toggle :which-key "Timemachine")
+        "gB" '(magit-blame-addition :which-key "Blame")
+        "gC" '(magit-clone :which-key "Clone")
+        "gD" '(magit-file-delete :which-key "Delete file")
+        "gF" '(magit-fetch :which-key "Fetch")
+        "gG" '(magit-status-here :which-key "Status here")
+        "gL" '(magit-log :which-key "Log")
+        "gS" '(magit-stage-file :which-key "Stage file")
+        "gU" '(magit-unstage-file :which-key "Unstage file")))
 #+END_SRC
 * Shell
-*** term-mode
+** term-mode
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
       (use-package term
         :defer t
         :commands (term ansi-term)
         :config (setq explicit-shell-file-name "zsh"
          term-prompt-regexp "^\$"))
-                                              ; 256 color support
-      (use-package eterm-256color
+                                   
+      (use-package eterm-256color           ; 256 color support
         :defer t
         :after term
         :hook (term-mode . eterm-256color-mode))
 #+end_src
-*** eshell
+** eshell
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
   (defun mf/configure-eshell ()
     (add-hook 'eshell-pre-command-hook 'eshell-save-some-history)
@@ -1153,7 +1124,7 @@ Use magit to handle git repositories
       (eshell-git-prompt-use-theme 'powerline)))
 
 #+end_src
-*** vterm
+** vterm
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
   (use-package vterm
     :defer t
@@ -1219,12 +1190,12 @@ Use magit to handle git repositories
              "* NEXT %^{Action}\n SCHEDULED:%T\n" :time-prompt t)
             ("r" "Ripetizioni")
             ("rc" "Chiara")
-            ("rcr" "Ripetzioni" entry
+            ("rcr" "Ripetizioni" entry
              (file+headline "~/org/schedule.org" "Chiara")
              "* TODO Ripetizioni Chiara Matematica\n SCHEDULED:%^T\n" :time-prompt t)
             ("rco" "Ore" table-line
              (file "~/Documents/Personal/Ripetizioni/Chiara/ore/ore.org")
-  "| %^t | %^{Ore} |")
+             "| %^t | %^{Ore} |")
             ("rm" "Migara")
             ("rmr" "Ripetizioni" entry
              (file+headline "~/org/schedule.org" "Migara")
@@ -1301,30 +1272,31 @@ author are used to display the title
 #+END_SRC
 * Dired
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-    (use-package dired
-      :ensure nil
-      :defer t
-      :commands ( dired dired-jump) ;counsel-dired
-      :hook (dired-mode . dired-hide-details-mode))
-    (use-package all-the-icons-dired
-      :defer t
-      :after (all-the-icons dired)
-      :commands (all-the-icons-dired-mode dired) ;counsel-dired
-      :hook (dired-mode . all-the-icons-dired-mode))
-    (use-package dired-single
-      :defer t
-      :after dired)
-  ;; :hook (dired-mode . (lambda ()
-    ;;   (evil-collection-define-key 'normal 'dired-mode-map
-    ;;     "h" 'dired-single-up-directory
-    ;;     "l" 'dired-single-buffer))))
-    (use-package dired-open
-      :defer t
-      :commands (dired  dired-jump) ;counsel-dired
-      :config (setq dired-open-extensions '(("png" . "sxiv")
-                                            ("mkv" . "mpv")
-                                            ("mp4" . "mpv")
-                                            ("pdf" . "zathura"))))
+        (use-package dired
+          :ensure nil
+          :defer t
+          :commands ( dired dired-jump) ;counsel-dired
+          :hook (dired-mode . dired-hide-details-mode))
+        (use-package all-the-icons-dired
+          :defer t
+          :after (all-the-icons dired)
+          :commands (all-the-icons-dired-mode dired) ;counsel-dired
+          :hook (dired-mode . all-the-icons-dired-mode))
+
+         (use-package dired-single
+          :defer t
+          :commands (dired dired-jump)
+        :config
+        (define-key dired-mode-map (kbd "h") 'dired-single-up-directory)
+        (define-key dired-mode-map (kbd "l") 'dired-single-buffer))
+
+     (use-package dired-open
+          :defer t
+          :commands (dired  dired-jump)
+          :config (setq dired-open-extensions '(("png" . "sxiv")
+                                                ("mkv" . "mpv")
+                                                ("mp4" . "mpv")
+                                                ("pdf" . "zathura"))))
 #+END_SRC
 * Miscellaneous
 ** Telegram
@@ -1449,8 +1421,8 @@ RSS [[https://github.com/skeeto/elfeed][reader]] for Emacs
     :general (mf/leader-keys
                "ay" '(ytdious :which-key "Youtube"))
     :config
-    (setq ytdious-invidious-api-url "https://www.invidiou.site")
-    ;; (setq ytdious-invidious-api-url "https://invidious.ethibox.fr")
+    ;; (setq ytdious-invidious-api-url "https://www.invidiou.site")
+    (setq ytdious-invidious-api-url "https://invidious.ethibox.fr")
     (defun mf/ytdious-watch ()
       "Stream video at point in mpv"
       (interactive)
@@ -1505,6 +1477,12 @@ Use [[https://gitlab.com/koral/gcmh][gcmh]] to manage garbage collection
     :config
     (setq gcmh-high-cons-threshold 16777216))
 #+END_SRC
+** Speed typing
+#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
+  (use-package speed-type
+    :defer t
+    :commands speed-type-mode)
+#+end_src
 * Next
 *org-graph-view* To display graphs from org mode buffers
 *org-roam* *org-roam-server* 
