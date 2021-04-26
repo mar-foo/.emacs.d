@@ -1,4 +1,4 @@
-#+TITLE: Emacs configuration
+e#+TITLE: Emacs configuration
 #+AUTHOR: Mario Forzanini
 * Look and Feel
 ** Modeline
@@ -275,10 +275,10 @@ Manage windows; Prefix: C-c-w
 | C-c-w-=    | Balance windows  |
 | C-c-w-w    | Other-window     |
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-  "wh" '(windmove-left :which-key "Focus left")
-  "wl" '(windmove-right :which-key "Focus-right")
-  "wj" '(windmove-down :which-key "Focus Down")
-  "wk" '(windmove-up :which-key "Focus Up")
+  "wd" '(windmove-left :which-key "Focus left")
+  "wn" '(windmove-right :which-key "Focus-right")
+  "wh" '(windmove-down :which-key "Focus Down")
+  "wt" '(windmove-up :which-key "Focus Up")
   "wc" '(delete-window :which-key "Close")
   "wq" '(delete-window :which-key "Close")
   "wv" '(split-window-right :which-key "Vertical-split")
@@ -797,10 +797,10 @@ Use [[https://github.com/ch11ng/exwm][exwm]] to manage X windows in Emacs buffer
                ([?\s-r] . exwm-reset)
 
                ;; Move between windows
-               ([?\s-h] . windmove-left)
-               ([?\s-l] . windmove-right)
-               ([?\s-j] . windmove-down)
-               ([?\s-k] . windmove-up)
+               ([?\s-d] . windmove-left)
+               ([?\s-n] . windmove-right)
+               ([?\s-h] . windmove-down)
+               ([?\s-t] . windmove-up)
 
                ;; Launch applications via shell command
                ([?\s-\;] . (lambda (command)
@@ -924,18 +924,19 @@ requires ad hoc customization
 #+end_src
 ** Window management
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-  (use-package rotate
-    :defer t
-    :commands (rotate-window rotate-layout)
-    :general (mf/leader-keys
-               "wr" '(rotate-window :which-key "Rotate")
-               "wL" '(rotate-layout :which-key "Layout")))
-  (use-package ace-window
-    :config
-    (ace-window-display-mode)
-    (setq aw-keys '(?h ?j ?k ?l ?f ?d ?s ?a))
-    :general (mf/leader-keys
-               "o" '(ace-window :which-key "Ace window")))
+    (use-package rotate
+      :defer t
+      :commands (rotate-window rotate-layout)
+      :general (mf/leader-keys
+                 "wr" '(rotate-window :which-key "Rotate")
+                 "wL" '(rotate-layout :which-key "Layout")))
+    (use-package ace-window
+      :config
+      (ace-window-display-mode)
+      (setq aw-keys '(?h ?t ?n ?s ?u ?e ?o ?a))    
+  ;; (setq aw-keys '(?h ?j ?k ?l ?f ?d ?s ?a))
+      :general (mf/leader-keys
+                 "o" '(ace-window :which-key "Ace window")))
 #+END_SRC
 * Programming
 ** Lsp mode
@@ -1481,7 +1482,7 @@ Use [[https://gitlab.com/koral/gcmh][gcmh]] to manage garbage collection
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
   (use-package speed-type
     :defer t
-    :commands speed-type-mode)
+    :commands speed-type-region)
 #+end_src
 * Next
 *org-graph-view* To display graphs from org mode buffers
