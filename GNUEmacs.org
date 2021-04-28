@@ -1172,88 +1172,88 @@ Use magit to handle git repositories
 #+end_src
 ** Org
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-   (use-package org
-     :defer t
-     :hook (org-mode . mf/org-mode-setup)
-     :general (mf/leader-keys
-                           "Ot" '(:ignore t :which-key "Tangle")
-                           "Ott" '(org-babe-tangle :which-key "Tangle")
-                           "Otl" '(org-babel-load-file :which-key "Load file")
-                           "Oa" '(org-agenda :which-key "Agenda")
-                           "Oc" '(org-capture :which-key "Capture")
-                           "OA" '(mf/view-org-archive :which-key "Open archive"))
-     :config
-     (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
-     (setq org-agenda-files
-           '("~/org/schedule.org"
-             "~/org/next-actions.org"
-             "~/org/projects.org")
-      org-archive-location "~/org/archive.org::"
-      org-agenda-start-with-log-mode t ;; Enable log mode
-      org-log-done 'time ;; Keep track when I complete a task
-      org-log-into-drawer t
+  (use-package org
+    :defer t
+    :hook (org-mode . mf/org-mode-setup)
+    :general (mf/leader-keys
+               "Ot" '(:ignore t :which-key "Tangle")
+               "Ott" '(org-babe-tangle :which-key "Tangle")
+               "Otl" '(org-babel-load-file :which-key "Load file")
+               "Oa" '(org-agenda :which-key "Agenda")
+               "Oc" '(org-capture :which-key "Capture")
+               "OA" '(mf/view-org-archive :which-key "Open archive"))
+    :config
+    (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+    (setq org-agenda-files
+          '("~/org/schedule.org"
+            "~/org/next-actions.org"
+            "~/org/projects.org")
+          org-archive-location "~/org/archive.org::"
+          org-agenda-start-with-log-mode t ;; Enable log mode
+          org-log-done 'time ;; Keep track when I complete a task
+          org-log-into-drawer t
 
-      org-agenda-custom-commands
-    '(("w" todo "WAITING")
-  ("n" todo "NEXT")
-  ("g" "GTD view"
-   ((agenda)
-    (todo "NEXT"
-          ((org-agenda-overriding-heading "Next actions:")))
-    (todo "WAITING"
-          ((org-agenda-overriding-heading "Waiting on:")))
-    (todo "DONE"
-          ((org-agenda-overriding-heading "Completed items:")))
-    (tags "projects"
-          ((org-agenda-overriding-heading "Projects in progress:"))))))
-      org-todo-keywords
-           '(( sequence "TODO(t)" "NEXT(n)" "WAITING(w)" "|" "NO(x)" "DONE(d!)")))
-     (setq org-ellipsis " "
-           org-hide-emphasis-markers t)
-   (defun mf/mark-done-and-archive ()
-     "Mark the state of an org-mode item as DONE and archive it"
-     (interactive)
-     (org-todo 'done)
-     (org-archive-subtree))
-   (define-key org-mode-map (kbd "C-c C-x C-s") 'mf/mark-done-and-archive)
+          org-agenda-custom-commands
+          '(("w" todo "WAITING")
+            ("n" todo "NEXT")
+            ("g" "GTD view"
+             ((agenda)
+              (todo "NEXT"
+                    ((org-agenda-overriding-heading "Next actions:")))
+              (todo "WAITING"
+                    ((org-agenda-overriding-heading "Waiting on:")))
+              (todo "DONE"
+                    ((org-agenda-overriding-heading "Completed items:")))
+              (tags "projects"
+                    ((org-agenda-overriding-heading "Projects in progress:"))))))
+          org-todo-keywords
+          '(( sequence "TODO(t)" "NEXT(n)" "WAITING(w)" "|" "NO(x)" "DONE(d!)")))
+    (setq org-ellipsis " "
+          org-hide-emphasis-markers t)
+    (defun mf/mark-done-and-archive ()
+      "Mark the state of an org-mode item as DONE and archive it"
+      (interactive)
+      (org-todo 'done)
+      (org-archive-subtree))
+    (define-key org-mode-map (kbd "C-c C-x C-s") 'mf/mark-done-and-archive)
 #+end_src
 ** Capture templates
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-    ;; Org helpers
-    (setq org-capture-templates
-          '(("t" "TODO")			; Todo
-            ("tt" "Today" entry
-             (file+olp+datetree "~/org/schedule.org")
-             "* TODO %^{Action}\n:PROPERTIES:\n:TRIGGER: self archive!\n:END:\nSCHEDULED:%t\n")
-            ("td" "Date" entry
-             (file+olp+datetree "~/org/schedule.org")
-             "* TODO %^{Action}\n:PROPERTIES:\n:TRIGGER: self archive!\n:END:\nSCHEDULED:%^T\n" :time-prompt t)
-            ("n" "Next")					; Next
-            ("nu" "University" entry
-             (file+headline "~/org/next-actions.org" "University")
-             "* NEXT %^{Action}\n:PROPERTIES:\n:TRIGGER: self archive!\n:END:\n%?" :time-prompt t)
-            ("r" "Ripetizioni")			; Ripetizioni
-            ("rc" "Chiara")
-            ("rcr" "Ripetzioni" entry
-             (file+headline "~/org/schedule.org" "Chiara")
-             "* TODO Ripetizioni Chiara Matematica\n:PROPERTIES:\n:TRIGGER: self archive!\n:END:\n SCHEDULED:%^T\n" :time-prompt t)
-            ("rco" "Ore" table-line
-             (file "~/Documents/Personal/Ripetizioni/Chiara/ore/ore.org")
-  "| %^t | %^{Ore} |")
-            ("rm" "Migara")
-            ("rmr" "Ripetizioni" entry
-             (file+headline "~/org/schedule.org" "Migara")
-             "* TODO Ripetizioni Migara %^{Materia|Matematica|Fisica}\n:PROPERTIES:\n:TRIGGER: self archive!\n:END:\nSCHEDULED: %^T\n%?" :time-prompt t)
-            ("rmo" "Ore" table-line
-             (file "~/Documents/Personal/Ripetizioni/Migara/ore/ore.org")
-             "| %^t | %^{Ore} |")
-            ("rM" "Marco Buzzetti")
-            ("rMr" "Ripetizioni" entry
-             (file+headline "~/org/schedule.org" "Marco")
-             "* TODO Ripetizioni Marco Buzzetti %^{Materia|Matematica|Fisica}\nArgomento: %^{Argomento}%?\n:PROPERTIES:\n:TRIGGER: self archive!\n:END:\n SCHEDULED: %^T\n" :time-prompt t)
-            ("rMo" "Ore" table-line
-             (file "~/Documents/Personal/Ripetizioni/Marco_B/ore/ore.org")
-             "| %^t | %^{Ore} |"))))
+  ;; Org helpers
+  (setq org-capture-templates
+        '(("t" "TODO")			; Todo
+          ("tt" "Today" entry
+           (file+olp+datetree "~/org/schedule.org")
+           "* TODO %^{Action}\n:PROPERTIES:\n:TRIGGER: self archive!\n:END:\nSCHEDULED:%t\n")
+          ("td" "Date" entry
+           (file+olp+datetree "~/org/schedule.org")
+           "* TODO %^{Action}\n:PROPERTIES:\n:TRIGGER: self archive!\n:END:\nSCHEDULED:%^T\n" :time-prompt t)
+          ("n" "Next")					; Next
+          ("nu" "University" entry
+           (file+headline "~/org/next-actions.org" "University")
+           "* NEXT %^{Action}\n:PROPERTIES:\n:TRIGGER: self archive!\n:END:\n%?" :time-prompt t)
+          ("r" "Ripetizioni")			; Ripetizioni
+          ("rc" "Chiara")
+          ("rcr" "Ripetzioni" entry
+           (file+headline "~/org/schedule.org" "Chiara")
+           "* TODO Ripetizioni Chiara Matematica\n:PROPERTIES:\n:TRIGGER: self archive!\n:END:\n SCHEDULED:%^T\n" :time-prompt t)
+          ("rco" "Ore" table-line
+           (file "~/Documents/Personal/Ripetizioni/Chiara/ore/ore.org")
+           "| %^t | %^{Ore} |")
+          ("rm" "Migara")
+          ("rmr" "Ripetizioni" entry
+           (file+headline "~/org/schedule.org" "Migara")
+           "* TODO Ripetizioni Migara %^{Materia|Matematica|Fisica}\n:PROPERTIES:\n:TRIGGER: self archive!\n:END:\nSCHEDULED: %^T\n%?" :time-prompt t)
+          ("rmo" "Ore" table-line
+           (file "~/Documents/Personal/Ripetizioni/Migara/ore/ore.org")
+           "| %^t | %^{Ore} |")
+          ("rM" "Marco Buzzetti")
+          ("rMr" "Ripetizioni" entry
+           (file+headline "~/org/schedule.org" "Marco")
+           "* TODO Ripetizioni Marco Buzzetti %^{Materia|Matematica|Fisica}\nArgomento: %^{Argomento}%?\n:PROPERTIES:\n:TRIGGER: self archive!\n:END:\n SCHEDULED: %^T\n" :time-prompt t)
+          ("rMo" "Ore" table-line
+           (file "~/Documents/Personal/Ripetizioni/Marco_B/ore/ore.org")
+           "| %^t | %^{Ore} |"))))
 #+end_src
 ** Bullets
 Prettify [[https://github.com/integral-dw/org-bullets][org bullets]]
