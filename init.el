@@ -40,7 +40,8 @@
 (setq show-paren-delay 0)		; Highlight matching parentheses
 (delete-selection-mode 1)		; Replace region when inserting text
 (set-face-attribute 'default nil :font "UbuntuMono Nerd Font" :height 110) ; Font
-
+(if (file-exists-p "/sys/class/power_supply/BAT0/capacity")
+	(display-battery-mode))				; Display battery on laptops
 ;; Theme
         (use-package modus-themes
           :custom
