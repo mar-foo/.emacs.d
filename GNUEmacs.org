@@ -1,6 +1,11 @@
 #+TITLE: Emacs configuration
 #+STARTUP: overview
 #+AUTHOR: Mario Forzanini
+* System recognition
+#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
+  (setq mf/is-laptop
+        (file-exists-p "/sys/class/power_supply/BAT0/capacity"))
+#+end_src
 * Look and Feel
 ** Icons and modeline
 Use doom-modeline because it loads faster than [[https://github.com/TheBB/spaceline][spaceline]] and [[https://github.com/domtronn/spaceline-all-the-icons.el][spaceline-all-the-icons]]
@@ -10,6 +15,7 @@ Use doom-modeline because it loads faster than [[https://github.com/TheBB/spacel
     :defer t
     :commands (emojify-mode)
     :hook (telega-root-mode-hook . emojify-mode)
+    (elfeed-mode-hook . emojify-mode)
     (eww-mode-hook . emojify-mode))
     (setq display-time-defaut-load-average nil)
     (display-time-mode 1)
@@ -24,78 +30,84 @@ Use doom-modeline because it loads faster than [[https://github.com/TheBB/spacel
 #+end_src
 ** Line numbers
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-     (column-number-mode)
-     (global-display-line-numbers-mode t)
-     (menu-bar--display-line-numbers-mode-relative)
+  (column-number-mode)
+  (global-display-line-numbers-mode t)
+  (menu-bar--display-line-numbers-mode-relative)
 
-     (dolist (mode '(term-mode-hook
-                     eshell-mode-hook
-                    vterm-mode-hook
-                     elfeed-search-mode
-                     elfeed-show-mode
-                     org-mode-hook))
-       (add-hook mode (lambda () (display-line-numbers-mode 0))))
+  (dolist (mode '(term-mode-hook
+                  eshell-mode-hook
+                  vterm-mode-hook
+                  elfeed-search-mode
+                  elfeed-show-mode
+                  org-mode-hook))
+    (add-hook mode (lambda () (display-line-numbers-mode 0))))
 #+end_src
 ** Elisp parentheses
 Use [[https://github.com/Fanael/rainbow-delimiters][rainbow-delimiters]] for nice parentheses coloring
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-          (use-package rainbow-delimiters
-            :defer t
-            :commands rainbow-delimiters-mode
-            :hook
-            (org-mode . rainbow-delimiters-mode)
-            (prog-mode . rainbow-delimiters-mode))
+  (use-package rainbow-delimiters
+    :defer t
+    :commands rainbow-delimiters-mode
+    :hook
+    (org-mode . rainbow-delimiters-mode)
+    (prog-mode . rainbow-delimiters-mode))
 #+end_src
 * Keybindings
 ** Leader key definitions
 *** Helper functions
 #+begin_src emacs-lisp  :tangle ~/.emacs.d/GNUEmacs.el
-      (defun mf/browse-youtube ()
-        "Prompts for keywords and outputs youtube search results"
-        (interactive)
-        (start-process-shell-command "Youtube" nil "/home/mario/.local/bin/scripts/myyt -r"))
+    (defun mf/browse-youtube ()
+      "Prompts for keywords and outputs youtube search results"
+      (interactive)
+      (start-process-shell-command "Youtube" nil "/home/mario/.local/bin/scripts/myyt -r"))
 
-      (defun mf/reload-configuration ()
-        "Reloads configuration"
-        (interactive)
-        (org-babel-load-file "~/.emacs.d/GNUEmacs.org"))
+    (defun mf/reload-configuration ()
+      "Reloads configuration"
+      (interactive)
+      (load-file (concat user-emacs-directory "init.el")))
 
-      (defun mf/edit-configuration ()
-        "Edit emacs configuration"
-        (interactive)
-        (find-file "~/.emacs.d/GNUEmacs.org"))
+    (defun mf/edit-configuration ()
+      "Edit emacs configuration"
+      (interactive)
+      (find-file "~/.emacs.d/GNUEmacs.org"))
 
-      (defun mf/focus-dashboard ()
-        (interactive)
-        (switch-to-buffer "*dashboard*"))
+    (defun mf/focus-dashboard ()
+      (interactive)
+      (switch-to-buffer "*dashboard*"))
 
-      (defun mf/find-recentf ()
-        "Open a recent file"
-        (interactive)
-        (find-file (completing-read "Recent File: " recentf-list nil t)))
+    (defun mf/find-recentf ()
+      "Open a recent file"
+      (interactive)
+      (find-file (completing-read "Recent File: " recentf-list nil t)))
 
-      (defun mf/browse-url-firefox ()
-        "Browse bookmarks defined in mf/site-bookmarks-list"
-        (interactive)
-        (browse-url-firefox 
-         (completing-read "Firefox: " mf/site-bookmarks-list nil nil)))
+    (defun mf/browse-url-firefox ()
+      "Browse bookmarks defined in mf/site-bookmarks-list"
+      (interactive)
+      (browse-url-firefox 
+       (completing-read "Firefox: " mf/site-bookmarks-list nil nil)))
 
-      (defun mf/toggle-vterm ()
-        "Toggle vterm window (positioned at the bottom of the screen with current buffer-display-alist configuration)"
-        (interactive)
-        (if (get-buffer-window "*vterm*")
-            (delete-window (get-buffer-window "*vterm*"))
+  (defun mf/open-protonmail ()
+    "Open protonmail web mail and copy password from the password store"
+    (interactive)
+    (browse-url-firefox "https://mail.protonmail.com")
+    (password-store-copy "Mail/forzmar-protonmail" ))
+
+    (defun mf/toggle-vterm ()
+      "Toggle vterm window (positioned at the bottom of the screen with current buffer-display-alist configuration)"
+      (interactive)
+      (if (get-buffer-window "*vterm*")
+          (delete-window (get-buffer-window "*vterm*"))
         (vterm)))
 
+    (defun mf/toggle-window (win)
+      "Toggle X window"
+      (interactive)
+      (if (get-buffer win)
+          (if (get-buffer-window win)
+              (delete-window (get-buffer-window win))
+            (pop-to-buffer win))
+        (start-process-shell-command win nil (downcase win))))
 
-        (defun mf/toggle-window (win)
-          "Toggle X window"
-          (interactive)
-              (if (get-buffer win)
-              (if (get-buffer-window win)
-                  (delete-window (get-buffer-window win))
-                (pop-to-buffer win))
-            (start-process-shell-command win nil (downcase win))))
     (defun mf/toggle-pavucontrol ()
       (interactive)
       (mf/toggle-window "Pavucontrol"))
@@ -161,12 +173,13 @@ Movement between windows and buffers; Prefix: SPC-g
 | C-c-a-f    | Firefox |
 | C-c-a-y    | Youtube |
 #+begin_src emacs-lisp  :tangle ~/.emacs.d/GNUEmacs.el
-    "ae" '(mu4e :which-key "Email")
-    "af" '(mf/browse-url-firefox :which-key "Firefox")
-    "am" '(emms-browser :which-key "Music")
-    "ap" '(mf/toggle-pavucontrol :which-key "Pavucontrol")
-    "aw" '(eww :which-key "Eww")
-    "ay" '(ytdious :which-key "Youtube")
+  "ae" '(mu4e :which-key "Email")
+  "af" '(mf/browse-url-firefox :which-key "Firefox")
+  "am" '(emms-browser :which-key "Music")
+  "ap" '(mf/toggle-pavucontrol :which-key "Pavucontrol")
+  "aw" '(eww :which-key "Eww")
+  "ay" '(ytdious :which-key "Youtube")
+  "aP" '(mf/open-protonmail :which-key "Protonmail")
 #+end_src
 **** Buffer management
 Quick bookmarks; Prefix: C-c-b
@@ -440,105 +453,106 @@ Contextually relevant keybindings under a simple prefix key
 #+end_src
 From protesilaos config
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-    (defun prot-minibuffer-focus-minibuffer ()
-      "Focus the active minibuffer."
+      (defun prot-minibuffer-focus-minibuffer ()
+        "Focus the active minibuffer."
+        (interactive)
+        (let ((mini (active-minibuffer-window)))
+          (when mini
+            (select-window mini))))
+
+      (defun prot-minibuffer--fit-completions-window ()
+        "Fit Completions' buffer to its window."
+        (fit-window-to-buffer (get-buffer-window "*Completions*")
+                              (floor (frame-height) 2) 1))
+
+      (defun prot-common-number-negative ( n )
+        "Make N negative."
+        (if (and (numberp n) (> n 0))
+            (* -1 n)
+          (error "%s is not a valid positive number" n)))
+
+
+      (defun prot-minibuffer--switch-to-completions ()
+        "Subroutine for switching to the completions' buffer."
+        (unless (get-buffer-window "*Completions*" 0)
+          (minibuffer-completion-help))
+        (switch-to-completions)
+        (prot-minibuffer--fit-completions-window))
+
+      (defun prot-minibuffer-switch-to-completions-top ()
+        "Switch to the top of the completions' buffer.
+                    Meant to be bound in `minibuffer-local-completion-map'."
+        (interactive)
+        (prot-minibuffer--switch-to-completions)
+        (goto-char (point-min))
+        (next-completion 1))
+
+      (defun prot-minibuffer-switch-to-completions-bottom ()
+        "Switch to the bottom of the completions' buffer.
+                    Meant to be bound in `minibuffer-local-completion-map'."
+        (interactive)
+        (prot-minibuffer--switch-to-completions)
+        (goto-char (point-max))
+        (next-completion -1)
+        (goto-char (point-at-bol))
+        (recenter
+         (- -1
+            (min (max 0 scroll-margin)
+                 (truncate (/ (window-body-height) 4.0))))
+         t))
+
+      (defun prot-minibuffer-next-completion-or-mini (&optional arg)
+        "Move to the next completion or switch to the minibuffer.
+                    This performs a regular motion for optional ARG lines, but when
+                    point can no longer move in that direction it switches to the
+                    minibuffer."
+        (interactive "p")
+        (cond
+         ((and (bobp)   ; see hack in `prot-minibuffer--clean-completions'
+               (get-text-property (point) 'invisible))
+          (forward-char 1)
+          (next-completion (or arg 1)))
+         ((or (eobp)
+              (eq (point-max)
+                  (save-excursion (forward-line 1) (point))))
+          (prot-minibuffer-focus-minibuffer))
+         (t
+          (next-completion (or arg 1))))
+        (setq this-command 'next-line))
+
+      (defun prot-minibuffer-previous-completion-or-mini (&optional arg)
+        "Move to the next completion or switch to the minibuffer.
+                    This performs a regular motion for optional ARG lines, but when
+                    point can no longer move in that direction it switches to the
+                    minibuffer."
+        (interactive "p")
+        (let ((num (prot-common-number-negative arg)))
+          (if (or (bobp)
+                  (eq (point) (1+ (point-min)))) ; see hack in `prot-minibuffer--clean-completions'
+              (prot-minibuffer-focus-minibuffer)
+            (next-completion (or num 1)))))
+  ;; Copied from icomplete.el
+  (defun prot-minibuffer--field-beg ()
+    "Determine beginning of completion."
+    (if (window-minibuffer-p)
+        (minibuffer-prompt-end)
+      (nth 0 completion-in-region--data)))
+    (defun prot-minibuffer--completion-category ()
+      "Return completion category."
+      (let* ((beg (prot-minibuffer--field-beg))
+             (md (completion--field-metadata beg)))
+        (alist-get 'category (cdr md))))
+    (defun prot-minibuffer-backward-updir ()
+      "Delete char before point or go up a directory.
+    Must be bound to `minibuffer-local-filename-completion-map'."
       (interactive)
-      (let ((mini (active-minibuffer-window)))
-        (when mini
-          (select-window mini))))
-
-    (defun prot-minibuffer--fit-completions-window ()
-      "Fit Completions' buffer to its window."
-      (fit-window-to-buffer (get-buffer-window "*Completions*")
-                            (floor (frame-height) 2) 1))
-
-    (defun prot-common-number-negative ( n )
-      "Make N negative."
-      (if (and (numberp n) (> n 0))
-          (* -1 n)
-        (error "%s is not a valid positive number" n)))
-
-    (defun prot-minibuffer--switch-to-completions ()
-      "Subroutine for switching to the completions' buffer."
-      (unless (get-buffer-window "*Completions*" 0)
-        (minibuffer-completion-help))
-      (switch-to-completions)
-      (prot-minibuffer--fit-completions-window))
-
-    (defun prot-minibuffer-switch-to-completions-top ()
-      "Switch to the top of the completions' buffer.
-                  Meant to be bound in `minibuffer-local-completion-map'."
-      (interactive)
-      (prot-minibuffer--switch-to-completions)
-      (goto-char (point-min))
-      (next-completion 1))
-
-    (defun prot-minibuffer-switch-to-completions-bottom ()
-      "Switch to the bottom of the completions' buffer.
-                  Meant to be bound in `minibuffer-local-completion-map'."
-      (interactive)
-      (prot-minibuffer--switch-to-completions)
-      (goto-char (point-max))
-      (next-completion -1)
-      (goto-char (point-at-bol))
-      (recenter
-       (- -1
-          (min (max 0 scroll-margin)
-               (truncate (/ (window-body-height) 4.0))))
-       t))
-
-    (defun prot-minibuffer-next-completion-or-mini (&optional arg)
-      "Move to the next completion or switch to the minibuffer.
-                  This performs a regular motion for optional ARG lines, but when
-                  point can no longer move in that direction it switches to the
-                  minibuffer."
-      (interactive "p")
-      (cond
-       ((and (bobp)   ; see hack in `prot-minibuffer--clean-completions'
-             (get-text-property (point) 'invisible))
-        (forward-char 1)
-        (next-completion (or arg 1)))
-       ((or (eobp)
-            (eq (point-max)
-                (save-excursion (forward-line 1) (point))))
-        (prot-minibuffer-focus-minibuffer))
-       (t
-        (next-completion (or arg 1))))
-      (setq this-command 'next-line))
-
-    (defun prot-minibuffer-previous-completion-or-mini (&optional arg)
-      "Move to the next completion or switch to the minibuffer.
-                  This performs a regular motion for optional ARG lines, but when
-                  point can no longer move in that direction it switches to the
-                  minibuffer."
-      (interactive "p")
-      (let ((num (prot-common-number-negative arg)))
-        (if (or (bobp)
-                (eq (point) (1+ (point-min)))) ; see hack in `prot-minibuffer--clean-completions'
-            (prot-minibuffer-focus-minibuffer)
-          (next-completion (or num 1)))))
-;; Copied from icomplete.el
-(defun prot-minibuffer--field-beg ()
-  "Determine beginning of completion."
-  (if (window-minibuffer-p)
-      (minibuffer-prompt-end)
-    (nth 0 completion-in-region--data)))
-  (defun prot-minibuffer--completion-category ()
-    "Return completion category."
-    (let* ((beg (prot-minibuffer--field-beg))
-           (md (completion--field-metadata beg)))
-      (alist-get 'category (cdr md))))
-  (defun prot-minibuffer-backward-updir ()
-    "Delete char before point or go up a directory.
-  Must be bound to `minibuffer-local-filename-completion-map'."
-    (interactive)
-    (if (and (eq (char-before) ?/)
-             (eq (prot-minibuffer--completion-category) 'file))
-        (save-excursion
-          (goto-char (1- (point)))
-          (when (search-backward "/" (point-min) t)
-            (delete-region (1+ (point)) (point-max))))
-      (call-interactively 'backward-delete-char)))
+      (if (and (eq (char-before) ?/)
+               (eq (prot-minibuffer--completion-category) 'file))
+          (save-excursion
+            (goto-char (1- (point)))
+            (when (search-backward "/" (point-min) t)
+              (delete-region (1+ (point)) (point-max))))
+        (call-interactively 'backward-delete-char)))
 #+end_src
 ** Minibuffer completions
 Adjust completions buffer size (and all temp buffers')
@@ -586,16 +600,12 @@ Set important variables
   (let ((map minibuffer-local-filename-completion-map))
     (define-key map (kbd "<M-backspace>") #'prot-minibuffer-backward-updir))
 #+end_src
-** Live completions
-Provide live completions using the simple [[https://github.com/oantolin/live-completions][live-completions]] package
-(TODO don't popup completion buffer until I actually hit TAB)
+** Corfu
+Use corfu for better completions at point
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-  (use-package live-completions
-    :disabled
-    :load-path "/home/mario/.emacs.d/lisp/live-completions/"
-    :config
-    (live-completions-mode))
-      #+end_src
+  (use-package corfu
+    :config (corfu-global-mode))
+#+end_src
 ** Helpful
 Use [[https://github.com/Wilfred/helpful][helpful]] to get better help, highlighting and references to the
 source files
@@ -611,32 +621,45 @@ source files
 * Mail
 ** Mu4e and smtpmail
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-  (use-package mu4e
-    :load-path "/usr/share/emacs/site-list/mu/"
+              (use-package mu4e
+                :load-path "/usr/share/emacs/site-list/mu/"
+                :defer t
+                :commands (mu4e)
+                :config
+                (require 'smtpmail)
+                (setq user-mail-address "mario.forzanini@studenti.unimi.it"
+                      user-full-name "Mario Forzanini"
+                      mu4e-get-mail-command "mbsync -c ~/.mbsyncrc -a mario.forzanini@studenti.unimi.it"
+                      mu4e-update-interval 300
+                      mu4e-compose-signature
+                      (concat
+                       "Mario Forzanini\n"
+                       "https://marioforzanini.com")
+                      message-send-mail-function 'smtpmail-send-it
+                      starttls-use-gnutls nil
+                      smtpmail-auth-credentials '(("smtp.unimi.it" 465 "mario.forzanini@studenti.unimi.it" nil))
+                      smtpmail-default-smtp-server "smtp.unimi.it"
+                      smtpmail-smtp-server "smtp.unimi.it"
+                      smtpmail-smtp-service 465
+                      smtpmail-stream-type 'ssl
+                      mu4e-sent-folder "/Sent"
+                      mu4e-drafts-folder "/Drafts"
+                      mu4e-trash-folder "/Trash")
+                :general (mf/leader-keys 
+                           "ae" '(mu4e :which-key "Email")))
+
+  (defun mf/mu4e-dashboard ()
+    "Focus mu4e dashboard and activate dashboard mode"
+    (interactive)
+    (find-file "~/.emacs.d/lisp/mu4e-dashboard/dashboard.org")
+    (mu4e-dashboard-mode 1))
+
+  (use-package mu4e-dashboard
+    :load-path "~/.emacs.d/lisp/mu4e-dashboard/"
     :defer t
-    :commands (mu4e)
-    :config
-    (require 'smtpmail)
-    (setq user-mail-address "mario.forzanini@studenti.unimi.it"
-          user-full-name "Mario Forzanini"
-          mu4e-get-mail-command "mbsync -c ~/.mbsyncrc -a mario.forzanini@studenti.unimi.it"
-          mu4e-update-interval 300
-          mu4e-compose-signature
-          (concat
-           "Mario Forzanini\n"
-           "https://marioforzanini.com")
-          message-send-mail-function 'smtpmail-send-it
-          starttls-use-gnutls nil
-          smtpmail-auth-credentials '(("smtp.unimi.it" 465 "mario.forzanini@studenti.unimi.it" nil))
-          smtpmail-default-smtp-server "smtp.unimi.it"
-          smtpmail-smtp-server "smtp.unimi.it"
-          smtpmail-smtp-service 465
-          smtpmail-stream-type 'ssl
-          mu4e-sent-folder "/Sent"
-          mu4e-drafts-folder "/Drafts"
-          mu4e-trash-folder "/Trash")
-    :general (mf/leader-keys 
-               "ae" '(mu4e :which-key "Email")))
+    :commands (mf/mu4e-dashboard)
+    :general (mf/leader-keys
+               "ad" '(mf/mu4e-dashboard :which-key "Mu4e dashboard")))
 #+end_src
 ** Notifications
 Use [[https://github.com/iqbalansari/mu4e-alert][mu4e-alert]] to receive notifications about incoming email
@@ -729,7 +752,7 @@ Prefix: C-c-/
 #+end_src
 * EXWM
 ** Buffer name
-#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
+#+begin_src emacs-lisp :tangle (if mf/is-laptop "no" "~/.emacs.d/GNUEmacs.el")
      (defun mf/exwm-update-class ()
        (exwm-workspace-rename-buffer exwm-class-name))
      (defun mf/exwm-update-title ()
@@ -742,8 +765,8 @@ Prefix: C-c-/
          ("Signal" (exwm-workspace-move-window 2))))
 #+end_src
 ** Main package
-Use [[https://github.com/ch11ng/exwm][exwm]] to manage X windows in Emacs buffers
-#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
+Use [[https://github.com/ch11ng/exwm][exwm]] to manage X windows in Emacs buffers, only on desktop computer
+#+begin_src emacs-lisp :tangle (if mf/is-laptop "no" "~/.emacs.d/GNUEmacs.el")
      (use-package exwm
        :config
        (setq exwm-workspace-number 1)
@@ -757,7 +780,7 @@ Use [[https://github.com/ch11ng/exwm][exwm]] to manage X windows in Emacs buffer
        (setq exwm-workspace-show-all-buffers t)
 #+end_src
 *** Keys that should always go through Emacs
-#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
+#+begin_src emacs-lisp :tangle (if mf/is-laptop "no" "~/.emacs.d/GNUEmacs.el")
        (setq exwm-input-prefix-keys
              '(?\C-x
                ?\C-u
@@ -775,7 +798,7 @@ Use [[https://github.com/ch11ng/exwm][exwm]] to manage X windows in Emacs buffer
        (define-key exwm-mode-map [?\C-q] 'exwm-input-send-next-key)
 #+end_src
 *** Xrandr
-#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
+#+begin_src emacs-lisp :tangle (if mf/is-laptop "no" "~/.emacs.d/GNUEmacs.el")
        (require 'exwm-randr)
        (exwm-randr-enable)
        (start-process-shell-command "xrandr" nil "xrandr --output VGA1 --primary --mode 1920x1200 --pos 0x0 --rotate normal")
@@ -784,7 +807,7 @@ Use [[https://github.com/ch11ng/exwm][exwm]] to manage X windows in Emacs buffer
        (mf/set-wallpaper)
 #+end_src
 *** Autostart
-#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
+#+begin_src emacs-lisp :tangle (if mf/is-laptop "no" "~/.emacs.d/GNUEmacs.el")
      (start-process-shell-command "xmodmap" nil "xmodmap ~/.Xmodmap")
      (start-process-shell-command "picom" nil "picom")
      (start-process-shell-command "dunst" nil "dunst")
@@ -805,51 +828,52 @@ Use [[https://github.com/ch11ng/exwm][exwm]] to manage X windows in Emacs buffer
 | S-RET         | Toggle vterm                   |
 | S-[0,...,9]   | Focus [0,...,9]-th workspace   |
 | C-S-[0,...,9] | Move to [0,...,9]-th workspace |
-#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-       (setq exwm-input-global-keys
-             `(
-               ;; Reset to line-mode
-               ([?\s-r] . exwm-reset)
+#+begin_src emacs-lisp :tangle (if mf/is-laptop "no" "~/.emacs.d/GNUEmacs.el")
+         (setq exwm-input-global-keys
+               `(
+                 ;; Reset to line-mode
+                 ([?\s-r] . exwm-reset)
 
-               ;; Move between windows (dvorak)
-               ([?\s-d] . windmove-left)
-               ([?\s-n] . windmove-right)
-               ([?\s-h] . windmove-down)
-               ([?\s-t] . windmove-up)
+                 ;; Move between windows (dvorak)
+                 ([?\s-d] . windmove-left)
+                 ([?\s-n] . windmove-right)
+                 ([?\s-h] . windmove-down)
+                 ([?\s-t] . windmove-up)
 
-               ;; Launch applications via shell command
-               ([?\s-\;] . (lambda (command)
-                             (interactive (list (read-shell-command "$ ")))
-                             (start-process-shell-command command nil command)))
+                 ;; Launch applications via shell command
+                 ([?\s-\;] . (lambda (command)
+                               (interactive (list (read-shell-command "$ ")))
+                               (start-process-shell-command command nil command)))
 
-               ;; Switch workspaces
-               ([?\s-w] . exwm-workspace-switch)
+                 ;; Switch workspaces
+                 ([?\s-w] . exwm-workspace-switch)
 
-               ;; Switch to Nth workspace with s-N
-               ,@(mapcar (lambda (i)
-                           `(,(kbd (format "s-%d" i)) .
-                             (lambda ()
-                               (interactive)
-                               (exwm-workspace-switch-create ,i))))
-                         (number-sequence 0 9))
+                 ;; Switch to Nth workspace with s-N
+                 ,@(mapcar (lambda (i)
+                             `(,(kbd (format "s-%d" i)) .
+                               (lambda ()
+                                 (interactive)
+                                 (exwm-workspace-switch-create ,i))))
+                           (number-sequence 0 9))
 
-               ;; Kill buffer
-               ([?\s-q] . kill-current-buffer)
-               ;; Layouts
-;;               ([?\s-q] . exwm-floating-toggle-floating)
-               ([?\s-e] . exwm-layout-toggle-fullscreen)
+                 ;; Kill buffer
+                 ([?\s-q] . kill-current-buffer)
+                 ;; Layouts
+  ;;               ([?\s-q] . exwm-floating-toggle-floating)
+                 ([?\s-e] . exwm-layout-toggle-fullscreen)
 
-               ;; Programs
-               ([s-return] . mf/toggle-vterm)
+                 ;; Programs
+                 ([s-return] . mf/toggle-vterm)
 
-               ;; Move window to Nth workspace with s-C-N
-               ,@(mapcar (lambda (i)
-                           `(,(kbd (format "C-s-%d" i)) .
-                             (lambda ()
-                               (interactive)
-                               (exwm-workspace-move-window ,i))))
-                         (number-sequence 0 9))))
-       (exwm-enable))
+                 ;; Move window to Nth workspace with s-C-N
+                 ,@(mapcar (lambda (i)
+                             `(,(kbd (format "C-s-%d" i)) .
+                               (lambda ()
+                                 (interactive)
+                                 (exwm-workspace-move-window ,i))))
+                           (number-sequence 0 9))))
+         (exwm-enable))
+
 #+end_src
 ** Automatic buffer management
 Specify window rules
@@ -1196,6 +1220,9 @@ Use magit to handle git repositories
           org-agenda-custom-commands
           '(("w" todo "WAITING")
             ("n" todo "NEXT")
+            ("W" "Week Review"
+             ((agenda "" ((org-agenda-span 7)))
+              (org-agenda-files (add-to-list 'org-agenda-files "~/org/archive.org"))))
             ("g" "GTD view"
              ((agenda)
               (todo "NEXT"
@@ -1204,10 +1231,10 @@ Use magit to handle git repositories
                     ((org-agenda-overriding-heading "Waiting on:")))
               (todo "DONE"
                     ((org-agenda-overriding-heading "Completed items:")))
-              (tags "projects"
+              (tags-todo "projects"
                     ((org-agenda-overriding-heading "Projects in progress:"))))))
           org-todo-keywords
-          '(( sequence "TODO(t)" "NEXT(n)" "WAITING(w)" "|" "NO(x)" "DONE(d!)")))
+          '(( sequence "TODO(t)" "NEXT(n)" "WAITING(w)" "PROJECT(p)" "|" "NO(x)" "DONE(d!)")))
     (setq org-ellipsis " "
           org-hide-emphasis-markers t)
     (defun mf/mark-done-and-archive ()
@@ -1231,10 +1258,20 @@ Use magit to handle git repositories
           ("n" "Next")					; Next
           ("nu" "University" entry
            (file+headline "~/org/next-actions.org" "University")
-           "* NEXT %^{Action}\n:PROPERTIES:\n:TRIGGER: self archive!\n:END:\n%?" :time-prompt t)
+           "* NEXT %^{Action}\n:PROPERTIES:\n:TRIGGER: self archive!\n:END:\n%?")
+          ("nh" "Home" entry
+           (file+headline "~/org/next-actions.org" "Home")
+           "* NEXT %^{Action}\n:PROPERTIES:\n:TRIGGER: self archive!\n:END:\n%?")
+          ("p" "Projects")				; Projects
+          ("pu" "University" entry
+           (file+headline "~/org/projects.org" "University")
+           "* PROJECT %^{Project}\n:PROPERTIES:\n:TRIGGER: if self !done? then next-sibling todo!(NEXT) endif\n:END:\n** NEXT %^{First Action}\n** %^{Second Action}\n:PROPERTIES:\n:BLOCKER: previous-sibling\n:END:\n** %^{Third Action}\n:PROPERTIES:\n:BLOCKER: previous-sibling\n:TRIGGER: parent archive!\n:END:\n")
+          ("ph" "Home" entry
+           (file+headline "~/org/projects.org" "Home")
+           "* PROJECT %^{Project}\n:PROPERTIES:\n:TRIGGER: if self !done? then next-sibling todo!(NEXT) endif\n:END:\n** NEXT %^{First Action}\n** %^{Second Action}\n:PROPERTIES:\n:BLOCKER: previous-sibling\n:END:\n** %^{Third Action}\n:PROPERTIES:\n:BLOCKER: previous-sibling\n:TRIGGER: parent archive!\n:END:\n")     
           ("r" "Ripetizioni")			; Ripetizioni
           ("rc" "Chiara")
-          ("rcr" "Ripetzioni" entry
+          ("rcr" "Ripetizioni" entry
            (file+headline "~/org/schedule.org" "Chiara")
            "* TODO Ripetizioni Chiara Matematica\n:PROPERTIES:\n:TRIGGER: self archive!\n:END:\n SCHEDULED:%^T\n" :time-prompt t)
           ("rco" "Ore" table-line
@@ -1292,9 +1329,11 @@ Get notifications for incoming TODOs with [[https://github.com/akhramov/org-wild
 Automatically execute actions when certain conditions are triggered
 (by default when items' state changes to DONE)
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-  (use-package org-edna
-    :config
-    (org-edna-mode))
+      (use-package org-edna
+        :config
+        (org-edna-mode)
+        :custom
+        (org-edna-use-inheritance t))
 #+end_src
 ** Presentations
 All the headings are displayed as slides, metadata about title and
@@ -1363,7 +1402,7 @@ Telegram [[https://github.com/zevlg/telega.el][client]] for Emacs
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
   (defun mf/telega-chat-hook  ()
     (hl-line-mode 0)
-    (set-input-method 'english-dvorak t)
+;;    (set-input-method 'english-dvorak t)
     (display-line-numbers-mode 0))
   (use-package telega
     :defer t
@@ -1389,44 +1428,60 @@ Telegram [[https://github.com/zevlg/telega.el][client]] for Emacs
 ** RSS
 RSS [[https://github.com/skeeto/elfeed][reader]] for Emacs
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-                     (use-package elfeed
-                       :defer t
-                       :commands elfeed
-                       :config
-                       (setq elfeed-feeds
-                             '(("https://trisquel.info/en/node/feed" trisquel freesw)
-                               ("https://www.fsf.org/static/fsforg/rss/news.xml" freesw)
-                               ("https://planet.gnu.org/rss20.xml" freesw)
-                               ;; ("https://rss.nytimes.com/services/xml/rss/nyt/World.xml" world)
-                               ;; ("https://feeds.a.dj.com/rss/RSSWorldNews.xml" world)
-                               ;; ("http://xml2.corriereobjects.it/rss/homepage.xml" italia)
-                               ;; ("http://xml2.corriereobjects.it/rss/politica.xml" italia)
-                               ;; ("http://www.repubblica.it/rss/homepage/rss2.0.xml" italia)
-                               ;; ("http://www.repubblica.it/rss/economia/rss2.0.xml" italia)
-                               ;; ("https://www.ansa.it/sito/ansait_rss.xml" italia)
-                               ;; ("https://www.ansa.it/sito/notizie/politica/politica_rss.xml" italia)
-                               ;; ("https://www.independent.co.uk/news/uk/rss" uk)
-                               ;; ("https://www.independent.co.uk/news/world/rss" uk)
-                               ;; "https://www.wired.com/feed/rss"
-                               ;; "https://www.wired.com/feed/category/science/latest/rss"
-                               ;; "http://rss.slashdot.org/Slashdot/slashdotMain"
-                               "http://www.salute.gov.it/portale/news/RSS_comunicati.xml"
-                               "http://www.governo.it/feed/rss"
-                               ("https://protesilaos.com/codelog.xml" youtube)  
-                               ("https://lukesmith.xyz/rss.xml" youtube)
-                               ("https://videos.lukesmith.xyz/feeds/videos.xml?accountId=3" youtube)
-                               ("https://www.youtube.com/feeds/videos.xml?channel_id=UC2eYFnH61tmytImy1mTYvhA" youtube)
-                               ("https://www.youtube.com/feeds/videos.xml?channel_id=UCVls1GmFKf6WlTraIb_IaJg" youtube)
-                               ("https://www.youtube.com/feeds/videos.xml?user=MentalOutlawStudios" youtube)
-                               ("https://www.youtube.com/feeds/videos.xml?user=OmegaDungeon" youtube)
-                               ("https://www.youtube.com/feeds/videos.xml?channel_id=UCAiiOTio8Yu69c3XnR7nQBQ" youtube)))
-                       (define-key elfeed-search-mode-map (kbd "C-c C-u") 'elfeed-update)
-                       :general (mf/leader-keys
-                                 "ar" '(elfeed :which-key "RSS")))
+                               (use-package elfeed
+                                 :defer t
+                                 :commands (elfeed elfeed-dashboard))
+          ;;                        :config
+          ;;                        (setq elfeed-feeds
+          ;;                              '(("https://trisquel.info/en/node/feed" trisquel freesw)
+          ;;                                ("https://www.fsf.org/static/fsforg/rss/news.xml" freesw)
+          ;;                                ("https://planet.gnu.org/rss20.xml" freesw)
+          ;;                                ;; ("https://rss.nytimes.com/services/xml/rss/nyt/World.xml" world)
+          ;;                                ;; ("https://feeds.a.dj.com/rss/RSSWorldNews.xml" world)
+          ;;                                ;; ("http://xml2.corriereobjects.it/rss/homepage.xml" italia)
+          ;;                                ;; ("http://xml2.corriereobjects.it/rss/politica.xml" italia)
+          ;;                                ;; ("http://www.repubblica.it/rss/homepage/rss2.0.xml" italia)
+          ;;                                ;; ("http://www.repubblica.it/rss/economia/rss2.0.xml" italia)
+          ;;                                ;; ("https://www.ansa.it/sito/ansait_rss.xml" italia)
+          ;;                                ;; ("https://www.ansa.it/sito/notizie/politica/politica_rss.xml" italia)
+          ;;                                ;; ("https://www.independent.co.uk/news/uk/rss" uk)
+          ;;                                ;; ("https://www.independent.co.uk/news/world/rss" uk)
+          ;;                                ;; "https://www.wired.com/feed/rss"
+          ;;                                ;; "https://www.wired.com/feed/category/science/latest/rss"
+          ;;                                ;; "http://rss.slashdot.org/Slashdot/slashdotMain"
+          ;;                                "http://www.salute.gov.it/portale/news/RSS_comunicati.xml"
+          ;;                                "http://www.governo.it/feed/rss"
+          ;;                                ("https://protesilaos.com/codelog.xml" youtube)  
+          ;;                                ("https://lukesmith.xyz/rss.xml" youtube)
+          ;;                                ("https://videos.lukesmith.xyz/feeds/videos.xml?accountId=3" youtube)
+          ;;                                ("https://www.youtube.com/feeds/videos.xml?channel_id=UC2eYFnH61tmytImy1mTYvhA" youtube)
+          ;;                                ("https://www.youtube.com/feeds/videos.xml?channel_id=UCVls1GmFKf6WlTraIb_IaJg" youtube)
+          ;;                                ("https://www.youtube.com/feeds/videos.xml?user=MentalOutlawStudios" youtube)
+          ;;                                ("https://www.youtube.com/feeds/videos.xml?user=OmegaDungeon" youtube)
+          ;;                                ("https://www.youtube.com/feeds/videos.xml?channel_id=UCAiiOTio8Yu69c3XnR7nQBQ" youtube)))
+      ;;                             :general (mf/leader-keys
+      ;;                                       "ar" '(elfeed :which-key "RSS")))
+
+ 
+       (use-package elfeed-org
+        :defer t
+        :commands elfeed-dashboard
+        :config (elfeed-org)
+        (setq rmh-elfeed-org-files (list "~/.emacs.d/elfeed.org")))
+
+      (use-package elfeed-dashboard
+        :defer t
+        :commands (elfeed elfeed-dashboard)
+        :config
+        (setq elfeed-dashboard-file "~/.emacs.d/elfeed-dashboard.org")
+        (advice-add 'elfeed-search-quit-window :after #'elfeed-dashboard-update-links)
+        :general (mf/leader-keys
+                   "ar" '(elfeed-dashboard :which-key "RSS")))
+
       (use-package elfeed-goodies
-      :defer t
-    :after elfeed
-  :hook (elfeed-search-mode . elfeed-goodies/setup))
+        :defer t
+        :after elfeed
+        :hook (elfeed-search-mode . elfeed-goodies/setup))
 
 #+end_src
 ** IRC
