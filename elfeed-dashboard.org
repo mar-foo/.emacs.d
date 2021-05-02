@@ -1,0 +1,34 @@
+* Basics
+[U] Update Elfeed
+[s] Search
+[E] Edit
+[g] Refresh counts
+[q] Kill dashboard
+
+* Bookmarks
+[b] Blogs
+[e] Emacs
+[l] Linux
+[n] News
+[u] Unread
+[y] Youtube
+
+
+* Configuration
+:PROPERTIES:
+:VISIBILITY: hideall
+:END:
+Press "E" to edit and M-x elfeed-dashboard-mode to go back
+
+#+STARTUP: showall showstars indent
+#+KEYMAP: u | elfeed-dashboard-query "+unread"
+#+KEYMAP: e | elfeed-dashboard-query "+unread +emacs"
+#+KEYMAP: b | elfeed-dashboard-query "+unread +Blog"
+#+KEYMAP: y | elfeed-dashboard-query "+unread +youtube"
+#+KEYMAP: l | elfeed-dashboard-query "+unread +linux"
+#+KEYMAP: n | elfeed-dashboard-query "+unread +news"
+#+KEYMAP: s | elfeed
+#+KEYMAP: g | elfeed-dashboard-update-links
+#+KEYMAP: U | elfeed-dashboard-update
+#+KEYMAP: E | elfeed-dashboard-edit
+#+KEYMAP: q | kill-current-buffer

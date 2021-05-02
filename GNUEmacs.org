@@ -4,7 +4,7 @@
 * System recognition
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
   (setq mf/is-laptop
-        (file-exists-p "/sys/class/power_supply/BAT0/capacity"))
+		(file-exists-p "/sys/class/power_supply/BAT0/capacity"))
 #+end_src
 * Look and Feel
 ** Icons and modeline
@@ -25,8 +25,8 @@ Use doom-modeline because it loads faster than [[https://github.com/TheBB/spacel
   (defun mf/set-wallpaper ()
     (interactive)
     (start-process-shell-command "hsetroot" nil "hsetroot -cover /home/mario/Media/Pictures/wallpapers/dull/wood.jpg"))
-  (set-frame-parameter (selected-frame) 'alpha  '(85 . 85))
-  (add-to-list 'default-frame-alist '(alpha . (85 . 85)))
+  (set-frame-parameter (selected-frame) 'alpha  '(90 . 90))
+  (add-to-list 'default-frame-alist '(alpha . (90 . 90)))
 #+end_src
 ** Line numbers
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
@@ -56,61 +56,70 @@ Use [[https://github.com/Fanael/rainbow-delimiters][rainbow-delimiters]] for nic
 ** Leader key definitions
 *** Helper functions
 #+begin_src emacs-lisp  :tangle ~/.emacs.d/GNUEmacs.el
-    (defun mf/browse-youtube ()
-      "Prompts for keywords and outputs youtube search results"
-      (interactive)
-      (start-process-shell-command "Youtube" nil "/home/mario/.local/bin/scripts/myyt -r"))
+        (defun mf/browse-youtube ()
+          "Prompts for keywords and outputs youtube search results"
+          (interactive)
+          (start-process-shell-command "Youtube" nil "/home/mario/.local/bin/scripts/myyt -r"))
 
-    (defun mf/reload-configuration ()
-      "Reloads configuration"
-      (interactive)
-      (load-file (concat user-emacs-directory "init.el")))
+        (defun mf/reload-configuration ()
+          "Reloads configuration"
+          (interactive)
+          (load-file (concat user-emacs-directory "init.el")))
 
-    (defun mf/edit-configuration ()
-      "Edit emacs configuration"
-      (interactive)
-      (find-file "~/.emacs.d/GNUEmacs.org"))
+        (defun mf/edit-configuration ()
+          "Edit emacs configuration"
+          (interactive)
+          (find-file "~/.emacs.d/GNUEmacs.org"))
 
-    (defun mf/focus-dashboard ()
-      (interactive)
-      (switch-to-buffer "*dashboard*"))
+        (defun mf/focus-dashboard ()
+          (interactive)
+          (switch-to-buffer "*dashboard*"))
 
-    (defun mf/find-recentf ()
-      "Open a recent file"
-      (interactive)
-      (find-file (completing-read "Recent File: " recentf-list nil t)))
+        (defun mf/find-recentf ()
+          "Open a recent file"
+          (interactive)
+          (find-file (completing-read "Recent File: " recentf-list nil t)))
 
-    (defun mf/browse-url-firefox ()
-      "Browse bookmarks defined in mf/site-bookmarks-list"
-      (interactive)
-      (browse-url-firefox 
-       (completing-read "Firefox: " mf/site-bookmarks-list nil nil)))
+        (defun mf/browse-url-firefox ()
+          "Browse bookmarks defined in mf/site-bookmarks-list"
+          (interactive)
+          (browse-url-firefox 
+           (completing-read "Firefox: " mf/site-bookmarks-list nil nil)))
 
   (defun mf/open-protonmail ()
-    "Open protonmail web mail and copy password from the password store"
-    (interactive)
+    "Open protonmail and copy password from the password store"
     (browse-url-firefox "https://mail.protonmail.com")
-    (password-store-copy "Mail/forzmar-protonmail" ))
+    (password-store-copy "Mail/forzmar-protonmail"))
 
-    (defun mf/toggle-vterm ()
-      "Toggle vterm window (positioned at the bottom of the screen with current buffer-display-alist configuration)"
-      (interactive)
-      (if (get-buffer-window "*vterm*")
-          (delete-window (get-buffer-window "*vterm*"))
-        (vterm)))
+      (defun mf/view-email (&optional use-generic-p)
+        "View email in mu4e, if there is a prefix argument open protonmail web mail and copy password from the password store"
+        (interactive "P")
+        (if use-generic-p
+            (mf/open-protonmail)
+          (mu4e)))
 
-    (defun mf/toggle-window (win)
-      "Toggle X window"
-      (interactive)
-      (if (get-buffer win)
-          (if (get-buffer-window win)
-              (delete-window (get-buffer-window win))
-            (pop-to-buffer win))
-        (start-process-shell-command win nil (downcase win))))
+        (defun mf/toggle-vterm (&optional use-generic-p)
+          "Toggle vterm window respecting buffer-alist configuration.
+    If there is a prefix argument, switch to the vterm buffer."
+          (interactive "P")
+          (if (get-buffer-window "*vterm*")
+              (delete-window (get-buffer-window "*vterm*"))
+            (if use-generic-p
+                (switch-to-buffer "*vterm*")
+            (vterm))))
 
-    (defun mf/toggle-pavucontrol ()
-      (interactive)
-      (mf/toggle-window "Pavucontrol"))
+        (defun mf/toggle-window (win)
+          "Toggle X window"
+          (interactive)
+          (if (get-buffer win)
+              (if (get-buffer-window win)
+                  (delete-window (get-buffer-window win))
+                (pop-to-buffer win))
+            (start-process-shell-command win nil (downcase win))))
+
+        (defun mf/toggle-pavucontrol ()
+          (interactive)
+          (mf/toggle-window "Pavucontrol"))
 #+end_src
 *** Leader key
 Use [[https://github.com/noctuid/general.el][general]] to setup space bar as leader key in normal mode, C-c in
@@ -173,13 +182,12 @@ Movement between windows and buffers; Prefix: SPC-g
 | C-c-a-f    | Firefox |
 | C-c-a-y    | Youtube |
 #+begin_src emacs-lisp  :tangle ~/.emacs.d/GNUEmacs.el
-  "ae" '(mu4e :which-key "Email")
+  "ae" '(mf/view-email :which-key "Email")
   "af" '(mf/browse-url-firefox :which-key "Firefox")
   "am" '(emms-browser :which-key "Music")
   "ap" '(mf/toggle-pavucontrol :which-key "Pavucontrol")
   "aw" '(eww :which-key "Eww")
   "ay" '(ytdious :which-key "Youtube")
-  "aP" '(mf/open-protonmail :which-key "Protonmail")
 #+end_src
 **** Buffer management
 Quick bookmarks; Prefix: C-c-b
@@ -644,9 +652,7 @@ source files
                       smtpmail-stream-type 'ssl
                       mu4e-sent-folder "/Sent"
                       mu4e-drafts-folder "/Drafts"
-                      mu4e-trash-folder "/Trash")
-                :general (mf/leader-keys 
-                           "ae" '(mu4e :which-key "Email")))
+                      mu4e-trash-folder "/Trash"))
 
   (defun mf/mu4e-dashboard ()
     "Focus mu4e dashboard and activate dashboard mode"
@@ -804,7 +810,7 @@ Use [[https://github.com/ch11ng/exwm][exwm]] to manage X windows in Emacs buffer
        (start-process-shell-command "xrandr" nil "xrandr --output VGA1 --primary --mode 1920x1200 --pos 0x0 --rotate normal")
 
        ;;Change wallpaper
-       (mf/set-wallpaper)
+;;       (mf/set-wallpaper)
 #+end_src
 *** Autostart
 #+begin_src emacs-lisp :tangle (if mf/is-laptop "no" "~/.emacs.d/GNUEmacs.el")
@@ -879,7 +885,7 @@ Use [[https://github.com/ch11ng/exwm][exwm]] to manage X windows in Emacs buffer
 Specify window rules
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
   (setq display-buffer-alist
-        '(("\\*\\(Backtrace\\|Warnings\\|Compile-Log\\|Messages\\)\\*"
+        '(("\\*\\(Backtrace\\|Warnings\\|Compile-Log\\|Apropos\\|Messages\\)\\*"
            (display-buffer-in-side-window)
            (window-height . 0.2)
            (side . left)
@@ -1186,13 +1192,13 @@ Use magit to handle git repositories
 * Org mode
 ** Setup
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-    (defun mf/org-mode-setup ()
-      (org-indent-mode)
-      (variable-pitch-mode 1)
-      (auto-fill-mode 1)
-      (visual-line-mode 1))
-  (defun mf/view-org-archive ()
-    (find-file "~/org/archive.org"))
+  (defun mf/org-mode-setup ()
+        (org-indent-mode)
+        (variable-pitch-mode 1)
+  ;;      (auto-fill-mode 1)
+        (visual-line-mode 1))
+    (defun mf/view-org-archive ()
+      (find-file "~/org/archive.org"))
 #+end_src
 ** Org
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
@@ -1298,9 +1304,7 @@ Prettify [[https://github.com/integral-dw/org-bullets][org bullets]]
      (use-package org-bullets
        :defer t
        :after org
-       :hook (org-mode . org-bullets-mode)
-       :custom
-       (org-bullets-bullet-list '("" "" "" "" "" "")))
+       :hook (org-mode . org-bullets-mode))
 #+end_src
 ** Look and feel
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
@@ -1495,17 +1499,19 @@ RSS [[https://github.com/skeeto/elfeed][reader]] for Emacs
 ** Dashboard
 Pretty and well organized startup [[https://github.com/emacs-dashboard/emacs-dashboard][dashboard]]
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-  (use-package page-break-lines
-    :defer t)
-  (use-package dashboard
-    :defer t
-    :init
-    (dashboard-setup-startup-hook)
-    (setq dashboard-banner-logo-title "Emacs is more than a text editor!"
-          dashboard-startup-banner 'logo
-          dashboard-set-heading-icons t
-          dashboard-set-file-icons t
-          dashboard-center-content t))
+      (use-package page-break-lines
+        :defer t)
+      (use-package dashboard
+        :defer t
+        :init
+        (dashboard-setup-startup-hook)
+        (setq dashboard-banner-logo-title "Emacs is more than a text editor!"
+              dashboard-startup-banner 'logo
+              dashboard-set-heading-icons t
+              dashboard-set-file-icons t
+              dashboard-center-content t
+              dashboard-filter-agenda-entry 'dashboard-filter-agenda-by-todo
+              dashboard-org-agenda-categories '("University")))
 #+end_src
 ** Youtube
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
