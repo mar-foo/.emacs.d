@@ -1,11 +1,6 @@
 #+TITLE: Emacs configuration
 #+STARTUP: overview
 #+AUTHOR: Mario Forzanini
-* System recognition
-#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-  (setq mf/is-laptop
-		(file-exists-p "/sys/class/power_supply/BAT0/capacity"))
-#+end_src
 * Look and Feel
 ** Icons and modeline
 Use doom-modeline because it loads faster than [[https://github.com/TheBB/spaceline][spaceline]] and [[https://github.com/domtronn/spaceline-all-the-icons.el][spaceline-all-the-icons]]
@@ -975,6 +970,19 @@ requires ad hoc customization
     :general (mf/leader-keys
                "o" '(ace-window :which-key "Ace window")))
 #+END_SRC
+** Perspective
+Use [[https://github.com/nex3/perspective-el][perspective.el]] to manage workspaces when not running EXWM
+#+begin_src emacs-lisp :tangle (if mf/is-laptop "~/.emacs.d/GNUEmacs.el" "no")
+        (use-package perspective
+          :defer t
+          :init (persp-mode)
+          :config
+          (setq persp-mode-prefix-key "C-c TAB"
+                persp-sort 'create)
+    :bind (("C-x b" . persp-switch-to-buffer*)
+           ("C-x k" . persp-kill-buffer*)))
+#+end_src
+
 * Programming
 ** Lsp mode
 Interact with language servers to use Emacs as an intelligent IDE with
@@ -1021,11 +1029,7 @@ find references faster with [[https://github.com/emacs-lsp/lsp-ivy][lsp-ivy]]
 
   (use-package lsp-treemacs
     :defer t
-    :after lsp-mode)
-
-  (use-package lsp-ivy
-    :defer t
-    :commands lsp-ivy-workspace-symbol
+  :commands treemacs
     :after lsp-mode)
 #+end_src
 *** C-C++ Language server
@@ -1040,6 +1044,16 @@ Install c/c++ [[https://github.com/MaskRay/emacs-ccls][language server]] to use 
          (setq-default flycheck-disabled-checkers '(c/c++-clang c/c++-cppcheck c/c++-gcc))
          :hook ((c-mode c++-mode objc-mode cuda-mode) .
                 (lambda () (require 'ccls) (lsp))))
+#+end_src
+** Treemacs
+#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
+  (use-package treemacs
+    :defer t
+    :commands treemacs
+    :custom
+    (treemacs-width 25)
+    :general (mf/leader-keys
+               "tt" '(treemacs :which-key "Treemacs")))
 #+end_src
 ** Autocompletion
 Get [[http://company-mode.github.io/][autocompletion]]. Edit: try to use Emacs' built in completion-at-point
@@ -1183,18 +1197,20 @@ Use magit to handle git repositories
 #+end_src
 *** vterm
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-  (use-package vterm
-    :defer t
-    :commands vterm
-    :config
-    (setq vterm-shell "/bin/zsh"))
+      (use-package vterm
+        :defer t
+        :commands vterm
+        :config
+        (setq vterm-shell "/bin/zsh")
+        :general (mf/leader-keys
+                   "RET" '(vterm :which-key "vterm")))
 #+end_src
 * Org mode
 ** Setup
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
   (defun mf/org-mode-setup ()
         (org-indent-mode)
-        (variable-pitch-mode 1)
+  ;;      (variable-pitch-mode 1)
   ;;      (auto-fill-mode 1)
         (visual-line-mode 1))
     (defun mf/view-org-archive ()
@@ -1499,19 +1515,22 @@ RSS [[https://github.com/skeeto/elfeed][reader]] for Emacs
 ** Dashboard
 Pretty and well organized startup [[https://github.com/emacs-dashboard/emacs-dashboard][dashboard]]
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-      (use-package page-break-lines
-        :defer t)
-      (use-package dashboard
-        :defer t
-        :init
-        (dashboard-setup-startup-hook)
-        (setq dashboard-banner-logo-title "Emacs is more than a text editor!"
-              dashboard-startup-banner 'logo
-              dashboard-set-heading-icons t
-              dashboard-set-file-icons t
-              dashboard-center-content t
-              dashboard-filter-agenda-entry 'dashboard-filter-agenda-by-todo
-              dashboard-org-agenda-categories '("University")))
+        (use-package page-break-lines
+          :defer t)
+        (use-package dashboard
+          :defer t
+          :init
+          (dashboard-setup-startup-hook)
+          (setq dashboard-banner-logo-title "Emacs is more than a text editor!"
+                dashboard-startup-banner 'logo
+                dashboard-set-heading-icons t
+                dashboard-set-file-icons t
+                dashboard-center-content t
+                dashboard-filter-agenda-entry 'dashboard-filter-agenda-by-todo
+                dashboard-org-agenda-categories '("University"))
+          :bind (:map dashboard-mode-map
+              ("n" . dashboard-next-line)
+              ("p" . dashboard-previous-line)))
 #+end_src
 ** Youtube
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
@@ -1576,6 +1595,16 @@ the view
   :general (mf/leader-keys
              "tf" '(focus-mode :which-key "Toggle focus mode")))
 #+end_src
+** Torrent
+#+begin_src emacs-lisp
+  (use-package xml-rpc
+    :defer t
+    :commands mentor)
+  (use-package mentor
+    :defer t
+    :commands mentor)
+#+end_src
+
 * Startup time
 Display information about startup time
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
