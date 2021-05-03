@@ -15,6 +15,7 @@ Use doom-modeline because it loads faster than [[https://github.com/TheBB/spacel
     (setq display-time-defaut-load-average nil)
     (display-time-mode 1)
 #+end_src
+
 ** Wallpaper
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
   (defun mf/set-wallpaper ()
@@ -613,13 +614,24 @@ Use corfu for better completions at point
 Use [[https://github.com/Wilfred/helpful][helpful]] to get better help, highlighting and references to the
 source files
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-  (use-package helpful
-    :defer t
-    :commands (helpful-callable helpful-variable helpful-command helpful-key)
-    :bind
-    ([remap describe-variable] . helpful-variable)
-    ([remap describe-command] . helpful-command)
-    ([remap describe-key] . helpful-key))
+      (use-package helpful
+        :defer t
+        :commands (helpful-callable helpful-variable helpful-command helpful-key)
+        :hook 
+        (helpful-mode . page-break-lines-mode)
+        (helpful-mode . visual-line-mode)
+        :bind
+        ([remap describe-variable] . helpful-variable)
+        ([remap describe-command] . helpful-command)
+        ([remap describe-key] . helpful-key)
+        (:map helpful-mode-map
+              ("q" . mf/quit-and-kill)					; Quitting help buffer kills them too
+              ("n" . next-line)
+              ("p" . previous-line))
+        :config
+        (defun mf/quit-and-kill ()
+          (interactive)
+          (quit-window t)))
 #+end_src
 * Mail
 ** Mu4e and smtpmail
@@ -977,7 +989,7 @@ Use [[https://github.com/nex3/perspective-el][perspective.el]] to manage workspa
           :defer t
           :init (persp-mode)
           :config
-          (setq persp-mode-prefix-key "C-c TAB"
+          (setq persp-mode-prefix-key (kbd "C-c TAB")
                 persp-sort 'create)
     :bind (("C-x b" . persp-switch-to-buffer*)
            ("C-x k" . persp-kill-buffer*)))
@@ -1074,6 +1086,16 @@ Get [[http://company-mode.github.io/][autocompletion]]. Edit: try to use Emacs' 
   (add-hook 'completion-at-point-functions
             #'complete-path-at-point+
             'append)
+#+end_src
+** Projectile
+#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
+  (use-package projectile
+      :defer t
+      :commands projectile-mode
+      :hook
+      (c-mode . projectile-mode)
+      (c++-mode . projectile-mode)
+      (emacs-lisp-mode . projectile-mode))
 #+end_src
 ** Scheme
 Use [[http://www.nongnu.org/geiser/][geiser]] to run a scheme REPL
@@ -1203,7 +1225,7 @@ Use magit to handle git repositories
         :config
         (setq vterm-shell "/bin/zsh")
         :general (mf/leader-keys
-                   "RET" '(vterm :which-key "vterm")))
+                   "RET" '(mf/toggle-vterm :which-key "vterm")))
 #+end_src
 * Org mode
 ** Setup
@@ -1359,19 +1381,22 @@ Automatically execute actions when certain conditions are triggered
 All the headings are displayed as slides, metadata about title and
 author are used to display the title
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-     (use-package org-tree-slide
-       :defer t
-       :after org
-       :commands org-tree-slide-mode
-       :custom
-       (org-image-actual-width nil)
-       :general (mf/leader-keys
-                 "tp" '(org-tree-slide-mode :which-key "Org presentation")))
-     (general-define-key
-      :keymaps 'org-tree-slide-mode-map
-      :prefix ""
-      "RET" '(org-tree-slide-move-next-tree :which-key "Next slide")
-      "C-RET" '(org-tree-slide-move-previous-tree :which-key "Previous slide"))
+  (use-package org-tree-slide
+    :defer t
+    :after org
+    :commands org-tree-slide-mode
+    :custom
+    (org-image-actual-width nil)
+    :bind (:map org-tree-slide-mode-map
+                ("RET" . org-tree-slide-move-next-tree)
+                ("<C-M-return>" . org-tree-slide-move-previous-tree))
+    :general (mf/leader-keys
+              "tp" '(org-tree-slide-mode :which-key "Org presentation")))
+  ;; (general-define-key
+  ;;  :keymaps 'org-tree-slide-mode-map
+  ;;  :prefix ""
+  ;;  "RET" '(org-tree-slide-move-next-tree :which-key "Next slide")
+  ;;  "C-RET" '(org-tree-slide-move-previous-tree :which-key "Previous slide"))
 #+end_src
 ** In line latex previews
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
@@ -1629,7 +1654,7 @@ Use [[https://gitlab.com/koral/gcmh][gcmh]] to manage garbage collection
 * Next
 *org-graph-view* To display graphs from org mode buffers
 *org-roam* *org-roam-server* 
-*org-present* Presentations in org-mode
+* org-present* Presentations in org-mode
 ** From doom
 *fold* universal code folding
 *ein* Jupyter notebooks
