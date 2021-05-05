@@ -24,9 +24,9 @@ Press "E" to edit and M-x elfeed-dashboard-mode to go back
 #+KEYMAP: u | elfeed-dashboard-query "+unread"
 #+KEYMAP: e | elfeed-dashboard-query "+unread +emacs"
 #+KEYMAP: b | elfeed-dashboard-query "+unread +Blog"
-#+KEYMAP: y | elfeed-dashboard-query "+unread +youtube"
+#+KEYMAP: y | elfeed-dashboard-query "+unread +Youtube"
 #+KEYMAP: l | elfeed-dashboard-query "+unread +linux"
-#+KEYMAP: n | elfeed-dashboard-query "+unread +news"
+#+KEYMAP: N | elfeed-dashboard-query "+unread +news"
 #+KEYMAP: s | elfeed
 #+KEYMAP: g | elfeed-dashboard-update-links
 #+KEYMAP: U | elfeed-dashboard-update
