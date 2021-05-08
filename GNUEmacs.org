@@ -51,70 +51,72 @@ Use [[https://github.com/Fanael/rainbow-delimiters][rainbow-delimiters]] for nic
 ** Leader key definitions
 *** Helper functions
 #+begin_src emacs-lisp  :tangle ~/.emacs.d/GNUEmacs.el
-        (defun mf/browse-youtube ()
-          "Prompts for keywords and outputs youtube search results"
-          (interactive)
-          (start-process-shell-command "Youtube" nil "/home/mario/.local/bin/scripts/myyt -r"))
+  (defun mf/browse-youtube ()
+    "Prompts for keywords and outputs youtube search results"
+    (interactive)
+    (start-process-shell-command "Youtube" nil "/home/mario/.local/bin/scripts/myyt -r"))
 
-        (defun mf/reload-configuration ()
-          "Reloads configuration"
-          (interactive)
-          (load-file (concat user-emacs-directory "init.el")))
+  (defun mf/reload-configuration ()
+    "Reloads configuration"
+    (interactive)
+    (load-file (concat user-emacs-directory "init.el")))
 
-        (defun mf/edit-configuration ()
-          "Edit emacs configuration"
-          (interactive)
-          (find-file "~/.emacs.d/GNUEmacs.org"))
+  (defun mf/edit-configuration ()
+    "Edit emacs configuration"
+    (interactive)
+    (find-file "~/.emacs.d/GNUEmacs.org"))
 
-        (defun mf/focus-dashboard ()
-          (interactive)
-          (switch-to-buffer "*dashboard*"))
+  (defun mf/focus-dashboard ()
+    "Return to the dashboard"
+    (interactive)
+    (switch-to-buffer "*dashboard*")
+    (delete-other-windows))
 
-        (defun mf/find-recentf ()
-          "Open a recent file"
-          (interactive)
-          (find-file (completing-read "Recent File: " recentf-list nil t)))
+  (defun mf/find-recentf ()
+    "Open a recent file"
+    (interactive)
+    (find-file (completing-read "Recent File: " recentf-list nil t)))
 
-        (defun mf/browse-url-firefox ()
-          "Browse bookmarks defined in mf/site-bookmarks-list"
-          (interactive)
-          (browse-url-firefox
-           (completing-read "Firefox: " mf/site-bookmarks-list nil nil)))
+  (defun mf/browse-url-firefox ()
+    "Browse bookmarks defined in mf/site-bookmarks-list"
+    (interactive)
+    (browse-url-firefox
+     (completing-read "Firefox: " mf/site-bookmarks-list nil nil)))
 
   (defun mf/open-protonmail ()
     "Open protonmail and copy password from the password store"
     (browse-url-firefox "https://mail.protonmail.com")
     (password-store-copy "Mail/forzmar-protonmail"))
 
-      (defun mf/view-email (&optional use-generic-p)
-        "View email in mu4e, if there is a prefix argument open protonmail web mail and copy password from the password store"
-        (interactive "P")
-        (if use-generic-p
-            (mf/open-protonmail)
-          (mu4e)))
+  (defun mf/view-email (&optional use-generic-p)
+    "View email in mu4e, if there is a prefix argument open protonmail web mail and copy password from the password store"
+    (interactive "P")
+    (if use-generic-p
+        (mf/open-protonmail)
+      (mu4e)))
 
-        (defun mf/toggle-vterm (&optional use-generic-p)
-          "Toggle vterm window respecting buffer-alist configuration.
+  (defun mf/toggle-vterm (&optional use-generic-p)
+    "Toggle vterm window respecting buffer-alist configuration.
     If there is a prefix argument, switch to the vterm buffer."
-          (interactive "P")
-          (if (get-buffer-window "*vterm*")
-              (delete-window (get-buffer-window "*vterm*"))
-            (if use-generic-p
-                (switch-to-buffer "*vterm*")
-            (vterm))))
+    (interactive "P")
+    (if (get-buffer-window "*vterm*")
+        (delete-window (get-buffer-window "*vterm*"))
+      (if use-generic-p
+          (switch-to-buffer "*vterm*")
+        (vterm))))
 
-        (defun mf/toggle-window (win)
-          "Toggle X window"
-          (interactive)
-          (if (get-buffer win)
-              (if (get-buffer-window win)
-                  (delete-window (get-buffer-window win))
-                (pop-to-buffer win))
-            (start-process-shell-command win nil (downcase win))))
+  (defun mf/toggle-window (win)
+    "Toggle X window"
+    (interactive)
+    (if (get-buffer win)
+        (if (get-buffer-window win)
+            (delete-window (get-buffer-window win))
+          (pop-to-buffer win))
+      (start-process-shell-command win nil (downcase win))))
 
-        (defun mf/toggle-pavucontrol ()
-          (interactive)
-          (mf/toggle-window "Pavucontrol"))
+  (defun mf/toggle-pavucontrol ()
+    (interactive)
+    (mf/toggle-window "Pavucontrol"))
 #+end_src
 *** Leader key
 Use [[https://github.com/noctuid/general.el][general]] to setup space bar as leader key in normal mode, C-c in
@@ -188,7 +190,6 @@ Quick bookmarks; Prefix: C-c-b
 | C-c-b-h    | Home buffer   |
 | C-c-b-r    | Rename buffer |
 #+begin_src emacs-lisp  :tangle ~/.emacs.d/GNUEmacs.el
-  "bb" '(switch-to-buffer :which-key "Switch buffer")
   "bd"  '(kill-current-buffer :which-key "Delete buffer")
   "bh" '(mf/focus-dashboard :which-key "Home")
   "br" '(rename-buffer :which-key "Rename buffer")
@@ -320,6 +321,70 @@ Manage windows; Prefix: C-c-w
                "jl" '(avy-goto-line :which-key "Goto line")
                "l" '(avy-goto-line :which-key "Goto line")))
 #+END_SRC
+** Hydra
+#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
+  (use-package hydra
+    :defer t
+    :commands hydra-resize/body)
+#+end_src
+*** Window resizing
+#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
+      (defun mf/window-enlarge ()
+        (interactive)
+        (shrink-window -6 t))
+      (defun mf/window-shrink ()
+        (interactive)
+        (shrink-window 6 t))
+      (defun mf/window-taller ()
+        (interactive)
+        (shrink-window -6 nil))
+      (defun mf/window-shorter ()
+        (interactive)
+        (shrink-window 6 nil))
+      (defun mf/window-big-enlarge ()
+        (interactive)
+        (shrink-window -12 t))
+      (defun mf/window-big-shrink ()
+        (interactive)
+        (shrink-window 12 t))
+      (defun mf/window-big-taller ()
+        (interactive)
+        (shrink-window -12 nil))
+      (defun mf/window-big-shorter ()
+        (interactive)
+        (shrink-window 12 nil))
+
+      (defhydra hydra-resize (global-map "C-c r")
+        "resize"
+        ("h" mf/window-shrink)
+        ("l" mf/window-enlarge)
+        ("j" mf/window-taller)
+        ("k" mf/window-shorter)
+        ("H" mf/window-big-shrink)
+        ("L" mf/window-big-enlarge)
+        ("J" mf/window-big-taller)
+        ("K" mf/window-big-shorter)
+        ("n" windmove-down)
+        ("p" windmove-up)
+        ("b" windmove-left)
+        ("f" windmove-right)
+        ("r" rotate-window)
+        ("0" delete-window)
+        ("2" split-window-below)
+        ("3" split-window-right)
+        ("q" nil))
+#+end_src
+*** Buffer cycling
+#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
+  (defhydra hydra-buf-cycle (global-map "C-c b b")
+    "cycle"
+    ("d" kill-current-buffer)
+    ("j" scroll-up-command)
+    ("k" scroll-down-command)
+    ("n" bs-cycle-next)
+    ("p" bs-cycle-previous)
+    ("q" nil))
+#+end_src
 * Completion framework
 ** Icomplete
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
@@ -806,12 +871,15 @@ Use [[https://github.com/ch11ng/exwm][exwm]] to manage X windows in Emacs buffer
 #+end_src
 *** Xrandr
 #+begin_src emacs-lisp :tangle (if mf/is-laptop "~/.emacs.d/exwm.el" "~/.emacs.d/GNUEmacs.el")
-       (require 'exwm-randr)
-       (exwm-randr-enable)
-       (start-process-shell-command "xrandr" nil "xrandr --output VGA1 --primary --mode 1920x1200 --pos 0x0 --rotate normal")
+             (require 'exwm-randr)
+             (exwm-randr-enable)
+             (start-process-shell-command "xrandr" nil "xrandr --output VGA1 --primary --mode 1920x1200 --pos 0x0 --rotate normal")
+      (require 'exwm-systemtray)
+  (exwm-systemtray-enable)
+  (start-process-shell-command "nm-applet" nil "nm-applet")
 
-       ;;Change wallpaper
-;;       (mf/set-wallpaper)
+             ;;Change wallpaper
+      ;;       (mf/set-wallpaper)
 #+end_src
 *** Autostart
 #+begin_src emacs-lisp :tangle (if mf/is-laptop "~/.emacs.d/exwm.el" "~/.emacs.d/GNUEmacs.el")
@@ -979,16 +1047,14 @@ requires ad hoc customization
 ** Perspective
 Use [[https://github.com/nex3/perspective-el][perspective.el]] to manage workspaces when not running EXWM
 #+begin_src emacs-lisp :tangle (if mf/is-laptop "~/.emacs.d/GNUEmacs.el" "no")
-        (use-package perspective
-          :defer t
-          :init (persp-mode)
-          :config
-          (setq persp-mode-prefix-key (kbd "C-c TAB")
-                persp-sort 'create)
+  (use-package perspective
+    :defer t
+    :init (persp-mode)
+    :config
+    (setq persp-sort 'create)
     :bind (("C-x b" . persp-switch-to-buffer*)
            ("C-x k" . persp-kill-buffer*)))
 #+end_src
-
 * Programming
 ** Lsp mode
 Interact with language servers to use Emacs as an intelligent IDE with

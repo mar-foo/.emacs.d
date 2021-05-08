@@ -95,6 +95,7 @@
 (setq mf/is-laptop
 	  (file-exists-p "/sys/class/power_supply/BAT0/capacity"))
 
+
 ;; Tangle and compile if necessary only, then load the configuration
 ;; From tecosaur's config https://github.com/tecosaur
 (let* ((.org "~/.emacs.d/GNUEmacs.org")

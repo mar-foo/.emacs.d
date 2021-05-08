@@ -1,5 +1,6 @@
 #!/bin/sh
 #setxkbmap dvorak
+setxkbmap gb
 wal -R &
 sxhkd -c /home/mario/.emacs.d/sxhkdrc &
-exec dbus-launch --exit-with-session emacsclient -c -e '(load-file "/home/mario/.emacs.d/exwm.el")'
+exec dbus-launch --exit-with-session emacs -mm --debug-init
