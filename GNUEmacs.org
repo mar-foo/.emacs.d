@@ -24,18 +24,19 @@
 #+end_src
 ** Line numbers
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-    (column-number-mode)
-    (global-display-line-numbers-mode t)
-    (menu-bar--display-line-numbers-mode-relative)
+      (column-number-mode)
+      (global-display-line-numbers-mode t)
+      (menu-bar--display-line-numbers-mode-relative)
 
-    (dolist (mode '(term-mode-hook
-                    eshell-mode-hook
-                    vterm-mode-hook
-                    helpful-mode-hook
-                    elfeed-search-mode
-                    elfeed-show-mode
-                    org-mode-hook))
-      (add-hook mode (lambda () (display-line-numbers-mode 0))))
+      (dolist (mode '(term-mode-hook
+                      completion-list-mode-hook
+                      eshell-mode-hook
+                      vterm-mode-hook
+                      helpful-mode-hook
+                      elfeed-search-mode
+                      elfeed-show-mode
+                      org-mode-hook))
+        (add-hook mode (lambda () (display-line-numbers-mode 0))))
 #+end_src
 ** Elisp parentheses
 Use [[https://github.com/Fanael/rainbow-delimiters][rainbow-delimiters]] for nice parentheses coloring
@@ -46,6 +47,21 @@ Use [[https://github.com/Fanael/rainbow-delimiters][rainbow-delimiters]] for nic
     :hook
     (org-mode . rainbow-delimiters-mode)
     (prog-mode . rainbow-delimiters-mode))
+#+end_src
+** Mini frame
+#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
+  (use-package mini-frame
+    :init
+    (mini-frame-mode)
+    :custom
+    (mini-frame-show-parameters '((left . 0.5)
+                                  (top . 0.05)
+                                  (width . 0.7)
+                                  (height . 1)))
+    (mini-frame-completions-show-parameters '((height . 0.25)
+                                              (width . 0.7)
+                                              (left . 0.5)))
+  (mini-frame-standalone t))
 #+end_src
 * Keybindings
 ** Leader key definitions
@@ -727,6 +743,7 @@ source files
     (mu4e-dashboard-mode 1))
 
   (use-package mu4e-dashboard
+:disabled
     :load-path "~/.emacs.d/lisp/mu4e-dashboard/"
     :defer t
     :commands (mf/mu4e-dashboard)
@@ -953,74 +970,70 @@ Use [[https://github.com/ch11ng/exwm][exwm]] to manage X windows in Emacs buffer
 ** Automatic buffer management
 Specify window rules
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-  (setq display-buffer-alist
-        '(("\\*\\(Backtrace\\|Warnings\\|Compile-Log\\|Apropos\\|Messages\\)\\*"
-           (display-buffer-in-side-window)
-           (window-height . 0.2)
-           (side . left)
-           (slot . 0))
-          ("\\*\\([Hh]elp\\|helpful.*\\)\\*"
-           (display-buffer-in-side-window)
-           (window-width . 0.3)
-           (side . left)
-           (slot  . 0))
-          ("\\*Org Select\\*"
-           (display-buffer-in-side-window)
-           (side . left)
-           (window-width . 0.2)
-           (slot . 1))
-          ("\\*Capture\\*"
-           (display-buffer-in-side-window)
-           (side . left)
-           (window-width . 0.2)
-           (slot . 1))
-          ("\\*Calendar\\*"
-           (display-buffer-in-side-window)
-           (side . bottom)
-           (window-height . 0.2)
-           (slot . 1))
-          ("\\*Occur\\*"
-           (display-buffer-in-side-window)
-           (side . bottom)
-           (window-height . 0.3)
-           (slot . 2))
-          ("\\*Emms Playlist\\*"
-           (display-buffer-in-side-window)
-           (side . left)
-           (window-width . 0.2)
-           (slot . 1))
-          ("Browsing by: artist"
-           (display-buffer-in-side-window)
-           (side . left)
-           (window-width . 0.2)
-           (slot . 1))
-          ("\\*\\(Embark\\)?.*Completions.*"
-           (display-buffer-in-side-window)
-           (side . bottom)
-           (slot . 0)
-           (window-parameters . ((no-other-window . t)
-                                 (mode-line-format . none))))
-          ("\\*Embark Collect Live\\*"
-           (display-buffer-in-side-window)
-           (side . bottom)
-           (slot . 0)
-           (window-parameters . ((no-other-window . t)
-                                 (mode-line-format . none))))
-          ("\\(e?shell\\|v?term\\).*"
-           (display-buffer-in-side-window)
-           (side . bottom)
-           (window-height . 0.25)
-           (slot . 2))
-          ;; X windows
-          ("Pavucontrol.*"
-           (display-buffer-in-side-window)
-           (side . bottom)
-           (window-height . 0.5)
-           (slot . 0))
-          ("mpv.*"
-           (display-buffer-pop-up-window)
-           (side . left)
-           (slot . 1))))
+      (setq display-buffer-alist
+            '(("\\*\\(Backtrace\\|Warnings\\|Compile-Log\\|Apropos\\|Messages\\)\\*"
+               (display-buffer-in-side-window)
+               (window-height . 0.35)
+               (side . bottom)
+               (slot . 0))
+              ("\\*\\([Hh]elp\\|helpful.*\\)\\*"
+               (display-buffer-in-side-window)
+               (window-height . 0.35)
+               (side . bottom)
+               (slot  . 0))
+              ("\\*Org Select\\*"
+               (display-buffer-in-side-window)
+               (side . left)
+               (window-width . 0.2)
+               (slot . 1))
+              ("\\*Capture\\*"
+               (display-buffer-in-side-window)
+               (side . left)
+               (window-width . 0.2)
+               (slot . 1))
+               ("\\*Calendar\\*"
+               (display-buffer-in-side-window)
+               (side . bottom)
+               (window-height . 0.2)
+               (slot . 1))
+              ("\\*Occur\\*"
+               (display-buffer-in-side-window)
+               (side . bottom)
+               (window-height . 0.3)
+               (slot . 2))
+              ("\\*Emms Playlist\\*"
+               (display-buffer-in-side-window)
+               (side . left)
+               (window-width . 0.2)
+               (slot . 1))
+              ("Browsing by: artist"
+               (display-buffer-in-side-window)
+               (side . left)
+               (window-width . 0.2)
+               (slot . 1))
+              ("\\*\\(Embark\\)?.*Completions.*"
+               (display-buffer-in-side-window)
+               (side . bottom)
+               (slot . 0)
+               (window-parameters . ((no-other-window . t)
+                                     (mode-line-format . none))))
+              ("\\*Embark Collect Live\\*"
+               (display-buffer-in-side-window)
+               (side . bottom)
+               (slot . 0)
+               (window-parameters . ((no-other-window . t)
+                                     (mode-line-format . none))))
+              ("\\(e?shell\\|v?term\\).*"
+               (display-buffer-in-side-window)
+               (side . bottom)
+               (window-height . 0.25)
+               (slot . 2))
+              ;; X windows
+              ("Pavucontrol.*"
+               (display-buffer-in-side-window)
+               (side . bottom)
+               (window-height . 0.5)
+               (slot . 0))))
 #+end_src
 *** Agenda window management
 For some reason org agenda doesn't respect display-buffer-alist and
@@ -1054,6 +1067,11 @@ Use [[https://github.com/nex3/perspective-el][perspective.el]] to manage workspa
     (setq persp-sort 'create)
     :bind (("C-x b" . persp-switch-to-buffer*)
            ("C-x k" . persp-kill-buffer*)))
+#+end_src
+** Modeline on top
+#+begin_src emacs-lisp :tangle (if mf/is-laptop "~/.emacs.d/exwm.el" "no")
+			  (setq-default header-line-format mode-line-format)
+			  (setq-default mode-line-format nil)
 #+end_src
 * Programming
 ** Lsp mode
@@ -1508,7 +1526,7 @@ author are used to display the title
             ;;                                         ("mp4" . "mpv")
             ;;                                         ("pdf" . "zathura"))))
 #+END_SRC
-* Miscellaneous
+* Social
 ** Telegram
 Telegram [[https://github.com/zevlg/telega.el][client]] for Emacs
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
@@ -1542,42 +1560,40 @@ Telegram [[https://github.com/zevlg/telega.el][client]] for Emacs
 ** RSS
 RSS [[https://github.com/skeeto/elfeed][reader]] for Emacs
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-                           (use-package elfeed
-                             :after elfeed-dashboard  
-                             :defer t
-                             :commands (elfeed elfeed-dashboard))
-   ;;                           :config
-   ;;                           (setq elfeed-feeds
-   ;;                                 '(("https://trisquel.info/en/node/feed" trisquel freesw)
-   ;;                                   ("https://www.fsf.org/static/fsforg/rss/news.xml" freesw)
-   ;;                                   ("https://planet.gnu.org/rss20.xml" freesw)
-   ;;                                   ;; ("https://rss.nytimes.com/services/xml/rss/nyt/World.xml" world)
-   ;;                                   ;; ("https://feeds.a.dj.com/rss/RSSWorldNews.xml" world)
-   ;;                                   ;; ("http://xml2.corriereobjects.it/rss/homepage.xml" italia)
-   ;;                                   ;; ("http://xml2.corriereobjects.it/rss/politica.xml" italia)
-   ;;                                   ;; ("http://www.repubblica.it/rss/homepage/rss2.0.xml" italia)
-   ;;                                   ;; ("http://www.repubblica.it/rss/economia/rss2.0.xml" italia)
-   ;;                                   ;; ("https://www.ansa.it/sito/ansait_rss.xml" italia)
-   ;;                                   ;; ("https://www.ansa.it/sito/notizie/politica/politica_rss.xml" italia)
-   ;;                                   ;; ("https://www.independent.co.uk/news/uk/rss" uk)
-   ;;                                   ;; ("https://www.independent.co.uk/news/world/rss" uk)
-   ;;                                   ;; "https://www.wired.com/feed/rss"
-   ;;                                   ;; "https://www.wired.com/feed/category/science/latest/rss"
-   ;;                                   ;; "http://rss.slashdot.org/Slashdot/slashdotMain"
-   ;;                                   "http://www.salute.gov.it/portale/news/RSS_comunicati.xml"
-   ;;                                   "http://www.governo.it/feed/rss"
-   ;;                                   ("https://protesilaos.com/codelog.xml" youtube)
-   ;;                                   ("https://lukesmith.xyz/rss.xml" youtube)
-   ;;                                   ("https://videos.lukesmith.xyz/feeds/videos.xml?accountId=3" youtube)
-   ;;                                   ("https://www.youtube.com/feeds/videos.xml?channel_id=UC2eYFnH61tmytImy1mTYvhA" youtube)
-   ;;                                   ("https://www.youtube.com/feeds/videos.xml?channel_id=UCVls1GmFKf6WlTraIb_IaJg" youtube)
-   ;;                                   ("https://www.youtube.com/feeds/videos.xml?user=MentalOutlawStudios" youtube)
-   ;;                                   ("https://www.youtube.com/feeds/videos.xml?user=OmegaDungeon" youtube)
-   ;;                                   ("https://www.youtube.com/feeds/videos.xml?channel_id=UCAiiOTio8Yu69c3XnR7nQBQ" youtube)))
-   ;;                            :general (mf/leader-keys
-   ;;                                      "ar" '(elfeed :which-key "RSS")))
-
-
+  (use-package elfeed
+    :after elfeed-dashboard  
+    :defer t
+    :commands (elfeed elfeed-dashboard)
+  :config
+  (setq elfeed-feeds
+        '(("https://trisquel.info/en/node/feed" trisquel freesw)
+          ("https://www.fsf.org/static/fsforg/rss/news.xml" freesw)
+          ("https://planet.gnu.org/rss20.xml" freesw)
+          ;; ("https://rss.nytimes.com/services/xml/rss/nyt/World.xml" world)
+          ;; ("https://feeds.a.dj.com/rss/RSSWorldNews.xml" world)
+          ;; ("http://xml2.corriereobjects.it/rss/homepage.xml" italia)
+          ;; ("http://xml2.corriereobjects.it/rss/politica.xml" italia)
+          ;; ("http://www.repubblica.it/rss/homepage/rss2.0.xml" italia)
+          ;; ("http://www.repubblica.it/rss/economia/rss2.0.xml" italia)
+          ;; ("https://www.ansa.it/sito/ansait_rss.xml" italia)
+          ;; ("https://www.ansa.it/sito/notizie/politica/politica_rss.xml" italia)
+          ;; ("https://www.independent.co.uk/news/uk/rss" uk)
+          ;; ("https://www.independent.co.uk/news/world/rss" uk)
+          ;; "https://www.wired.com/feed/rss"
+          ;; "https://www.wired.com/feed/category/science/latest/rss"
+          ;; "http://rss.slashdot.org/Slashdot/slashdotMain"
+          "http://www.salute.gov.it/portale/news/RSS_comunicati.xml"
+          "http://www.governo.it/feed/rss"
+          ("https://protesilaos.com/codelog.xml" youtube)
+          ("https://lukesmith.xyz/rss.xml" youtube)
+          ("https://videos.lukesmith.xyz/feeds/videos.xml?accountId=3" youtube)
+          ("https://www.youtube.com/feeds/videos.xml?channel_id=UC2eYFnH61tmytImy1mTYvhA" youtube)
+          ("https://www.youtube.com/feeds/videos.xml?channel_id=UCVls1GmFKf6WlTraIb_IaJg" youtube)
+          ("https://www.youtube.com/feeds/videos.xml?user=MentalOutlawStudios" youtube)
+          ("https://www.youtube.com/feeds/videos.xml?user=OmegaDungeon" youtube)
+          ("https://www.youtube.com/feeds/videos.xml?channel_id=UCAiiOTio8Yu69c3XnR7nQBQ" youtube)))
+  :general (mf/leader-keys
+             "ar" '(elfeed :which-key "RSS")))
   (use-package elfeed-org
     :defer t
     :commands elfeed-dashboard
@@ -1589,9 +1605,9 @@ RSS [[https://github.com/skeeto/elfeed][reader]] for Emacs
     :commands (elfeed elfeed-dashboard)
     :config
     (setq elfeed-dashboard-file "~/.emacs.d/elfeed-dashboard.org")
-    (advice-add 'elfeed-search-quit-window :after #'elfeed-dashboard-update-links)
-    :general (mf/leader-keys
-               "ar" '(elfeed-dashboard :which-key "RSS")))
+    (advice-add 'elfeed-search-quit-window :after #'elfeed-dashboard-update-links))
+  ;;   :general (mf/leader-keys
+  ;;              "ar" '(elfeed-dashboard :which-key "RSS")))
 
   (use-package elfeed-goodies
     :defer t
@@ -1607,29 +1623,7 @@ RSS [[https://github.com/skeeto/elfeed][reader]] for Emacs
     :general (mf/leader-keys
                "ai" '(erc :which-key "IRC")))
 #+END_SRC
-** Dashboard
-Pretty and well organized startup [[https://github.com/emacs-dashboard/emacs-dashboard][dashboard]]
-#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-        (use-package page-break-lines
-          :defer t)
-        (use-package dashboard
-          :defer t
-          :init
-          (dashboard-setup-startup-hook)
-          (setq dashboard-banner-logo-title "Emacs is more than a text editor!"
-                dashboard-startup-banner 'logo
-                dashboard-set-heading-icons t
-                dashboard-set-file-icons t
-                dashboard-center-content t
-                dashboard-filter-agenda-entry 'dashboard-filter-agenda-by-todo
-                dashboard-org-agenda-categories '("University")
-              dashboard-items '((recents . 5)
-                                (bookmarks . 5)
-                                (agenda . 5)))
-          :bind (:map dashboard-mode-map
-              ("n" . dashboard-next-line)
-              ("p" . dashboard-previous-line)))
-#+end_src
+
 ** Youtube
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
   (use-package ytdious
@@ -1663,7 +1657,30 @@ Pretty and well organized startup [[https://github.com/emacs-dashboard/emacs-das
                                  ("lbry.tv" . browse-url-generic)
                                  ("." . browse-url-firefox)))
 #+end_src
-** Password management
+* Dashboard
+Pretty and well organized startup [[https://github.com/emacs-dashboard/emacs-dashboard][dashboard]]
+#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
+        (use-package page-break-lines
+          :defer t)
+        (use-package dashboard
+          :defer t
+          :init
+          (dashboard-setup-startup-hook)
+          (setq dashboard-banner-logo-title "Emacs is more than a text editor!"
+                dashboard-startup-banner 'logo
+                dashboard-set-heading-icons t
+                dashboard-set-file-icons t
+                dashboard-center-content t
+                dashboard-filter-agenda-entry 'dashboard-filter-agenda-by-todo
+                dashboard-org-agenda-categories '("University")
+              dashboard-items '((recents . 5)
+                                (bookmarks . 5)
+                                (agenda . 5)))
+          :bind (:map dashboard-mode-map
+              ("n" . dashboard-next-line)
+              ("p" . dashboard-previous-line)))
+#+end_src
+* Password management
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
   (use-package password-store
     :defer t
@@ -1675,12 +1692,38 @@ Pretty and well organized startup [[https://github.com/emacs-dashboard/emacs-das
     :config
     (auth-source-pass-enable))
 #+end_src
+* Burly
+Save window or frame configuration with burly
+#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
+    (use-package burly
+      :defer t
+      :commands (burly-bookmark-windows burly-open-bookmark)
+    :general (mf/leader-keys
+               "s" '(burly-bookmark-windows :which-key "Burly windows")))
+#+end_src
+* Miscellaneous
 ** Sudo editing
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
 (use-package sudo-edit
   :defer t
   :commands (sudo-edit))
 #+END_SRC
+** Torrent
+#+begin_src emacs-lisp
+   (use-package xml-rpc
+     :defer t
+     :commands mentor)
+   (use-package mentor
+     :defer t
+     :after xml-rpc
+    :commands mentor)
+#+end_src
+** Edit server for firefox plugin
+#+begin_src emacs-lisp :tangle "~/.emacs.d/GNUEmacs.el"
+    (use-package edit-server
+      :init
+      (edit-server-start))
+#+end_src
 ** Focus mode
 Focus mode highlihts the text object you are on and dims the rest of
 the view
@@ -1693,22 +1736,6 @@ the view
   :general (mf/leader-keys
              "tf" '(focus-mode :which-key "Toggle focus mode")))
 #+end_src
-** Torrent
-#+begin_src emacs-lisp
-  (use-package xml-rpc
-    :defer t
-    :commands mentor)
-  (use-package mentor
-    :defer t
-    :commands mentor)
-#+end_src
-** Edit server for firefox plugin
-#+begin_src emacs-lisp :tangle "~/.emacs.d/GNUEmacs.el"
-    (use-package edit-server
-      :init
-      (edit-server-start))
-#+end_src
-
 * Next
 *org-graph-view* To display graphs from org mode buffers
 *org-roam* *org-roam-server*
