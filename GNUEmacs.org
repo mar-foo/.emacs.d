@@ -1,6 +1,7 @@
 #+TITLE: Emacs configuration
 #+STARTUP: overview
 #+AUTHOR: Mario Forzanini
+#+HTML_HEAD: <link rel="stylesheet" href="style/simple.css">
 * Look and Feel
 ** Icons
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
@@ -49,17 +50,18 @@ Use [[https://github.com/Fanael/rainbow-delimiters][rainbow-delimiters]] for nic
     (prog-mode . rainbow-delimiters-mode))
 #+end_src
 ** Mini frame
-#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
+Use mini frame when in EXWM
+#+begin_src emacs-lisp :tangle ~/.emacs.d/exwm.el
   (use-package mini-frame
     :init
     (mini-frame-mode)
     :custom
     (mini-frame-show-parameters '((left . 0.5)
-                                  (top . 0.05)
-                                  (width . 0.7)
+                                  (top . 0.5)
+                                  (width . 0.6)
                                   (height . 1)))
     (mini-frame-completions-show-parameters '((height . 0.25)
-                                              (width . 0.7)
+                                              (width . 0.6)
                                               (left . 0.5)))
   (mini-frame-standalone t))
 #+end_src
@@ -842,31 +844,42 @@ Prefix: C-c-/
 * EXWM
 ** Buffer name
 #+begin_src emacs-lisp :tangle (if mf/is-laptop "~/.emacs.d/exwm.el" "~/.emacs.d/GNUEmacs.el")
-     (defun mf/exwm-update-class ()
-       (exwm-workspace-rename-buffer exwm-class-name))
-     (defun mf/exwm-update-title ()
-       (pcase exwm-class-name
-         ("tabbed" (exwm-workspace-rename-buffer (format "tabbed: %s" exwm-title)))))
-     (defun mf/configure-window-by-class ()
-       (interactive)
-       (pcase exwm-class-name
-         ("Firefox" (exwm-workspace-move-window 1))
-         ("Signal" (exwm-workspace-move-window 2))))
+  (defun mf/exwm-update-class ()
+    (exwm-workspace-rename-buffer exwm-class-name))
+
+  (defun mf/exwm-update-title ()
+    (pcase exwm-class-name
+      ("tabbed" (exwm-workspace-rename-buffer (format "tabbed: %s" exwm-title)))
+      ("Firefox" (exwm-workspace-rename-buffer (format "Firefox: %s" exwm-title)))))
+
+  (defun mf/move-to-switch-workspace (num)
+    (interactive)
+    (exwm-workspace-move-window num)
+    (exwm-workspace-switch num))
+
+  (defun mf/configure-window-by-class ()
+    (interactive)
+    (pcase exwm-class-name
+      ("Firefox" (mf/move-to-switch-workspace 1))
+      ("Signal" (mf/move-to-switch-workspace 2))
+      ("Zoom" (mf/move-to-swich-workspace 3))))
 #+end_src
 ** Main package
-Use [[https://github.com/ch11ng/exwm][exwm]] to manage X windows in Emacs buffers, only on desktop computer
+Use [[https://github.com/ch11ng/exwm][exwm]] to manage X windows in Emacs buffers
 #+begin_src emacs-lisp :tangle (if mf/is-laptop "~/.emacs.d/exwm.el" "~/.emacs.d/GNUEmacs.el")
-     (use-package exwm
-       :config
-       (setq exwm-workspace-number 1)
-       ;; When window class updates, use it to set buffer name
-       (add-hook 'exwm-update-class-hook #'mf/exwm-update-class)
-       ;; Handle surf window title differently
-       (add-hook 'exwm-update-class-hook #'mf/exwm-update-title)
-       ;; Move windows to specific workspaces
-       (add-hook 'exwm-manage-finish-hook #'mf/configure-window-by-class)
-       ;; Show all buffers in counsel-ibuffer
-       (setq exwm-workspace-show-all-buffers t)
+    (use-package exwm
+      :config
+      (setq exwm-workspace-number 4)
+      ;; When window class updates, use it to set buffer name
+      (add-hook 'exwm-update-class-hook #'mf/exwm-update-class)
+      ;; Handle surf window title differently
+      (add-hook 'exwm-update-class-hook #'mf/exwm-update-title)
+      ;; Move windows to specific workspaces
+      (add-hook 'exwm-manage-finish-hook #'mf/configure-window-by-class)
+      ;; Show all buffers in ibuffer
+      (setq exwm-workspace-show-all-buffers t)
+      ;; When switching buffer to a window on a different workspace switch to that workspace instead
+      (global-set-key (kbd "C-x b") 'exwm-workspace-switch-to-buffer)
 #+end_src
 *** Keys that should always go through Emacs
 #+begin_src emacs-lisp :tangle (if mf/is-laptop "~/.emacs.d/exmw.el" "~/.emacs.d/GNUEmacs.el")
@@ -1052,7 +1065,7 @@ requires ad hoc customization
                "wL" '(rotate-layout :which-key "Layout")))
   (use-package ace-window
     :config
-    (ace-window-display-mode)
+    (ace-window-display-mode -1)
     (setq aw-keys '(?h ?j ?k ?l ?f ?d ?s ?a))
     :general (mf/leader-keys
                "o" '(ace-window :which-key "Ace window")))
@@ -1561,39 +1574,38 @@ Telegram [[https://github.com/zevlg/telega.el][client]] for Emacs
 RSS [[https://github.com/skeeto/elfeed][reader]] for Emacs
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
   (use-package elfeed
-    :after elfeed-dashboard  
     :defer t
-    :commands (elfeed elfeed-dashboard)
-  :config
-  (setq elfeed-feeds
-        '(("https://trisquel.info/en/node/feed" trisquel freesw)
-          ("https://www.fsf.org/static/fsforg/rss/news.xml" freesw)
-          ("https://planet.gnu.org/rss20.xml" freesw)
-          ;; ("https://rss.nytimes.com/services/xml/rss/nyt/World.xml" world)
-          ;; ("https://feeds.a.dj.com/rss/RSSWorldNews.xml" world)
-          ;; ("http://xml2.corriereobjects.it/rss/homepage.xml" italia)
-          ;; ("http://xml2.corriereobjects.it/rss/politica.xml" italia)
-          ;; ("http://www.repubblica.it/rss/homepage/rss2.0.xml" italia)
-          ;; ("http://www.repubblica.it/rss/economia/rss2.0.xml" italia)
-          ;; ("https://www.ansa.it/sito/ansait_rss.xml" italia)
-          ;; ("https://www.ansa.it/sito/notizie/politica/politica_rss.xml" italia)
-          ;; ("https://www.independent.co.uk/news/uk/rss" uk)
-          ;; ("https://www.independent.co.uk/news/world/rss" uk)
-          ;; "https://www.wired.com/feed/rss"
-          ;; "https://www.wired.com/feed/category/science/latest/rss"
-          ;; "http://rss.slashdot.org/Slashdot/slashdotMain"
-          "http://www.salute.gov.it/portale/news/RSS_comunicati.xml"
-          "http://www.governo.it/feed/rss"
-          ("https://protesilaos.com/codelog.xml" youtube)
-          ("https://lukesmith.xyz/rss.xml" youtube)
-          ("https://videos.lukesmith.xyz/feeds/videos.xml?accountId=3" youtube)
-          ("https://www.youtube.com/feeds/videos.xml?channel_id=UC2eYFnH61tmytImy1mTYvhA" youtube)
-          ("https://www.youtube.com/feeds/videos.xml?channel_id=UCVls1GmFKf6WlTraIb_IaJg" youtube)
-          ("https://www.youtube.com/feeds/videos.xml?user=MentalOutlawStudios" youtube)
-          ("https://www.youtube.com/feeds/videos.xml?user=OmegaDungeon" youtube)
-          ("https://www.youtube.com/feeds/videos.xml?channel_id=UCAiiOTio8Yu69c3XnR7nQBQ" youtube)))
-  :general (mf/leader-keys
-             "ar" '(elfeed :which-key "RSS")))
+    :commands elfeed
+    :config
+    (setq elfeed-feeds
+          '(("https://trisquel.info/en/node/feed" trisquel freesw)
+            ("https://www.fsf.org/static/fsforg/rss/news.xml" freesw)
+            ("https://planet.gnu.org/rss20.xml" freesw)
+            ;; ("https://rss.nytimes.com/services/xml/rss/nyt/World.xml" world)
+            ;; ("https://feeds.a.dj.com/rss/RSSWorldNews.xml" world)
+            ;; ("http://xml2.corriereobjects.it/rss/homepage.xml" italia)
+            ;; ("http://xml2.corriereobjects.it/rss/politica.xml" italia)
+            ;; ("http://www.repubblica.it/rss/homepage/rss2.0.xml" italia)
+            ;; ("http://www.repubblica.it/rss/economia/rss2.0.xml" italia)
+            ;; ("https://www.ansa.it/sito/ansait_rss.xml" italia)
+            ;; ("https://www.ansa.it/sito/notizie/politica/politica_rss.xml" italia)
+            ;; ("https://www.independent.co.uk/news/uk/rss" uk)
+            ;; ("https://www.independent.co.uk/news/world/rss" uk)
+            ;; "https://www.wired.com/feed/rss"
+            ;; "https://www.wired.com/feed/category/science/latest/rss"
+            ;; "http://rss.slashdot.org/Slashdot/slashdotMain"
+            "http://www.salute.gov.it/portale/news/RSS_comunicati.xml"
+            "http://www.governo.it/feed/rss"
+            ("https://protesilaos.com/codelog.xml" youtube)
+            ("https://lukesmith.xyz/rss.xml" youtube)
+            ("https://videos.lukesmith.xyz/feeds/videos.xml?accountId=3" youtube)
+            ("https://www.youtube.com/feeds/videos.xml?channel_id=UC2eYFnH61tmytImy1mTYvhA" youtube)
+            ("https://www.youtube.com/feeds/videos.xml?channel_id=UCVls1GmFKf6WlTraIb_IaJg" youtube)
+            ("https://www.youtube.com/feeds/videos.xml?user=MentalOutlawStudios" youtube)
+            ("https://www.youtube.com/feeds/videos.xml?user=OmegaDungeon" youtube)
+            ("https://www.youtube.com/feeds/videos.xml?channel_id=UCAiiOTio8Yu69c3XnR7nQBQ" youtube)))
+    :general (mf/leader-keys
+               "ar" '(elfeed :which-key "RSS")))
   (use-package elfeed-org
     :defer t
     :commands elfeed-dashboard
@@ -1602,7 +1614,7 @@ RSS [[https://github.com/skeeto/elfeed][reader]] for Emacs
 
   (use-package elfeed-dashboard
     :defer t
-    :commands (elfeed elfeed-dashboard)
+    :commands elfeed-dashboard
     :config
     (setq elfeed-dashboard-file "~/.emacs.d/elfeed-dashboard.org")
     (advice-add 'elfeed-search-quit-window :after #'elfeed-dashboard-update-links))
