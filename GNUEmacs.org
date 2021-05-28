@@ -66,6 +66,15 @@ Use mini frame when in EXWM
   (mini-frame-standalone t))
 #+end_src
 * Keybindings
+** Evil mode
+#+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
+    (use-package evil
+      :init
+      (setq evil-want-integration t
+       evil-want-keybinding nil)
+      :config
+      (evil-mode 1))
+#+END_SRC
 ** Leader key definitions
 *** Helper functions
 #+begin_src emacs-lisp  :tangle ~/.emacs.d/GNUEmacs.el
@@ -141,10 +150,18 @@ Use [[https://github.com/noctuid/general.el][general]] to setup space bar as lea
 other modes. C-c-m is the major-mode-specific leader
 #+begin_src emacs-lisp  :tangle ~/.emacs.d/GNUEmacs.el
   (use-package general
-     :config
+    :init
+    (general-override-mode 1)
+    :config
+    (general-evil-setup t)
 
     (general-create-definer mf/leader-keys
-      :prefix "C-c")
+      :keymaps '(normal insert visual emacs)
+      :prefix "SPC"
+      :global-prefix "C-SPC")
+
+;;    (general-create-definer mf/leader-keys
+;;      :prefix "C-c")
 #+end_src
 **** General definitions
 Commonly used bindings for different purposes; Prefix: C-c
@@ -402,6 +419,22 @@ Manage windows; Prefix: C-c-w
     ("n" bs-cycle-next)
     ("p" bs-cycle-previous)
     ("q" nil))
+#+end_src
+** Evil integrations
+Use [[https://github.com/emacs-evil/evil][evil]] keybindings to make my life better, [[https://github.com/emacs-evil/evil-collection][evil-collection]] to use
+vim keybindings in many modes and [[https://github.com/Alexander-Miller/treemacs][treemacs-evil]] to use vim keybindings
+in treemacs navigation
+#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el 
+    (use-package evil-collection
+      :after evil
+      :config
+      (evil-collection-init)
+    (setq evil-want-C-i-jump t))
+
+    (use-package treemacs-evil
+      :defer t
+      :after (evil evil-collection)
+      :commands (treemacs))
 #+end_src
 * Completion framework
 ** Icomplete
@@ -773,7 +806,6 @@ Write emails in org-mode and convert them to html with =org-mime-htmlize=, to ed
       :config (setq org-mime-export-options '(:section-numbers nil
                                                                :with-author nil
                                                                :with-toc nil)))
-  (add-hook 'message-send-hook 'org-mime-htmlize)
 #+END_SRC
 * Music
 ** Custom functions
