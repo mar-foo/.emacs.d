@@ -1,4 +1,4 @@
-;; Raise garbage collection threshold to speed up init time
+; Raise garbage collection threshold to speed up init time
 (setq gc-cons-threshold (* 50 1000 1000))
 ;; Package management
 (require 'package)
@@ -42,14 +42,14 @@
 
 ;; Fonts
 (defun mf/set-font-faces ()
-  (set-face-attribute 'variable-pitch nil ; Variable pitch font
+ (set-face-attribute 'variable-pitch nil ; Variable pitch font
 					  :font "Dejavu Serif"
 					  :height 100)
   (set-face-attribute 'fixed-pitch nil
-					  :font "JetBrains Mono"
+					  :font "Terminus"
 					  :height 110)
   (set-face-attribute 'default nil
-					  :font "JetBrains Mono"
+					  :font "Terminus"
 					  :height 100))
 
 (if (daemonp)
