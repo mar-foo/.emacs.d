@@ -132,6 +132,7 @@ Quick bookmarks; Prefix: C-c-b
 | SPC-b-d    | Delete buffer |
 | SPC-b-r    | Rename buffer |
 #+begin_src emacs-lisp  :tangle ~/.emacs.d/GNUEmacs.el
+  "bb"  '(switch-to-buffer :which-key "Switch to buffer")
   "bd"  '(kill-current-buffer :which-key "Delete buffer")
   "br" '(rename-buffer :which-key "Rename buffer")
 #+end_src
@@ -325,14 +326,19 @@ Movement in the filesystem; Prefix: C-c-f
 #+end_src
 ** Evil integrations
 Use [[https://github.com/emacs-evil/evil][evil]] keybindings to make my life better, [[https://github.com/emacs-evil/evil-collection][evil-collection]] to use
-vim keybindings in many modes and [[https://github.com/Alexander-Miller/treemacs][treemacs-evil]] to use vim keybindings
-in treemacs navigation
+vim keybindings in many modes and [[https://github.com/syl20nbr/evil-escape][evil-escape]] to map 'jk' to escape
+in insert mode
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el 
-    (use-package evil-collection
-      :after evil
-      :config
-      (evil-collection-init)
+  (use-package evil-collection
+    :after evil
+    :config
+    (evil-collection-init)
     (setq evil-want-C-i-jump t))
+  (use-package evil-escape
+    :after evil
+    :config
+    (evil-escape-mode)
+    (setq evil-escape-key-sequence "jk"))
 #+end_src
 * Completion framework
 ** Icomplete
@@ -669,7 +675,6 @@ Get [[http://company-mode.github.io/][autocompletion]]. Edit: try to use Emacs' 
     :after haskell-mode
     :commands 'dante-mode
     :init
-    (add-hook 'haskell-mode-hook 'haskell-indent-mode)
     (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
     (add-hook 'haskell-mode-hook 'flycheck-mode)
     (add-hook 'haskell-mode-hook 'dante-mode))
