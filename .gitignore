@@ -3,3 +3,10 @@ Emacs.el
 auto-save-list
 elpa
 exwm.el
+projectile-bookmarks.eld
+recentf
+GNUEmacs.elc
+GNUEmacs.el~
+transient/
+emojis/
+recentf~
