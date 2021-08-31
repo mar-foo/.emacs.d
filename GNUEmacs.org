@@ -9,19 +9,9 @@
   (use-package emojify
     :defer t
     :commands (emojify-mode)
-    :hook (telega-root-mode-hook . emojify-mode)
+    :hook
     (elfeed-mode-hook . emojify-mode)
     (eww-mode-hook . emojify-mode))
-    (setq display-time-defaut-load-average nil)
-    (display-time-mode 1)
-#+end_src
-** Wallpaper
-#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-  (defun mf/set-wallpaper ()
-    (interactive)
-    (start-process-shell-command "hsetroot" nil "hsetroot -cover /home/mario/Media/Pictures/wallpapers/dull/wood.jpg"))
-  (set-frame-parameter (selected-frame) 'alpha  '(90 . 90))
-  (add-to-list 'default-frame-alist '(alpha . (90 . 90)))
 #+end_src
 ** Line numbers
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
@@ -49,22 +39,6 @@ Use [[https://github.com/Fanael/rainbow-delimiters][rainbow-delimiters]] for nic
     (org-mode . rainbow-delimiters-mode)
     (prog-mode . rainbow-delimiters-mode))
 #+end_src
-** Mini frame
-Use mini frame when in EXWM
-#+begin_src emacs-lisp :tangle ~/.emacs.d/exwm.el
-  (use-package mini-frame
-    :init
-    (mini-frame-mode)
-    :custom
-    (mini-frame-show-parameters '((left . 0.5)
-                                  (top . 0.5)
-                                  (width . 0.6)
-                                  (height . 1)))
-    (mini-frame-completions-show-parameters '((height . 0.25)
-                                              (width . 0.6)
-                                              (left . 0.5)))
-  (mini-frame-standalone t))
-#+end_src
 * Keybindings
 ** Evil mode
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
@@ -78,11 +52,6 @@ Use mini frame when in EXWM
 ** Leader key definitions
 *** Helper functions
 #+begin_src emacs-lisp  :tangle ~/.emacs.d/GNUEmacs.el
-  (defun mf/browse-youtube ()
-    "Prompts for keywords and outputs youtube search results"
-    (interactive)
-    (start-process-shell-command "Youtube" nil "/home/mario/.local/bin/scripts/myyt -r"))
-
   (defun mf/reload-configuration ()
     "Reloads configuration"
     (interactive)
@@ -93,34 +62,10 @@ Use mini frame when in EXWM
     (interactive)
     (find-file "~/.emacs.d/GNUEmacs.org"))
 
-  (defun mf/focus-dashboard ()
-    "Return to the dashboard"
-    (interactive)
-    (switch-to-buffer "*dashboard*")
-    (delete-other-windows))
-
   (defun mf/find-recentf ()
     "Open a recent file"
     (interactive)
     (find-file (completing-read "Recent File: " recentf-list nil t)))
-
-  (defun mf/browse-url-firefox ()
-    "Browse bookmarks defined in mf/site-bookmarks-list"
-    (interactive)
-    (browse-url-firefox
-     (completing-read "Firefox: " mf/site-bookmarks-list nil nil)))
-
-  (defun mf/open-protonmail ()
-    "Open protonmail and copy password from the password store"
-    (browse-url-firefox "https://mail.protonmail.com")
-    (password-store-copy "Mail/forzmar-protonmail"))
-
-  (defun mf/view-email (&optional use-generic-p)
-    "View email in mu4e, if there is a prefix argument open protonmail web mail and copy password from the password store"
-    (interactive "P")
-    (if use-generic-p
-        (mf/open-protonmail)
-      (mu4e)))
 
   (defun mf/toggle-vterm (&optional use-generic-p)
     "Toggle vterm window respecting buffer-alist configuration.
@@ -131,19 +76,6 @@ Use mini frame when in EXWM
       (if use-generic-p
           (switch-to-buffer "*vterm*")
         (vterm))))
-
-  (defun mf/toggle-window (win)
-    "Toggle X window"
-    (interactive)
-    (if (get-buffer win)
-        (if (get-buffer-window win)
-            (delete-window (get-buffer-window win))
-          (pop-to-buffer win))
-      (start-process-shell-command win nil (downcase win))))
-
-  (defun mf/toggle-pavucontrol ()
-    (interactive)
-    (mf/toggle-window "Pavucontrol"))
 #+end_src
 *** Leader key
 Use [[https://github.com/noctuid/general.el][general]] to setup space bar as leader key in normal mode, C-c in
@@ -159,27 +91,22 @@ other modes. C-c-m is the major-mode-specific leader
       :keymaps '(normal insert visual emacs)
       :prefix "SPC"
       :global-prefix "C-SPC")
-
-;;    (general-create-definer mf/leader-keys
-;;      :prefix "C-c")
 #+end_src
 **** General definitions
 Commonly used bindings for different purposes; Prefix: C-c
 | Keybinding | Action              |
 |------------+---------------------|
-| C-c-a      | Applications prefix |
-| C-c-b      | Buffers prefix      |
-| C-c-f      | Files prefix        |
-| C-c-h      | Help prefix         |
-| C-c-i      | Insert prefix       |
-| C-c-l      | Layouts prefix      |
-| C-c-m      | Major mode prefix   |
-| C-c-O      | Org prefix          |
-| C-c-q      | Quit prefix         |
-| C-c-q-q    | Exit Emacs          |
-| C-c-w      | Window prefix       |
-| C-c-/      | Music prefix        |
-| C-c-SPC    | M-x                 |
+| SPC-b      | Buffers prefix      |
+| SPC-f      | Files prefix        |
+| SPC-h      | Help prefix         |
+| SPC-i      | Insert prefix       |
+| SPC-m      | Major mode prefix   |
+| SPC-O      | Org prefix          |
+| SPC-q      | Quit prefix         |
+| SPC-q-q    | Exit Emacs          |
+| SPC-w      | Window prefix       |
+| SPC-/      | Music prefix        |
+| SPC-SPC    | M-x                 |
 #+begin_src emacs-lisp  :tangle ~/.emacs.d/GNUEmacs.el
   (mf/leader-keys
     "a" '(:ignore t :which-key "Applications")
@@ -190,43 +117,22 @@ Commonly used bindings for different purposes; Prefix: C-c
     "h" '(:ignore t :which-key "Help")
     "i" '(:ignore t :which-key "Insert")
     "j" '(:ignore t :which-key "Jump")
-    "l" '(:ignore t :which-key "Layouts")
-    "r" '(:ignore t :which-key "Register/Rings/Resume")
     "q" '(:ignore t :which-key "Quit")
     "t" '(:ignore t :which-key "Toggle")
     "w" '(:ignore t :which-key "Windows")
     "O" '(:ignore t :which-key "Org")
-    "/" '(:ignore t :which-key "Music")
 
     "SPC" '(execute-extended-command :which-key "M-x")
     "qq" '(save-buffers-kill-terminal :which-key "Exit Emacs")
-#+end_src
-**** Applications
-Movement between windows and buffers; Prefix: SPC-g
-| Keybinding | Action  |
-|------------+---------|
-| C-c-a-e    | Email   |
-| C-c-a-m    | Music   |
-| C-c-a-f    | Firefox |
-| C-c-a-y    | Youtube |
-#+begin_src emacs-lisp  :tangle ~/.emacs.d/GNUEmacs.el
-  "ae" '(mf/view-email :which-key "Email")
-  "af" '(mf/browse-url-firefox :which-key "Firefox")
-  "am" '(emms-browser :which-key "Music")
-  "ap" '(mf/toggle-pavucontrol :which-key "Pavucontrol")
-  "aw" '(eww :which-key "Eww")
-  "ay" '(ytdious :which-key "Youtube")
 #+end_src
 **** Buffer management
 Quick bookmarks; Prefix: C-c-b
 | Keybinding | Action        |
 |------------+---------------|
-| C-c-b-d    | Delete buffer |
-| C-c-b-h    | Home buffer   |
-| C-c-b-r    | Rename buffer |
+| SPC-b-d    | Delete buffer |
+| SPC-b-r    | Rename buffer |
 #+begin_src emacs-lisp  :tangle ~/.emacs.d/GNUEmacs.el
   "bd"  '(kill-current-buffer :which-key "Delete buffer")
-  "bh" '(mf/focus-dashboard :which-key "Home")
   "br" '(rename-buffer :which-key "Rename buffer")
 #+end_src
 **** Code
@@ -240,10 +146,10 @@ Quick bookmarks; Prefix: C-c-b
 Movement in the filesystem; Prefix: C-c-f
 | Keybinding | Action                   |
 |------------+--------------------------|
-| C-c-f-s    | Save buffer              |
-| C-c-f-e    | Emacs prefix             |
-| C-c-f-e-d  | Edit emacs configuration |
-| C-c-f-e-R  | Reload emacs configuration |
+| SPC-f-s    | Save buffer              |
+| SPC-f-e    | Emacs prefix             |
+| SPC-f-e-d  | Edit emacs configuration |
+| SPC-f-e-R  | Reload emacs configuration |
 #+begin_src emacs-lisp  :tangle ~/.emacs.d/GNUEmacs.el
   "fd" '(dired :which-key "Dired")
   "ff" '(find-file :which-key "Find-file")
@@ -256,26 +162,26 @@ Movement in the filesystem; Prefix: C-c-f
 **** Help
 | Keybindings | Action                |
 |-------------+-----------------------|
-| C-c-h-a     | Apropos               |
-| C-c-h-c     | Key briefly           |
-| C-c-h-d     | Apropos documentation |
-| C-c-h-e     | Emacs                 |
-| C-c-h-i     | Info                  |
-| C-c-h-k     | Key                   |
-| C-c-h-l     | Lossage               |
-| C-c-h-m     | Mode                  |
-| C-c-h-n     | Emacs news            |
-| C-c-h-q     | Quit                  |
-| C-c-h-r     | Info emacs            |
-| C-c-h-s     | Syntax                |
-| C-c-h-C     | Coding system         |
-| C-c-h-F     | Info command          |
-| C-c-h-I     | Input method          |
-| C-c-h-K     | Info key              |
-| C-c-h-L     | Language environment  |
-| C-c-h-P     | Package               |
-| C-c-h-S     | Symbol                |
-| C-c-h-?     | Help                  |
+| SPC-h-a     | Apropos               |
+| SPC-h-c     | Key briefly           |
+| SPC-h-d     | Apropos documentation |
+| SPC-h-e     | Emacs                 |
+| SPC-h-i     | Info                  |
+| SPC-h-k     | Key                   |
+| SPC-h-l     | Lossage               |
+| SPC-h-m     | Mode                  |
+| SPC-h-n     | Emacs news            |
+| SPC-h-q     | Quit                  |
+| SPC-h-r     | Info emacs            |
+| SPC-h-s     | Syntax                |
+| SPC-h-C     | Coding system         |
+| SPC-h-F     | Info command          |
+| SPC-h-I     | Input method          |
+| SPC-h-K     | Info key              |
+| SPC-h-L     | Language environment  |
+| SPC-h-P     | Package               |
+| SPC-h-S     | Symbol                |
+| SPC-h-?     | Help                  |
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
 "ha" '(apropos-command :which-key "Apropos")
 "hb" '(describe-bindings :which-key "Bindings")
@@ -305,9 +211,6 @@ Movement in the filesystem; Prefix: C-c-f
 #+begin_src emacs-lisp
 "j(" '(check-parens :which-key "Check parens")
 #+end_src
-**** Registers/Rings/Resume
-     #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-     #+END_SRC
 **** Toggle
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
   "tr" '(read-only-mode :which-key "Read only mode")
@@ -315,20 +218,20 @@ Movement in the filesystem; Prefix: C-c-f
 ;; Define functions to toggle auto-completion, smartparens, yasnippet...
 #+END_SRC
 **** Windows
-Manage windows; Prefix: C-c-w
+    Manage windows; Prefix: SPC-w
 | Keybinding | Action           |
 |------------+------------------|
-| C-c-w-h    | Focus left       |
-| C-c-w-l    | Focus right      |
-| C-c-w-j    | Focus down       |
-| C-c-w-k    | Focus up         |
-| C-c-w-c    | Close            |
-| C-c-w-q    | Close            |
-| C-c-w-v    | Vertical split   |
-| C-c-w-s    | Horizontal split |
-| C-c-w-m    | Maximize         |
-| C-c-w-=    | Balance windows  |
-| C-c-w-w    | Other-window     |
+| SPC-w-h    | Focus left       |
+| SPC-w-l    | Focus right      |
+| SPC-w-j    | Focus down       |
+| SPC-w-k    | Focus up         |
+| SPC-w-c    | Close            |
+| SPC-w-q    | Close            |
+| SPC-w-v    | Vertical split   |
+| SPC-w-s    | Horizontal split |
+| SPC-w-m    | Maximize         |
+| SPC-w-=    | Balance windows  |
+| SPC-w-w    | Other-window     |
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
   "wh" '(windmove-left :which-key "Focus left")
   "wl" '(windmove-right :which-key "Focus-right")
@@ -430,40 +333,10 @@ in treemacs navigation
       :config
       (evil-collection-init)
     (setq evil-want-C-i-jump t))
-
-    (use-package treemacs-evil
-      :defer t
-      :after (evil evil-collection)
-      :commands (treemacs))
 #+end_src
 * Completion framework
 ** Icomplete
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-  (use-package icomplete-vertical
-    :disabled
-    :demand t
-    :custom
-    (completion-styles '(partial-completion substring))
-    (read-file-name-completion-ignore-case t)
-    (read-buffer-completion-ignore-case t)
-    (completion-ignore-case t)
-    :init
-    (icomplete-mode 1)
-    :bind (:map icomplete-minibuffer-map
-                ("RET" . minibuffer-complete-and-exit)
-                ("<down>" . icomplete-forward-completions)
-                ("C-n" . icomplete-forward-completions)
-                ("<up>" . icomplete-backward-completions)
-                ("C-p" . icomplete-backward-completions))
-    :config
-    (setq icomplete-vertical-prospects-height 8)
-    (icomplete-vertical-mode 1)
-    :general (mf/leader-keys
-               "SPC" '(execute-extended-command :which-key "M-x")
-               "bb" '(switch-to-buffer :which-key "Switch buffer")
-               "fd" '(dired :which-key "Dired")
-               "ff" '(find-file :which-key "Find-file")
-               "fr" '(mf/find-recentf :which-key "Recent files")))
   (use-package prescient
     :defer t
     :hook (minibuffer-inactive-mode-hook . prescient-persistent-mode))
@@ -724,472 +597,26 @@ Use corfu for better completions at point
 Use [[https://github.com/Wilfred/helpful][helpful]] to get better help, highlighting and references to the
 source files
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-      (use-package helpful
-        :defer t
-        :commands (helpful-callable helpful-variable helpful-command helpful-key)
-        :hook
-        (helpful-mode . page-break-lines-mode)
-        (helpful-mode . visual-line-mode)
-        :bind
-        ([remap describe-variable] . helpful-variable)
-        ([remap describe-command] . helpful-command)
-        ([remap describe-key] . helpful-key)
-        (:map helpful-mode-map
-              ("q" . mf/quit-and-kill)					; Quitting help buffer kills them too
-              ("n" . next-line)
-              ("p" . previous-line))
-        :config
-        (defun mf/quit-and-kill ()
-          (interactive)
-          (quit-window t)))
-#+end_src
-* Mail
-** Mu4e and smtpmail
-#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-  (use-package mu4e
-    :load-path "/usr/share/emacs/site-list/mu/"
+  (use-package helpful
     :defer t
-    :commands (mu4e)
-    :config
-    (require 'smtpmail)
-    (setq user-mail-address "mario.forzanini@studenti.unimi.it"
-          user-full-name "Mario Forzanini"
-          mu4e-get-mail-command "mbsync -c ~/.mbsyncrc -a mario.forzanini@studenti.unimi.it"
-          mu4e-update-interval 300
-          mu4e-compose-signature
-          (concat
-           "Mario Forzanini\n"
-           "https://marioforzanini.com")
-          message-send-mail-function 'smtpmail-send-it
-          starttls-use-gnutls nil
-          smtpmail-auth-credentials '(("smtp.unimi.it" 465 "mario.forzanini@studenti.unimi.it" nil))
-          smtpmail-default-smtp-server "smtp.unimi.it"
-          smtpmail-smtp-server "smtp.unimi.it"
-          smtpmail-smtp-service 465
-          smtpmail-stream-type 'ssl
-          mu4e-sent-folder "/Sent"
-          mu4e-drafts-folder "/Drafts"
-          mu4e-trash-folder "/Trash"))
-
-  (defun mf/mu4e-dashboard ()
-    "Focus mu4e dashboard and activate dashboard mode"
-    (interactive)
-    (find-file "~/.emacs.d/lisp/mu4e-dashboard/dashboard.org")
-    (mu4e-dashboard-mode 1))
-
-  (use-package mu4e-dashboard
-:disabled
-    :load-path "~/.emacs.d/lisp/mu4e-dashboard/"
-    :defer t
-    :commands (mf/mu4e-dashboard)
-    :general (mf/leader-keys
-               "ad" '(mf/mu4e-dashboard :which-key "Mu4e dashboard")))
-#+end_src
-** Notifications
-Use [[https://github.com/iqbalansari/mu4e-alert][mu4e-alert]] to receive notifications about incoming email
-#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-     (use-package mu4e-alert
-       :defer t
-       :after mu4e
-       :config
-       (mu4e-alert-set-default-style 'libnotify)
-       :hook (mu4e-mode . mu4e-alert-enable-notifications))
-#+end_src
-** Org
-Write emails in org-mode and convert them to html with =org-mime-htmlize=, to edit mail in org-mode use
-=org-mime-edit-mail-in-org-mode=, to automatically convert it to html
-#+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-    (use-package org-mime
-      :defer t
-      :commands (mu4e compose-mail mu4e-compose-new)
-      :hook (message-mode . org-mime-edit-mail-in-org-mode)
-      :config (setq org-mime-export-options '(:section-numbers nil
-                                                               :with-author nil
-                                                               :with-toc nil)))
-#+END_SRC
-* Music
-** Custom functions
-*** Run mpd from emacs
-#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-      (defun  mpd/start-music-daemon ()
-        "Starts MPD, connects to it and syncs the metadata cache."
-        (interactive)
-        (shell-command "mpd")
-        (mpd/update-database)
-        (emms-player-mpd-connect)
-        (emms-cache-set-from-mpd-all)
-        (message "MPD Started!"))
-#+end_src
-*** Kill mpd from emacs
-#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-      (defun mpd/kill-music-daemon ()
-        "Stops playback and kills the music daemon."
-        (interactive)
-        (emms-stop)
-        (call-process "killall" nil nil nil "mpd")
-        (message "MPD Killed!"))
-#+end_src
-*** Update the database
-#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-      (defun mpd/update-database ()
-        "Updates the MPD database synchronously."
-        (interactive)
-        (call-process "mpc" nil nil nil "update")
-        (message "MPD Database updated!"))
-#+end_src
-** Emms
-Use [[https://www.gnu.org/software/emms/][emms]] and mpd to manage music within emacs
-Prefix: C-c-/
-| Keybinding | Action               |
-|------------+----------------------|
-| C-c-/-m    | Start mpd            |
-| C-c-/-k    | Kill mpd             |
-| C-c-/-u    | Update mpd database  |
-| C-c-/-p    | Toggle pause         |
-| C-c-/-s    | Stop playing         |
-| C-c-/- /   | Browse the music dir |
-#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-  (use-package emms
-    :defer t
-    :commands (emms-browser mpd/start-music-daemon mpd/update-database)
-    :config
-    (require 'emms-setup)
-    (require 'emms-player-mpd)
-    (emms-all)
-    (setq emms-seek-seconds 5
-          emms-player-list '(emms-player-mpd)
-          emms-info-functions '(emms-info-mpd)
-          emms-player-mpd-server-name "localhost"
-          emms-player-mpd-server-port "6601"
-          mpc-host "localhost:6601")
-    (define-key emms-browser-mode-map (kbd "q") 'kill-current-buffer)
+    :commands (helpful-callable helpful-variable helpful-command helpful-key)
+    :hook
+    (helpful-mode . page-break-lines-mode)
+    (helpful-mode . visual-line-mode)
     :bind
-    ("C-x C-/ /" . emms-browser)
-    :general (mf/leader-keys
-               "/m" '(mpd/start-music-daemon :which-key "Start mpd")
-               "/k" '(mpd/kill-music-daemon :which-key "Kill mpd")
-               "/u" '(mpd/update-database :which-key "Update mpd")
-               "/p" '(emms-pause :which-key "Toggle pause")
-               "/s" '(emms-stop :which-key "Stop music")
-               "/b" '(emms-browser :which-key "Open music dir")))
-#+end_src
-* EXWM
-** Buffer name
-#+begin_src emacs-lisp :tangle (if mf/is-laptop "~/.emacs.d/exwm.el" "~/.emacs.d/GNUEmacs.el")
-  (defun mf/exwm-update-class ()
-    (exwm-workspace-rename-buffer exwm-class-name))
-
-  (defun mf/exwm-update-title ()
-    (pcase exwm-class-name
-      ("tabbed" (exwm-workspace-rename-buffer (format "tabbed: %s" exwm-title)))
-      ("Firefox" (exwm-workspace-rename-buffer (format "Firefox: %s" exwm-title)))))
-
-  (defun mf/move-to-switch-workspace (num)
-    (interactive)
-    (exwm-workspace-move-window num)
-    (exwm-workspace-switch num))
-
-  (defun mf/configure-window-by-class ()
-    (interactive)
-    (pcase exwm-class-name
-      ("Firefox" (mf/move-to-switch-workspace 1))
-      ("Signal" (mf/move-to-switch-workspace 2))
-      ("Zoom" (mf/move-to-swich-workspace 3))))
-#+end_src
-** Main package
-Use [[https://github.com/ch11ng/exwm][exwm]] to manage X windows in Emacs buffers
-#+begin_src emacs-lisp :tangle (if mf/is-laptop "~/.emacs.d/exwm.el" "~/.emacs.d/GNUEmacs.el")
-    (use-package exwm
-      :config
-      (setq exwm-workspace-number 4)
-      ;; When window class updates, use it to set buffer name
-      (add-hook 'exwm-update-class-hook #'mf/exwm-update-class)
-      ;; Handle surf window title differently
-      (add-hook 'exwm-update-class-hook #'mf/exwm-update-title)
-      ;; Move windows to specific workspaces
-      (add-hook 'exwm-manage-finish-hook #'mf/configure-window-by-class)
-      ;; Show all buffers in ibuffer
-      (setq exwm-workspace-show-all-buffers t)
-      ;; When switching buffer to a window on a different workspace switch to that workspace instead
-      (global-set-key (kbd "C-x b") 'exwm-workspace-switch-to-buffer)
-#+end_src
-*** Keys that should always go through Emacs
-#+begin_src emacs-lisp :tangle (if mf/is-laptop "~/.emacs.d/exmw.el" "~/.emacs.d/GNUEmacs.el")
-       (setq exwm-input-prefix-keys
-             '(?\C-x
-               ?\C-u
-               ?\C-h
-               ?\M-x
-               ?\M-`
-               ?\M-&
-               ?\M-:
-               ?\C-\ 			;Ctrl+Space
-               ?\s-j
-               ?\s-k
-               ?\s-h
-               ?\s-l))
-       ;; Crtl+Q will enable the next key to be sent directly to the X program
-       (define-key exwm-mode-map [?\C-q] 'exwm-input-send-next-key)
-#+end_src
-*** Xrandr
-#+begin_src emacs-lisp :tangle (if mf/is-laptop "~/.emacs.d/exwm.el" "~/.emacs.d/GNUEmacs.el")
-             (require 'exwm-randr)
-             (exwm-randr-enable)
-             (start-process-shell-command "xrandr" nil "xrandr --output VGA1 --primary --mode 1920x1200 --pos 0x0 --rotate normal")
-      (require 'exwm-systemtray)
-  (exwm-systemtray-enable)
-  (start-process-shell-command "nm-applet" nil "nm-applet")
-
-             ;;Change wallpaper
-      ;;       (mf/set-wallpaper)
-#+end_src
-*** Autostart
-#+begin_src emacs-lisp :tangle (if mf/is-laptop "~/.emacs.d/exwm.el" "~/.emacs.d/GNUEmacs.el")
-     (start-process-shell-command "xmodmap" nil "xmodmap ~/.Xmodmap")
-     (start-process-shell-command "picom" nil "picom")
-     (start-process-shell-command "dunst" nil "dunst")
-     (start-process-shell-command "xcape" nil "xcape -e 'Control_L=Escape")
-#+end_src
-*** Keybindings
-| Keybindings   | Action                         |
-|---------------+--------------------------------|
-| S-d           | Kill buffer                    |
-| S-e           | Toggle fullscreen              |
-| S-h           | Focus left                     |
-| S-j           | Focus down                     |
-| S-k           | Focus up                       |
-| S-l           | Focus right                    |
-| S-q           | Toggle floating                |
-| S-r           | Reset (line mode)              |
-| S-;           | Run prompt                     |
-| S-RET         | Toggle vterm                   |
-| S-[0,...,9]   | Focus [0,...,9]-th workspace   |
-| C-S-[0,...,9] | Move to [0,...,9]-th workspace |
-#+begin_src emacs-lisp :tangle (if mf/is-laptop "~/.emacs.d/exwm.el" "~/.emacs.d/GNUEmacs.el")
-         (setq exwm-input-global-keys
-               `(
-                 ;; Reset to line-mode
-                 ([?\s-r] . exwm-reset)
-
-                 ;; Move between windows (dvorak)
-                 ([?\s-d] . windmove-left)
-                 ([?\s-n] . windmove-right)
-                 ([?\s-h] . windmove-down)
-                 ([?\s-t] . windmove-up)
-
-                 ;; Launch applications via shell command
-                 ([?\s-\;] . (lambda (command)
-                               (interactive (list (read-shell-command "$ ")))
-                               (start-process-shell-command command nil command)))
-
-                 ;; Switch workspaces
-                 ([?\s-w] . exwm-workspace-switch)
-
-                 ;; Switch to Nth workspace with s-N
-                 ,@(mapcar (lambda (i)
-                             `(,(kbd (format "s-%d" i)) .
-                               (lambda ()
-                                 (interactive)
-                                 (exwm-workspace-switch-create ,i))))
-                           (number-sequence 0 9))
-
-                 ;; Kill buffer
-                 ([?\s-q] . kill-current-buffer)
-                 ;; Layouts
-  ;;               ([?\s-q] . exwm-floating-toggle-floating)
-                 ([?\s-e] . exwm-layout-toggle-fullscreen)
-
-                 ;; Programs
-                 ([s-return] . mf/toggle-vterm)
-
-                 ;; Move window to Nth workspace with s-C-N
-                 ,@(mapcar (lambda (i)
-                             `(,(kbd (format "C-s-%d" i)) .
-                               (lambda ()
-                                 (interactive)
-                                 (exwm-workspace-move-window ,i))))
-                           (number-sequence 0 9))))
-         (exwm-enable))
-
-#+end_src
-** Automatic buffer management
-Specify window rules
-#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-      (setq display-buffer-alist
-            '(("\\*\\(Backtrace\\|Warnings\\|Compile-Log\\|Apropos\\|Messages\\)\\*"
-               (display-buffer-in-side-window)
-               (window-height . 0.35)
-               (side . bottom)
-               (slot . 0))
-              ("\\*\\([Hh]elp\\|helpful.*\\)\\*"
-               (display-buffer-in-side-window)
-               (window-height . 0.35)
-               (side . bottom)
-               (slot  . 0))
-              ("\\*Org Select\\*"
-               (display-buffer-in-side-window)
-               (side . left)
-               (window-width . 0.2)
-               (slot . 1))
-              ("\\*Capture\\*"
-               (display-buffer-in-side-window)
-               (side . left)
-               (window-width . 0.2)
-               (slot . 1))
-               ("\\*Calendar\\*"
-               (display-buffer-in-side-window)
-               (side . bottom)
-               (window-height . 0.2)
-               (slot . 1))
-              ("\\*Occur\\*"
-               (display-buffer-in-side-window)
-               (side . bottom)
-               (window-height . 0.3)
-               (slot . 2))
-              ("\\*Emms Playlist\\*"
-               (display-buffer-in-side-window)
-               (side . left)
-               (window-width . 0.2)
-               (slot . 1))
-              ("Browsing by: artist"
-               (display-buffer-in-side-window)
-               (side . left)
-               (window-width . 0.2)
-               (slot . 1))
-              ("\\*\\(Embark\\)?.*Completions.*"
-               (display-buffer-in-side-window)
-               (side . bottom)
-               (slot . 0)
-               (window-parameters . ((no-other-window . t)
-                                     (mode-line-format . none))))
-              ("\\*Embark Collect Live\\*"
-               (display-buffer-in-side-window)
-               (side . bottom)
-               (slot . 0)
-               (window-parameters . ((no-other-window . t)
-                                     (mode-line-format . none))))
-              ("\\(e?shell\\|v?term\\).*"
-               (display-buffer-in-side-window)
-               (side . bottom)
-               (window-height . 0.25)
-               (slot . 2))
-              ;; X windows
-              ("Pavucontrol.*"
-               (display-buffer-in-side-window)
-               (side . bottom)
-               (window-height . 0.5)
-               (slot . 0))))
-#+end_src
-*** Agenda window management
-For some reason org agenda doesn't respect display-buffer-alist and
-requires ad hoc customization
-#+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-(setq org-agenda-restore-windows-after-quit t)
-(setq org-agenda-window-setup 'current-window)
-#+END_SRC
-** Window management
-#+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-  (use-package rotate
-    :defer t
-    :commands (rotate-window rotate-layout)
-    :general (mf/leader-keys
-               "wr" '(rotate-window :which-key "Rotate")
-               "wL" '(rotate-layout :which-key "Layout")))
-  (use-package ace-window
+    ([remap describe-variable] . helpful-variable)
+    ([remap describe-command] . helpful-command)
+    ([remap describe-key] . helpful-key)
+    (:map helpful-mode-map
+          ("q" . mf/quit-and-kill)					; Quitting help buffer kills them too
+          ("n" . next-line)
+          ("p" . previous-line))
     :config
-    (ace-window-display-mode -1)
-    (setq aw-keys '(?h ?j ?k ?l ?f ?d ?s ?a))
-    :general (mf/leader-keys
-               "o" '(ace-window :which-key "Ace window")))
-#+END_SRC
-** Perspective
-Use [[https://github.com/nex3/perspective-el][perspective.el]] to manage workspaces when not running EXWM
-#+begin_src emacs-lisp :tangle (if mf/is-laptop "~/.emacs.d/GNUEmacs.el" "no")
-  (use-package perspective
-    :defer t
-    :init (persp-mode)
-    :config
-    (setq persp-sort 'create)
-    :bind (("C-x b" . persp-switch-to-buffer*)
-           ("C-x k" . persp-kill-buffer*)))
-#+end_src
-** Modeline on top
-#+begin_src emacs-lisp :tangle (if mf/is-laptop "~/.emacs.d/exwm.el" "no")
-			  (setq-default header-line-format mode-line-format)
-			  (setq-default mode-line-format nil)
+    (defun mf/quit-and-kill ()
+      (interactive)
+      (quit-window t)))
 #+end_src
 * Programming
-** Lsp mode
-Interact with language servers to use Emacs as an intelligent IDE with
-[[https://github.com/emacs-lsp/lsp-mode][lsp-mode]]
-#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-  (use-package lsp-mode
-    :defer t
-    :commands (lsp lsp-deferred)
-    :custom
-    (setq lsp-keymap-prefix "C-c l")
-    :hook (
-           (c++-mode . lsp-deferred)
-           (c-mode . lsp-deferred)
-           (html-mode . lsp-deferred)
-           (lsp-mode . lsp-enable-which-key-integration)))
-#+end_src
-***  Syntax checking
-On the fly syntax checking and error count with [[http://www.flycheck.org][flycheck]]
-#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-      (use-package flycheck
-        :defer t
-:commands flycheck-mode
-        :hook
-(lsp-mode . flycheck-mode)
-(prog-mode . flycheck-mode)
-:general (mf/leader-keys
-          "fx" '(flycheck-list-errors :which-key "List errors")
-          "fn" '(flycheck-next-error :which-key "Next error")
-          "fN" '(flycheck-previous-error :which-key "Previous error")))
-#+end_src
-*** Nice UI
-Get references and info in popup windows instead of separate buffers,
-also get information about errors runtime at the end of the current
-line with [[https://github.com/emacs-lsp/lsp-ui][lsp-ui]], get a nice view of the project with [[https://github.com/emacs-lsp/lsp-treemacs][lsp-treemacs]],
-find references faster with [[https://github.com/emacs-lsp/lsp-ivy][lsp-ivy]]
-#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-  (use-package lsp-ui
-    :disabled
-    :defer t
-    :after lsp-mode
-    :hook (lsp-mode . lsp-ui-mode)
-    :custom
-    (lsp-ui-peek-enable))
-
-  (use-package lsp-treemacs
-    :defer t
-  :commands treemacs
-    :after lsp-mode)
-#+end_src
-*** C-C++ Language server
-Install c/c++ [[https://github.com/MaskRay/emacs-ccls][language server]] to use with lsp-mode
-#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-       (use-package ccls
-         :defer t
-         :after lsp
-         :config
-         (setq ccls-executable "ccls")
-         (setq lsp-prefer-flymake nil)
-         (setq-default flycheck-disabled-checkers '(c/c++-clang c/c++-cppcheck c/c++-gcc))
-         :hook ((c-mode c++-mode objc-mode cuda-mode) .
-                (lambda () (require 'ccls) (lsp))))
-#+end_src
-** Treemacs
-#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-  (use-package treemacs
-    :defer t
-    :commands treemacs
-    :custom
-    (treemacs-width 25)
-    :general (mf/leader-keys
-               "tt" '(treemacs :which-key "Treemacs")))
-#+end_src
 ** Autocompletion
 Get [[http://company-mode.github.io/][autocompletion]]. Edit: try to use Emacs' built in completion-at-point
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
@@ -1220,15 +647,6 @@ Get [[http://company-mode.github.io/][autocompletion]]. Edit: try to use Emacs' 
       (c++-mode . projectile-mode)
       (emacs-lisp-mode . projectile-mode))
 #+end_src
-** Scheme
-Use [[http://www.nongnu.org/geiser/][geiser]] to run a scheme REPL
-#+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-          (use-package geiser
-            :defer t
-            :commands run-geiser
-            :config
-            (setq geiser-active-implementations '(guile)))
-#+END_SRC
 ** Groff
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
      (defun mf/nroff-startup ()
@@ -1239,24 +657,23 @@ Use [[http://www.nongnu.org/geiser/][geiser]] to run a scheme REPL
 
      (add-hook 'nroff-mode-hook #'mf/nroff-startup)
 #+end_src
-** Snippets
-Use yasnippets for comfortable templates
-#+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-      (use-package yasnippet
-        :defer t
-        :hook
-        (prog-mode . yas-minor-mode)
-        (c-c++-mode-hook . yas-minor-mode)
-        :config
-        (message "Loading yasnippet")
-        (yas-reload-all)
-        :general (mf/leader-keys
-                   "ty"'(yas-minor-mode :which-key "Yasnippet")))
+** Haskell
+#+begin_src emacs-lisp
+  (use-package hindent
+    :defer t
+    :hook (haskell-mode-hook . hindent-mode)
+    :config (setq hindent-reformat-buffer-on-save t))
 
-      (use-package yasnippet-snippets
-        :defer t
-        :after yasnippet)
-#+END_SRC
+
+  (use-package dante
+    :after haskell-mode
+    :commands 'dante-mode
+    :init
+    (add-hook 'haskell-mode-hook 'haskell-indent-mode)
+    (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
+    (add-hook 'haskell-mode-hook 'flycheck-mode)
+    (add-hook 'haskell-mode-hook 'dante-mode))
+#+end_src
 ** Smart parentheses
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
   (use-package smartparens
@@ -1270,10 +687,6 @@ Use yasnippets for comfortable templates
     :config
     (require 'smartparens-config))
 #+END_SRC
-** Spice mode
-#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-(use-package spice-mode)
-#+end_src
 ** Git
 Use magit to handle git repositories
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
@@ -1307,7 +720,7 @@ Use magit to handle git repositories
       (use-package term
         :defer t
         :commands (term ansi-term)
-        :config (setq explicit-shell-file-name "zsh"
+        :config (setq explicit-shell-file-name "ksh"
          term-prompt-regexp "^\$"))
                                               ; 256 color support
       (use-package eterm-256color
@@ -1346,7 +759,7 @@ Use magit to handle git repositories
         :defer t
         :commands vterm
         :config
-        (setq vterm-shell "/bin/zsh")
+        (setq vterm-shell "/bin/ksh")
         :general (mf/leader-keys
                    "RET" '(mf/toggle-vterm :which-key "vterm")))
 #+end_src
@@ -1379,9 +792,9 @@ Use magit to handle git repositories
             (add-to-list 'org-structure-template-alist '("S" . "src spice"))
             (setq org-agenda-files
                   '("~/org/schedule.org"
-                    "~/org/next-actions.org"
-                    "~/org/projects.org")
-                  org-archive-location "~/org/archive.org::"
+                    "~/.local/share/org/next-actions.org"
+                    "~/.local/share/org/projects.org")
+                  org-archive-location "~/.local/share/org/archive.org::"
                   org-agenda-include-diary t
                   org-agenda-start-with-log-mode t ;; Enable log mode
                   org-log-done 'time ;; Keep track when I complete a task
@@ -1392,7 +805,7 @@ Use magit to handle git repositories
                     ("n" todo "NEXT")
                     ("W" "Week Review"
                      ((agenda "" ((org-agenda-span 7)))
-                      (org-agenda-files (add-to-list 'org-agenda-files "~/org/archive.org"))))
+                      (org-agenda-files (add-to-list 'org-agenda-files "~/.local/share/org/archive.org"))))
                     ("g" "GTD view"
                      ((agenda)
                       (todo "NEXT"
@@ -1412,55 +825,7 @@ Use magit to handle git repositories
               (interactive)
               (org-todo 'done)
               (org-archive-subtree))
-            (define-key org-mode-map (kbd "C-c C-x C-s") 'mf/mark-done-and-archive)
-#+end_src
-** Capture templates
-#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-  ;; Org helpers
-  (setq org-capture-templates
-        '(("t" "TODO")			; Todo
-          ("tt" "Today" entry
-           (file+olp+datetree "~/org/schedule.org")
-           "* TODO %^{Action}\n:PROPERTIES:\n:TRIGGER: self archive!\n:END:\nSCHEDULED:%t\n")
-          ("td" "Date" entry
-           (file+olp+datetree "~/org/schedule.org")
-           "* TODO %^{Action}\n:PROPERTIES:\n:TRIGGER: self archive!\n:END:\nSCHEDULED:%^T\n" :time-prompt t)
-          ("n" "Next")					; Next
-          ("nu" "University" entry
-           (file+headline "~/org/next-actions.org" "University")
-           "* NEXT %^{Action}\n:PROPERTIES:\n:TRIGGER: self archive!\n:END:\n%?")
-          ("nh" "Home" entry
-           (file+headline "~/org/next-actions.org" "Home")
-           "* NEXT %^{Action}\n:PROPERTIES:\n:TRIGGER: self archive!\n:END:\n%?")
-          ("p" "Projects")				; Projects
-          ("pu" "University" entry
-           (file+headline "~/org/projects.org" "University")
-           "* PROJECT %^{Project}\n:PROPERTIES:\n:TRIGGER: if self !done? then next-sibling todo!(NEXT) endif\n:END:\n** NEXT %^{First Action}\n** %^{Second Action}\n:PROPERTIES:\n:BLOCKER: previous-sibling\n:END:\n** %^{Third Action}\n:PROPERTIES:\n:BLOCKER: previous-sibling\n:TRIGGER: parent archive!\n:END:\n")
-          ("ph" "Home" entry
-           (file+headline "~/org/projects.org" "Home")
-           "* PROJECT %^{Project}\n:PROPERTIES:\n:TRIGGER: if self !done? then next-sibling todo!(NEXT) endif\n:END:\n** NEXT %^{First Action}\n** %^{Second Action}\n:PROPERTIES:\n:BLOCKER: previous-sibling\n:END:\n** %^{Third Action}\n:PROPERTIES:\n:BLOCKER: previous-sibling\n:TRIGGER: parent archive!\n:END:\n")
-          ("r" "Ripetizioni")			; Ripetizioni
-          ("rc" "Chiara")
-          ("rcr" "Ripetizioni" entry
-           (file+headline "~/org/schedule.org" "Chiara")
-           "* TODO Ripetizioni Chiara Matematica\n:PROPERTIES:\n:TRIGGER: self archive!\n:END:\n SCHEDULED:%^T\n" :time-prompt t)
-          ("rco" "Ore" table-line
-           (file "~/Documents/Personal/Ripetizioni/Chiara/ore/ore.org")
-           "| %^t | %^{Ore} |")
-          ("rm" "Migara")
-          ("rmr" "Ripetizioni" entry
-           (file+headline "~/org/schedule.org" "Migara")
-           "* TODO Ripetizioni Migara %^{Materia|Matematica|Fisica}\n:PROPERTIES:\n:TRIGGER: self archive!\n:END:\nSCHEDULED: %^T\n%?" :time-prompt t)
-          ("rmo" "Ore" table-line
-           (file "~/Documents/Personal/Ripetizioni/Migara/ore/ore.org")
-           "| %^t | %^{Ore} |")
-          ("rM" "Marco Buzzetti")
-          ("rMr" "Ripetizioni" entry
-           (file+headline "~/org/schedule.org" "Marco")
-           "* TODO Ripetizioni Marco Buzzetti %^{Materia|Matematica|Fisica}\nArgomento: %^{Argomento}%?\n:PROPERTIES:\n:TRIGGER: self archive!\n:END:\n SCHEDULED: %^T\n" :time-prompt t)
-          ("rMo" "Ore" table-line
-           (file "~/Documents/Personal/Ripetizioni/Marco_B/ore/ore.org")
-           "| %^t | %^{Ore} |"))))
+            (define-key org-mode-map (kbd "C-c C-x C-s") 'mf/mark-done-and-archive))
 #+end_src
 ** Bullets
 Prettify [[https://github.com/integral-dw/org-bullets][org bullets]]
@@ -1481,44 +846,6 @@ Prettify [[https://github.com/integral-dw/org-bullets][org bullets]]
        :defer t
        :hook (org-mode . mf/org-mode-visual-fill))
 #+end_src
-** Notifications for org agenda
-Get notifications for incoming TODOs with [[https://github.com/akhramov/org-wild-notifier.el][org-wild-notifier]]
-#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-     (use-package org-wild-notifier
-       :defer 2
-       :ensure t
-       :config (org-wild-notifier-mode 1)
-       :custom
-       (alert-default-style 'libnotify)
-       (org-wild-notifier-alert-time '(1 10 30))
-       (org-wild-notifier-keyword-whitelist '("TODO" "NEXT")))
-#+end_src
-** Edna mode
-Automatically execute actions when certain conditions are triggered
-(by default when items' state changes to DONE)
-#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-      (use-package org-edna
-        :config
-        (org-edna-mode)
-        :custom
-        (org-edna-use-inheritance t))
-#+end_src
-** Presentations
-All the headings are displayed as slides, metadata about title and
-author are used to display the title
-#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-  (use-package org-tree-slide
-    :defer t
-    :after org
-    :commands org-tree-slide-mode
-    :custom
-    (org-image-actual-width nil)
-    :bind (:map org-tree-slide-mode-map
-                ("RET" . org-tree-slide-move-next-tree)
-                ("<C-M-return>" . org-tree-slide-move-previous-tree))
-    :general (mf/leader-keys
-              "tp" '(org-tree-slide-mode :which-key "Org presentation")))
-#+end_src
 ** In line latex previews
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
         (use-package org-fragtog
@@ -1529,261 +856,3 @@ author are used to display the title
          :bind (:map org-mode-map
                      ("C-c tf" . org-fragtog-mode)))
 #+END_SRC
-* Dired
-#+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-            (use-package dired
-              :ensure nil
-              :defer t
-              :commands ( dired dired-jump)
-              :hook (dired-mode . dired-hide-details-mode))
-
-            (use-package all-the-icons-dired
-              :defer t
-              :after (all-the-icons dired)
-              :commands (all-the-icons-dired-mode dired)
-              :hook (dired-mode . all-the-icons-dired-mode))
-
-            (use-package dired-single
-              :defer t
-              :after dired
-              :bind (:map dired-mode-map
-                          ("S-RET" . dired-single-up-directory)
-                          ("RET" . dired-single-buffer)))
-
-        (when (require 'openwith nil 'noerror)
-          (setq openwith-associations
-                (list
-                 (list (openwith-make-extension-regexp '("ods" "odt" "doc" "docx" "rtf")) "libreoffice" '(file))
-                 (list (openwith-make-extension-regexp '("mpg" "mpeg" "mp3" "mp4" "avi" "wmv" "wav" "mov" "mkv")) "mpv" '(file))
-                 (list (openwith-make-extension-regexp '("pdf")) "zathura" '(file))
-                 (list (openwith-make-extension-regexp '("bmp" "gif" "jpeg" "jpg" "png" "tif")) "sxiv" '(file))))
-          (openwith-mode 1))
-
-          ;; :hook (dired-mode . (lambda ()
-            ;;   (evil-collection-define-key 'normal 'dired-mode-map
-            ;;     "h" 'dired-single-up-directory
-            ;;     "l" 'dired-single-buffer))))
-            ;; (use-package dired-open
-            ;;   :defer t
-            ;;   :commands (dired  dired-jump) ;counsel-dired
-            ;;   :config (setq dired-open-extensions '(("png" . "sxiv")
-            ;;                                         ("mkv" . "mpv")
-            ;;                                         ("mp4" . "mpv")
-            ;;                                         ("pdf" . "zathura"))))
-#+END_SRC
-* Social
-** Telegram
-Telegram [[https://github.com/zevlg/telega.el][client]] for Emacs
-#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-    (defun mf/telega-chat-hook  ()
-      (hl-line-mode 0)
-      (display-line-numbers-mode 0))
-
-    (use-package telega
-      :defer t
-      :commands telega
-      :hook
-      (telega-chat-mode . mf/telega-chat-hook)
-      (telega-root-mode . telega-notifications-mode)
-      (telega-root-mode . telega-mode-line-mode)
-  (telega-root-mode . (lambda ()
-                        (display-line-numbers-mode 0)))    
-  :general (mf/leader-keys
-                 "at" '(telega :which-key "Telegram")))
-#+end_src
-** Mastodon
-[[https://github.com/jdenen/mastodon.el][Mastodon]] client for Emacs
-#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-  (use-package mastodon
-    :defer t
-    :commands mastodon
-    :config
-    (setq mastodon-instance-url "https://floss.social")
-    :general (mf/leader-keys
-                     "aM" '(mastodon :which-key "Mastodon")))
-#+end_src
-** RSS
-RSS [[https://github.com/skeeto/elfeed][reader]] for Emacs
-#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-  (use-package elfeed
-    :defer t
-    :commands elfeed
-    :config
-    (setq elfeed-feeds
-          '(("https://trisquel.info/en/node/feed" trisquel freesw)
-            ("https://www.fsf.org/static/fsforg/rss/news.xml" freesw)
-            ("https://planet.gnu.org/rss20.xml" freesw)
-            ;; ("https://rss.nytimes.com/services/xml/rss/nyt/World.xml" world)
-            ;; ("https://feeds.a.dj.com/rss/RSSWorldNews.xml" world)
-            ;; ("http://xml2.corriereobjects.it/rss/homepage.xml" italia)
-            ;; ("http://xml2.corriereobjects.it/rss/politica.xml" italia)
-            ;; ("http://www.repubblica.it/rss/homepage/rss2.0.xml" italia)
-            ;; ("http://www.repubblica.it/rss/economia/rss2.0.xml" italia)
-            ;; ("https://www.ansa.it/sito/ansait_rss.xml" italia)
-            ;; ("https://www.ansa.it/sito/notizie/politica/politica_rss.xml" italia)
-            ;; ("https://www.independent.co.uk/news/uk/rss" uk)
-            ;; ("https://www.independent.co.uk/news/world/rss" uk)
-            ;; "https://www.wired.com/feed/rss"
-            ;; "https://www.wired.com/feed/category/science/latest/rss"
-            ;; "http://rss.slashdot.org/Slashdot/slashdotMain"
-            "http://www.salute.gov.it/portale/news/RSS_comunicati.xml"
-            "http://www.governo.it/feed/rss"
-            ("https://protesilaos.com/codelog.xml" youtube)
-            ("https://lukesmith.xyz/rss.xml" youtube)
-            ("https://videos.lukesmith.xyz/feeds/videos.xml?accountId=3" youtube)
-            ("https://www.youtube.com/feeds/videos.xml?channel_id=UC2eYFnH61tmytImy1mTYvhA" youtube)
-            ("https://www.youtube.com/feeds/videos.xml?channel_id=UCVls1GmFKf6WlTraIb_IaJg" youtube)
-            ("https://www.youtube.com/feeds/videos.xml?user=MentalOutlawStudios" youtube)
-            ("https://www.youtube.com/feeds/videos.xml?user=OmegaDungeon" youtube)
-            ("https://www.youtube.com/feeds/videos.xml?channel_id=UCAiiOTio8Yu69c3XnR7nQBQ" youtube)))
-    :general (mf/leader-keys
-               "ar" '(elfeed :which-key "RSS")))
-  (use-package elfeed-org
-    :defer t
-    :commands elfeed-dashboard
-    :config (elfeed-org)
-    (setq rmh-elfeed-org-files (list "~/.emacs.d/elfeed.org")))
-
-  (use-package elfeed-dashboard
-    :defer t
-    :commands elfeed-dashboard
-    :config
-    (setq elfeed-dashboard-file "~/.emacs.d/elfeed-dashboard.org")
-    (advice-add 'elfeed-search-quit-window :after #'elfeed-dashboard-update-links))
-  ;;   :general (mf/leader-keys
-  ;;              "ar" '(elfeed-dashboard :which-key "RSS")))
-
-  (use-package elfeed-goodies
-    :defer t
-    :after elfeed
-    :hook (elfeed-search-mode . elfeed-goodies/setup))
-
-#+end_src
-** IRC
-#+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-  (use-package erc
-    :defer t
-    :commands (erc)
-    :general (mf/leader-keys
-               "ai" '(erc :which-key "IRC")))
-#+END_SRC
-
-** Youtube
-#+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-  (use-package ytdious
-    :defer t
-    :commands ytdious
-    :general (mf/leader-keys
-               "ay" '(ytdious :which-key "Youtube"))
-    :config
-    (setq ytdious-invidious-api-url "https://www.invidiou.site")
-    ;; (setq ytdious-invidious-api-url "https://invidious.ethibox.fr")
-    (defun mf/ytdious-watch ()
-      "Stream video at point in mpv"
-      (interactive)
-      (let* ((video (ytdious-get-current-video))
-             (id (ytdious-video-id-fun video)))
-        (start-process "ytdious mpv" nil
-                       "mpv"
-                       (concat "https://www.youtube.com/watch?v=" id))
-        "--ytdl-format=bestvideo+bestaudio/best")
-      (message "Starting streaming..."))
-    :bind (:map ytdious-mode-map
-                ("y" . mf/ytdious-watch)
-                ("j" . next-line)
-                ("k" . previous-line)))
-#+END_SRC
-=Video link handling with mpv=
-#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-     (setq browse-url-generic-program (executable-find "mpv"))
-     (setq browse-url-handlers '(
-                                 ("youtube.com.*" . browse-url-generic)
-                                 ("lbry.tv" . browse-url-generic)
-                                 ("." . browse-url-firefox)))
-#+end_src
-* Dashboard
-Pretty and well organized startup [[https://github.com/emacs-dashboard/emacs-dashboard][dashboard]]
-#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-        (use-package page-break-lines
-          :defer t)
-        (use-package dashboard
-          :defer t
-          :init
-          (dashboard-setup-startup-hook)
-          (setq dashboard-banner-logo-title "Emacs is more than a text editor!"
-                dashboard-startup-banner 'logo
-                dashboard-set-heading-icons t
-                dashboard-set-file-icons t
-                dashboard-center-content t
-                dashboard-filter-agenda-entry 'dashboard-filter-agenda-by-todo
-                dashboard-org-agenda-categories '("University")
-              dashboard-items '((recents . 5)
-                                (bookmarks . 5)
-                                (agenda . 5)))
-          :bind (:map dashboard-mode-map
-              ("n" . dashboard-next-line)
-              ("p" . dashboard-previous-line)))
-#+end_src
-* Password management
-#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-  (use-package password-store
-    :defer t
-    :commands (password-store-copy password-store-edit password-store-insert))
-
-  (use-package auth-source-pass
-    :defer t
-    :after password-store
-    :config
-    (auth-source-pass-enable))
-#+end_src
-* Burly
-Save window or frame configuration with burly
-#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-    (use-package burly
-      :defer t
-      :commands (burly-bookmark-windows burly-open-bookmark)
-    :general (mf/leader-keys
-               "s" '(burly-bookmark-windows :which-key "Burly windows")))
-#+end_src
-* Miscellaneous
-** Sudo editing
-#+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-(use-package sudo-edit
-  :defer t
-  :commands (sudo-edit))
-#+END_SRC
-** Torrent
-#+begin_src emacs-lisp
-   (use-package xml-rpc
-     :defer t
-     :commands mentor)
-   (use-package mentor
-     :defer t
-     :after xml-rpc
-    :commands mentor)
-#+end_src
-** Edit server for firefox plugin
-#+begin_src emacs-lisp :tangle "~/.emacs.d/GNUEmacs.el"
-    (use-package edit-server
-      :init
-      (edit-server-start))
-#+end_src
-** Focus mode
-Focus mode highlihts the text object you are on and dims the rest of
-the view
-#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-    (use-package focus
-      :defer t
-    :commands (focus-mode focus-read-only-mode)
-     :config
-    (add-to-list 'focus-mode-to-thing '(prog-mode . paragraph))
-  :general (mf/leader-keys
-             "tf" '(focus-mode :which-key "Toggle focus mode")))
-#+end_src
-* Next
-*org-graph-view* To display graphs from org mode buffers
-*org-roam* *org-roam-server*
-** From doom
-*fold* universal code folding
-*ein* Jupyter notebooks
-*rgb* create color strings
