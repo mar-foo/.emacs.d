@@ -25,8 +25,7 @@
                       vterm-mode-hook
                       helpful-mode-hook
                       elfeed-search-mode
-                      elfeed-show-mode
-                      org-mode-hook))
+                      elfeed-show-mode))
         (add-hook mode (lambda () (display-line-numbers-mode 0))))
 #+end_src
 ** Elisp parentheses
@@ -39,15 +38,30 @@ Use [[https://github.com/Fanael/rainbow-delimiters][rainbow-delimiters]] for nic
     (org-mode . rainbow-delimiters-mode)
     (prog-mode . rainbow-delimiters-mode))
 #+end_src
+** Layout
+#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
+  (setq display-buffer-alist '(("\\*vterm\\*"  (display-buffer-below-selected)
+                                (window-height . 0.4))
+                               ("\\*Packages\\*" (display-buffer-below-selected)
+                                (window-height . 0.4))
+                               ("\\*WoMan" (display-buffer-below-selected)
+                                (window-height . 0.4))
+                               ("\\*[Hh]elp" (display-buffer-below-selected)
+                                (window-height . 0.4))))
+#+end_src
 * Keybindings
 ** Evil mode
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-    (use-package evil
-      :init
-      (setq evil-want-integration t
-       evil-want-keybinding nil)
-      :config
-      (evil-mode 1))
+  (use-package evil
+    :init
+    (setq evil-want-integration t
+          evil-want-keybinding nil
+          evil-undo-system 'undo-redo
+          evil-vsplit-window-right t
+          evil-split-window-below t
+          evil-disable-insert-state-bindings t)
+    :config
+    (evil-mode 1))
 #+END_SRC
 ** Leader key definitions
 *** Helper functions
@@ -78,8 +92,8 @@ Use [[https://github.com/Fanael/rainbow-delimiters][rainbow-delimiters]] for nic
         (vterm))))
 #+end_src
 *** Leader key
-Use [[https://github.com/noctuid/general.el][general]] to setup space bar as leader key in normal mode, C-c in
-other modes. C-c-m is the major-mode-specific leader
+Use [[https://github.com/noctuid/general.el][general]] to setup space bar as leader key in normal mode, C-SPC in
+other modes.
 #+begin_src emacs-lisp  :tangle ~/.emacs.d/GNUEmacs.el
   (use-package general
     :init
@@ -114,7 +128,7 @@ Commonly used bindings for different purposes; Prefix: C-c
     "c" '(:ignore t :which-key "Code")
     "f" '(:ignore t :which-key "Files")
     "g" '(:ignore t :which-key "Git")
-    "h" '(:ignore t :which-key "Help")
+    "H" '(:ignore t :which-key "Help")
     "i" '(:ignore t :which-key "Insert")
     "j" '(:ignore t :which-key "Jump")
     "q" '(:ignore t :which-key "Quit")
@@ -124,6 +138,7 @@ Commonly used bindings for different purposes; Prefix: C-c
 
     "SPC" '(execute-extended-command :which-key "M-x")
     "qq" '(save-buffers-kill-terminal :which-key "Exit Emacs")
+    "o" '(delete-other-windows :which-key "Only!")
 #+end_src
 **** Buffer management
 Quick bookmarks; Prefix: C-c-b
@@ -132,9 +147,9 @@ Quick bookmarks; Prefix: C-c-b
 | SPC-b-d    | Delete buffer |
 | SPC-b-r    | Rename buffer |
 #+begin_src emacs-lisp  :tangle ~/.emacs.d/GNUEmacs.el
-  "bb"  '(switch-to-buffer :which-key "Switch to buffer")
-  "bd"  '(kill-current-buffer :which-key "Delete buffer")
-  "br" '(rename-buffer :which-key "Rename buffer")
+  "b"  '(switch-to-buffer :which-key "Switch to buffer")
+  "C-b" '(list-buffers :which-key "Ibuffer")
+  "d"  '(kill-current-buffer :which-key "Delete buffer")
 #+end_src
 **** Code
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
@@ -142,6 +157,7 @@ Quick bookmarks; Prefix: C-c-b
 "ce" '(eval-buffer :which-key "Eval buffer")
 "cr" '(recompile :which-key "Recompile")
 "cE" '(eval-region :which-key "Eval region")
+"c(" '(check-parens :which-key "Check parens")
 #+END_SRC
 **** File management
 Movement in the filesystem; Prefix: C-c-f
@@ -163,55 +179,51 @@ Movement in the filesystem; Prefix: C-c-f
 **** Help
 | Keybindings | Action                |
 |-------------+-----------------------|
-| SPC-h-a     | Apropos               |
-| SPC-h-c     | Key briefly           |
-| SPC-h-d     | Apropos documentation |
-| SPC-h-e     | Emacs                 |
-| SPC-h-i     | Info                  |
-| SPC-h-k     | Key                   |
-| SPC-h-l     | Lossage               |
-| SPC-h-m     | Mode                  |
-| SPC-h-n     | Emacs news            |
-| SPC-h-q     | Quit                  |
-| SPC-h-r     | Info emacs            |
-| SPC-h-s     | Syntax                |
-| SPC-h-C     | Coding system         |
-| SPC-h-F     | Info command          |
-| SPC-h-I     | Input method          |
-| SPC-h-K     | Info key              |
-| SPC-h-L     | Language environment  |
-| SPC-h-P     | Package               |
-| SPC-h-S     | Symbol                |
-| SPC-h-?     | Help                  |
+| SPC-H-a     | Apropos               |
+| SPC-H-c     | Key briefly           |
+| SPC-H-d     | Apropos documentation |
+| SPC-H-e     | Emacs                 |
+| SPC-H-i     | Info                  |
+| SPC-H-k     | Key                   |
+| SPC-H-l     | Lossage               |
+| SPC-H-m     | Mode                  |
+| SPC-H-n     | Emacs news            |
+| SPC-H-q     | Quit                  |
+| SPC-H-r     | Info emacs            |
+| SPC-H-s     | Syntax                |
+| SPC-H-C     | Coding system         |
+| SPC-H-F     | Info command          |
+| SPC-H-I     | Input method          |
+| SPC-H-K     | Info key              |
+| SPC-H-L     | Language environment  |
+| SPC-H-P     | Package               |
+| SPC-H-S     | Symbol                |
+| SPC-H-?     | Help                  |
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-"ha" '(apropos-command :which-key "Apropos")
-"hb" '(describe-bindings :which-key "Bindings")
-"hc" '(describe-key-briefly :which-key "Key briefly")
-"hd" '(apropos-documentation :which-key "Apropos documentation")
-"he" '(about-emacs :which-key "Emacs")
-"hf" '(describe-function :which-key "Function")
-"hi" '(info :which-key "Info")
-"hk" '(describe-key :which-key "Key")
-"hl" '(view-lossage :which-key "Lossage")
-"hm" '(describe-mode :which-key "Mode")
-"hn" '(view-emacs-news :which-key "Emacs news")
-"hq" '(help-quit :which-key "Quit")
-"hr" '(info-emacs-manual :which-key "Info emacs")
-"hs" '(describe-syntax :which-key "Syntax")
-"hv" '(describe-variable :which-hey "Variable")
-"hC" '(describe-coding-system :which-key "Coding system")
-"hF" '(Info-goto-emacs-command-node :which-key "Info command")
-"hI" '(describe-input-method :which-key "Input method")
-"hK" '(Info-goto-emacs-key-command-node :which-key "Info key")
-"hL" '(describe-language-environment :which-key "Language environment")
-"hP" '(describe-package :which-key "Package")
-"hS" '(info-lookup-symbol :which-key "Info symbol")
-"h?" '(help-for-help :which-key "Help")
+"Ha" '(apropos-command :which-key "Apropos")
+"Hb" '(describe-bindings :which-key "Bindings")
+"Hc" '(describe-key-briefly :which-key "Key briefly")
+"Hd" '(apropos-documentation :which-key "Apropos documentation")
+"He" '(about-emacs :which-key "Emacs")
+"Hf" '(describe-function :which-key "Function")
+"Hi" '(info :which-key "Info")
+"Hk" '(describe-key :which-key "Key")
+"Hl" '(view-lossage :which-key "Lossage")
+"Hm" '(describe-mode :which-key "Mode")
+"Hn" '(view-emacs-news :which-key "Emacs news")
+"Hq" '(help-quit :which-key "Quit")
+"Hr" '(info-emacs-manual :which-key "Info emacs")
+"Hs" '(describe-syntax :which-key "Syntax")
+"Hv" '(describe-variable :which-hey "Variable")
+"HC" '(describe-coding-system :which-key "Coding system")
+"HF" '(Info-goto-emacs-command-node :which-key "Info command")
+"HI" '(describe-input-method :which-key "Input method")
+"HK" '(Info-goto-emacs-key-command-node :which-key "Info key")
+"HL" '(describe-language-environment :which-key "Language environment")
+"HP" '(describe-package :which-key "Package")
+"HS" '(info-lookup-symbol :which-key "Info symbol")
+"H?" '(help-for-help :which-key "Help")
 #+END_SRC
-**** J
-#+begin_src emacs-lisp
-"j(" '(check-parens :which-key "Check parens")
-#+end_src
 **** Toggle
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
   "tr" '(read-only-mode :which-key "Read only mode")
@@ -222,10 +234,10 @@ Movement in the filesystem; Prefix: C-c-f
     Manage windows; Prefix: SPC-w
 | Keybinding | Action           |
 |------------+------------------|
-| SPC-w-h    | Focus left       |
-| SPC-w-l    | Focus right      |
-| SPC-w-j    | Focus down       |
-| SPC-w-k    | Focus up         |
+| SPC-h      | Focus left       |
+| SPC-l      | Focus right      |
+| SPC-j      | Focus down       |
+| SPC-k      | Focus up         |
 | SPC-w-c    | Close            |
 | SPC-w-q    | Close            |
 | SPC-w-v    | Vertical split   |
@@ -234,10 +246,10 @@ Movement in the filesystem; Prefix: C-c-f
 | SPC-w-=    | Balance windows  |
 | SPC-w-w    | Other-window     |
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-  "wh" '(windmove-left :which-key "Focus left")
-  "wl" '(windmove-right :which-key "Focus-right")
-  "wj" '(windmove-down :which-key "Focus Down")
-  "wk" '(windmove-up :which-key "Focus Up")
+  "h" '(windmove-left :which-key "Focus left")
+  "l" '(windmove-right :which-key "Focus-right")
+  "j" '(windmove-down :which-key "Focus Down")
+  "k" '(windmove-up :which-key "Focus Up")
   "wc" '(delete-window :which-key "Close")
   "wq" '(delete-window :which-key "Close")
   "wv" '(split-window-right :which-key "Vertical-split")
@@ -246,19 +258,6 @@ Movement in the filesystem; Prefix: C-c-f
   "w=" '(balance-windows :which-key "Balance windows")
   "ww" '(other-window :which-key "Other window")
   ))
-#+END_SRC
-** Jumping with Avy
-#+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-  (use-package avy
-    :defer t
-    :commands (avy-goto-char avy-goto-char-2 avy-goto-word-0 avy-goto-line avy-goto-word-1)
-    :general (mf/leader-keys
-               "jj" '(avy-goto-char-2 :which-key "Goto char 2")
-               "jJ" '(avy-goto-char :which-key "Goto char")
-               "jw" '(avy-goto-word-1 :which-key "Goto word")
-               "jW" '(avy-goto-word-0 :which-key "Goto any word")
-               "jl" '(avy-goto-line :which-key "Goto line")
-               "l" '(avy-goto-line :which-key "Goto line")))
 #+END_SRC
 ** Hydra
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
@@ -307,7 +306,6 @@ Movement in the filesystem; Prefix: C-c-f
         ("p" windmove-up)
         ("b" windmove-left)
         ("f" windmove-right)
-        ("r" rotate-window)
         ("0" delete-window)
         ("2" split-window-below)
         ("3" split-window-right)
@@ -341,7 +339,7 @@ in insert mode
     (setq evil-escape-key-sequence "jk"))
 #+end_src
 * Completion framework
-** Icomplete
+** Prescient
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
   (use-package prescient
     :defer t
@@ -388,163 +386,108 @@ in insert mode
       (define-key map (kbd "SPC") nil)
       (define-key map (kbd "?") nil)))
 #+end_src
-** Which key
-Use [[https://github.com/justbur/emacs-which-key][which-key]] to get information about keybindings while pressing them
-#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-  (use-package which-key
-    :defer t
-    :commands (which-key-mode)
-    :config
-    (setq which-key-idle-delay 10000
-          which-key-show-early-on-C-h t
-          which-key-order 'which-key-prefix-then-key-order
-          which-key-idle-secondar-delay 0.05
-          which-key-min-display-lines 3))
-#+end_src
-** Embark
-Contextually relevant keybindings under a simple prefix key
-#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-  (use-package embark
-    :defer t
-    :commands (embark-act)
-    :init
-    (define-key global-map (kbd "C-,") #'embark-act)
-    (let ((map minibuffer-local-completion-map))
-      (define-key map (kbd "C-,") #'embark-act)
-      (define-key map (kbd "C->") #'embark-become)
-      (define-key map (kbd "M-q") #'embark-collect-toggle-view))
-    :hook (which-key-mode . (lambda ()
-                              (setq embark-action-indicator
-                                    (lambda (map _target)
-                                      (which-key--show-keymap "Embark" map nil nil 'no-paging)
-                                      #'which-key--hide-popup-ignore-command)
-                                    embark-become-indicator embark-action-indicator)))
-    :config
-    (setq embark-collect-initial-view-alist
-          '((file . list)
-            (buffer . list)
-            (symbol . list)
-            (line . list)
-            (xref-location . list)
-            (kill-ring . zebra)
-            (t . list))
-          embark-quit-after-action t
-          embark-collect-live-update-delay 0.5
-          embark-collect-live-initial-delay 0.8
-          embark-prompter 'embark-keymap-prompter)
-     (let ((map embark-collect-mode-map))
-      (define-key map (kbd "C-,") #'embark-act)
-      (define-key map (kbd ",") #'embark-act)
-      (define-key map (kbd "M-q") #'embark-collect-toggle-view))
-    (let ((map embark-region-map))
-      (define-key map (kbd "a") #'align-regexp)
-      (define-key  map (kbd "s") #'sort-lines))
-    (let ((map embark-symbol-map))
-      (define-key map (kbd ".") #'embark-find-definition)
-      (define-key map (kbd "k") #'describe-keymap)))
-#+end_src
 From [[https://www.protesilaos.com][protesilaos]] config
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-      (defun prot-minibuffer-focus-minibuffer ()
-        "Focus the active minibuffer."
-        (interactive)
-        (let ((mini (active-minibuffer-window)))
-          (when mini
-            (select-window mini))))
+  (defun prot-minibuffer-focus-minibuffer ()
+    "Focus the active minibuffer."
+    (interactive)
+    (let ((mini (active-minibuffer-window)))
+      (when mini
+        (select-window mini))))
 
-      (defun prot-minibuffer--fit-completions-window ()
-        "Fit Completions' buffer to its window."
-        (fit-window-to-buffer (get-buffer-window "*Completions*")
-                              (floor (frame-height) 2) 1))
+  (defun prot-minibuffer--fit-completions-window ()
+    "Fit Completions' buffer to its window."
+    (fit-window-to-buffer (get-buffer-window "*Completions*")
+                          (floor (frame-height) 2) 1))
 
-      (defun prot-common-number-negative ( n )
-        "Make N negative."
-        (if (and (numberp n) (> n 0))
-            (* -1 n)
-          (error "%s is not a valid positive number" n)))
+  (defun prot-common-number-negative ( n )
+    "Make N negative."
+    (if (and (numberp n) (> n 0))
+        (* -1 n)
+      (error "%s is not a valid positive number" n)))
 
 
-      (defun prot-minibuffer--switch-to-completions ()
-        "Subroutine for switching to the completions' buffer."
-        (unless (get-buffer-window "*Completions*" 0)
-          (minibuffer-completion-help))
-        (switch-to-completions)
-        (prot-minibuffer--fit-completions-window))
+  (defun prot-minibuffer--switch-to-completions ()
+    "Subroutine for switching to the completions' buffer."
+    (unless (get-buffer-window "*Completions*" 0)
+      (minibuffer-completion-help))
+    (switch-to-completions)
+    (prot-minibuffer--fit-completions-window))
 
-      (defun prot-minibuffer-switch-to-completions-top ()
-        "Switch to the top of the completions' buffer.
+  (defun prot-minibuffer-switch-to-completions-top ()
+    "Switch to the top of the completions' buffer.
                     Meant to be bound in `minibuffer-local-completion-map'."
-        (interactive)
-        (prot-minibuffer--switch-to-completions)
-        (goto-char (point-min))
-        (next-completion 1))
+    (interactive)
+    (prot-minibuffer--switch-to-completions)
+    (goto-char (point-min))
+    (next-completion 1))
 
-      (defun prot-minibuffer-switch-to-completions-bottom ()
-        "Switch to the bottom of the completions' buffer.
+  (defun prot-minibuffer-switch-to-completions-bottom ()
+    "Switch to the bottom of the completions' buffer.
                     Meant to be bound in `minibuffer-local-completion-map'."
-        (interactive)
-        (prot-minibuffer--switch-to-completions)
-        (goto-char (point-max))
-        (next-completion -1)
-        (goto-char (point-at-bol))
-        (recenter
-         (- -1
-            (min (max 0 scroll-margin)
-                 (truncate (/ (window-body-height) 4.0))))
-         t))
+    (interactive)
+    (prot-minibuffer--switch-to-completions)
+    (goto-char (point-max))
+    (next-completion -1)
+    (goto-char (point-at-bol))
+    (recenter
+     (- -1
+        (min (max 0 scroll-margin)
+             (truncate (/ (window-body-height) 4.0))))
+     t))
 
-      (defun prot-minibuffer-next-completion-or-mini (&optional arg)
-        "Move to the next completion or switch to the minibuffer.
+  (defun prot-minibuffer-next-completion-or-mini (&optional arg)
+    "Move to the next completion or switch to the minibuffer.
                     This performs a regular motion for optional ARG lines, but when
                     point can no longer move in that direction it switches to the
                     minibuffer."
-        (interactive "p")
-        (cond
-         ((and (bobp)   ; see hack in `prot-minibuffer--clean-completions'
-               (get-text-property (point) 'invisible))
-          (forward-char 1)
-          (next-completion (or arg 1)))
-         ((or (eobp)
-              (eq (point-max)
-                  (save-excursion (forward-line 1) (point))))
-          (prot-minibuffer-focus-minibuffer))
-         (t
-          (next-completion (or arg 1))))
-        (setq this-command 'next-line))
+    (interactive "p")
+    (cond
+     ((and (bobp)   ; see hack in `prot-minibuffer--clean-completions'
+           (get-text-property (point) 'invisible))
+      (forward-char 1)
+      (next-completion (or arg 1)))
+     ((or (eobp)
+          (eq (point-max)
+              (save-excursion (forward-line 1) (point))))
+      (prot-minibuffer-focus-minibuffer))
+     (t
+      (next-completion (or arg 1))))
+    (setq this-command 'next-line))
 
-      (defun prot-minibuffer-previous-completion-or-mini (&optional arg)
-        "Move to the next completion or switch to the minibuffer.
+  (defun prot-minibuffer-previous-completion-or-mini (&optional arg)
+    "Move to the next completion or switch to the minibuffer.
                     This performs a regular motion for optional ARG lines, but when
                     point can no longer move in that direction it switches to the
                     minibuffer."
-        (interactive "p")
-        (let ((num (prot-common-number-negative arg)))
-          (if (or (bobp)
-                  (eq (point) (1+ (point-min)))) ; see hack in `prot-minibuffer--clean-completions'
-              (prot-minibuffer-focus-minibuffer)
-            (next-completion (or num 1)))))
+    (interactive "p")
+    (let ((num (prot-common-number-negative arg)))
+      (if (or (bobp)
+              (eq (point) (1+ (point-min)))) ; see hack in `prot-minibuffer--clean-completions'
+          (prot-minibuffer-focus-minibuffer)
+        (next-completion (or num 1)))))
   ;; Copied from icomplete.el
   (defun prot-minibuffer--field-beg ()
     "Determine beginning of completion."
     (if (window-minibuffer-p)
         (minibuffer-prompt-end)
       (nth 0 completion-in-region--data)))
-    (defun prot-minibuffer--completion-category ()
-      "Return completion category."
-      (let* ((beg (prot-minibuffer--field-beg))
-             (md (completion--field-metadata beg)))
-        (alist-get 'category (cdr md))))
-    (defun prot-minibuffer-backward-updir ()
-      "Delete char before point or go up a directory.
+  (defun prot-minibuffer--completion-category ()
+    "Return completion category."
+    (let* ((beg (prot-minibuffer--field-beg))
+           (md (completion--field-metadata beg)))
+      (alist-get 'category (cdr md))))
+  (defun prot-minibuffer-backward-updir ()
+    "Delete char before point or go up a directory.
     Must be bound to `minibuffer-local-filename-completion-map'."
-      (interactive)
-      (if (and (eq (char-before) ?/)
-               (eq (prot-minibuffer--completion-category) 'file))
-          (save-excursion
-            (goto-char (1- (point)))
-            (when (search-backward "/" (point-min) t)
-              (delete-region (1+ (point)) (point-max))))
-        (call-interactively 'backward-delete-char)))
+    (interactive)
+    (if (and (eq (char-before) ?/)
+             (eq (prot-minibuffer--completion-category) 'file))
+        (save-excursion
+          (goto-char (1- (point)))
+          (when (search-backward "/" (point-min) t)
+            (delete-region (1+ (point)) (point-max))))
+      (call-interactively 'backward-delete-char)))
 #+end_src
 ** Minibuffer completions
 Adjust completions buffer size (and all temp buffers)
@@ -599,10 +542,14 @@ Use corfu for better completions at point
   (use-package corfu
     :config (corfu-global-mode))
 #+end_src
-** Helpful
+* Helpful
 Use [[https://github.com/Wilfred/helpful][helpful]] to get better help, highlighting and references to the
 source files
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
+  (use-package page-break-lines
+    :defer t
+    :commands page-break-lines-mode)
+
   (use-package helpful
     :defer t
     :commands (helpful-callable helpful-variable helpful-command helpful-key)
@@ -646,22 +593,19 @@ Get [[http://company-mode.github.io/][autocompletion]]. Edit: try to use Emacs' 
 ** Projectile
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
   (use-package projectile
-      :defer t
-      :commands projectile-mode
-      :hook
-      (c-mode . projectile-mode)
-      (c++-mode . projectile-mode)
-      (emacs-lisp-mode . projectile-mode))
+    :defer t
+    :commands projectile-mode
+    :hook
+    (c-mode . projectile-mode)
+    (c++-mode . projectile-mode)
+    (haskell-mode . projectile-mode)
+    (emacs-lisp-mode . projectile-mode))
 #+end_src
-** Groff
+** Go
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-     (defun mf/nroff-startup ()
-       (setq visual-fill-column-width 100
-             visual-fill-column-center-text t)
-       (visual-fill-column-mode 1)
-       (auto-fill-mode 1))
-
-     (add-hook 'nroff-mode-hook #'mf/nroff-startup)
+  (use-package go-mode
+    :defer t
+    :commands go-mode)
 #+end_src
 ** Haskell
 #+begin_src emacs-lisp
@@ -670,14 +614,20 @@ Get [[http://company-mode.github.io/][autocompletion]]. Edit: try to use Emacs' 
     :hook (haskell-mode-hook . hindent-mode)
     :config (setq hindent-reformat-buffer-on-save t))
 
+  (use-package haskell-mode
+    :defer t
+    :commands haskell-mode
+    :hook (haskell-mode-hook . interactive-haskell-mode)
+    (haskell-mode-hook . haskell-indentation-mode))
 
-  (use-package dante
-    :after haskell-mode
-    :commands 'dante-mode
-    :init
-    (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
-    (add-hook 'haskell-mode-hook 'flycheck-mode)
-    (add-hook 'haskell-mode-hook 'dante-mode))
+  ;; (use-package dante
+  ;;   :after haskell-mode
+  ;;   :commands 'dante-mode
+  ;;   :init
+  ;;   (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
+  ;;   (add-hook 'haskell-mode-hook 'haskell-indentation-mode)
+  ;;   (add-hook 'haskell-mode-hook 'flycheck-mode)
+  ;;   (add-hook 'haskell-mode-hook 'dante-mode))
 #+end_src
 ** Smart parentheses
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
@@ -720,43 +670,28 @@ Use magit to handle git repositories
             "gU" '(magit-unstage-file :which-key "Unstage file")))
 #+END_SRC
 * Shell
-*** term-mode
-#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-      (use-package term
-        :defer t
-        :commands (term ansi-term)
-        :config (setq explicit-shell-file-name "ksh"
-         term-prompt-regexp "^\$"))
-                                              ; 256 color support
-      (use-package eterm-256color
-        :defer t
-        :after term
-        :hook (term-mode . eterm-256color-mode))
-#+end_src
 *** eshell
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
   (defun mf/configure-eshell ()
     (add-hook 'eshell-pre-command-hook 'eshell-save-some-history)
     (add-to-list 'eshell-output-filter-functions 'eshell-truncate-buffer))
 
-
-    (use-package eshell-git-prompt
-      :defer t
-      :after eshell)
-    (use-package eshell
-      :defer t
-      :commands eshell
-      :hook (eshell-first-time-mode . mf/configure-eshell)
-      :config
-      (setq eshell-history-size 5000
-	    eshell-buffer-maximum-lines 5000
-	    eshell-hist-ignoredups t
-	    eshell-scroll-to-bottom-on-input t)
+  (use-package eshell-git-prompt
+    :defer t
+    :after eshell)
+  (use-package eshell
+    :defer t
+    :commands eshell
+    :hook (eshell-first-time-mode . mf/configure-eshell)
+    :config
+    (setq eshell-history-size 5000
+          eshell-buffer-maximum-lines 5000
+          eshell-hist-ignoredups t
+          eshell-scroll-to-bottom-on-input t)
     (with-eval-after-load 'esh-opt
       (setq eshell-destroy-buffer-when-process-dies t)
-      (setq eshell-visual-commands '("htop" "pulsemixer" "zsh"))
+      (setq eshell-visual-commands '("htop" "sh"))
       (eshell-git-prompt-use-theme 'powerline)))
-
 #+end_src
 *** vterm
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
@@ -764,7 +699,7 @@ Use magit to handle git repositories
         :defer t
         :commands vterm
         :config
-        (setq vterm-shell "/bin/ksh")
+        (setq vterm-shell "/bin/sh")
         :general (mf/leader-keys
                    "RET" '(mf/toggle-vterm :which-key "vterm")))
 #+end_src
@@ -773,83 +708,19 @@ Use magit to handle git repositories
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
     (defun mf/org-mode-setup ()
           (org-indent-mode)
-    ;;      (variable-pitch-mode 1)
-    ;;      (auto-fill-mode 1)
           (visual-line-mode 1))
-      (defun mf/view-org-archive ()
-        (interactive)
-        (find-file "~/org/archive.org"))
 #+end_src
 ** Org
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-          (use-package org
-            :defer t
-            :hook (org-mode . mf/org-mode-setup)
-            :general (mf/leader-keys
-                       "Ot" '(:ignore t :which-key "Tangle")
-                       "Ott" '(org-babe-tangle :which-key "Tangle")
-                       "Otl" '(org-babel-load-file :which-key "Load file")
-                       "Oa" '(org-agenda :which-key "Agenda")
-                       "Oc" '(org-capture :which-key "Capture")
-                       "OA" '(mf/view-org-archive :which-key "Open archive"))
-            :config
-            (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
-            (add-to-list 'org-structure-template-alist '("S" . "src spice"))
-            (setq org-agenda-files
-                  '("~/org/schedule.org"
-                    "~/.local/share/org/next-actions.org"
-                    "~/.local/share/org/projects.org")
-                  org-archive-location "~/.local/share/org/archive.org::"
-                  org-agenda-include-diary t
-                  org-agenda-start-with-log-mode t ;; Enable log mode
-                  org-log-done 'time ;; Keep track when I complete a task
-                  org-log-into-drawer t
-
-                  org-agenda-custom-commands
-                  '(("w" todo "WAITING")
-                    ("n" todo "NEXT")
-                    ("W" "Week Review"
-                     ((agenda "" ((org-agenda-span 7)))
-                      (org-agenda-files (add-to-list 'org-agenda-files "~/.local/share/org/archive.org"))))
-                    ("g" "GTD view"
-                     ((agenda)
-                      (todo "NEXT"
-                            ((org-agenda-overriding-heading "Next actions:")))
-                      (todo "WAITING"
-                            ((org-agenda-overriding-heading "Waiting on:")))
-                      (todo "DONE"
-                            ((org-agenda-overriding-heading "Completed items:")))
-                      (tags-todo "projects"
-                            ((org-agenda-overriding-heading "Projects in progress:"))))))
-                  org-todo-keywords
-                  '(( sequence "TODO(t)" "NEXT(n)" "WAITING(w)" "PROJECT(p)" "|" "NO(x)" "DONE(d!)")))
-            (setq org-ellipsis " "
-                  org-hide-emphasis-markers t)
-            (defun mf/mark-done-and-archive ()
-              "Mark the state of an org-mode item as DONE and archive it"
-              (interactive)
-              (org-todo 'done)
-              (org-archive-subtree))
-            (define-key org-mode-map (kbd "C-c C-x C-s") 'mf/mark-done-and-archive))
-#+end_src
-** Bullets
-Prettify [[https://github.com/integral-dw/org-bullets][org bullets]]
-#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-     (use-package org-bullets
-       :defer t
-       :after org
-       :hook (org-mode . org-bullets-mode))
-#+end_src
-** Look and feel
-#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-     (defun mf/org-mode-visual-fill ()
-       (setq visual-fill-column-width 130
-             visual-fill-column-center-text t)
-       (visual-fill-column-mode 1))
-
-     (use-package visual-fill-column
-       :defer t
-       :hook (org-mode . mf/org-mode-visual-fill))
+  (use-package org
+    :defer t
+    :hook (org-mode . mf/org-mode-setup)
+    :general (mf/leader-keys
+               "Ot" '(:ignore t :which-key "Tangle")
+               "Ott" '(org-babe-tangle :which-key "Tangle")
+               "Otl" '(org-babel-load-file :which-key "Load file"))
+    :config
+    (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp")))
 #+end_src
 ** In line latex previews
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
