@@ -40,28 +40,40 @@ Use [[https://github.com/Fanael/rainbow-delimiters][rainbow-delimiters]] for nic
 #+end_src
 ** Layout
 #+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-  (setq display-buffer-alist '(("\\*vterm\\*"  (display-buffer-below-selected)
+  (setq display-buffer-alist '(("\\*vterm\\*"  (display-buffer-in-side-window)
+                                (side . bottom)
                                 (window-height . 0.4))
-                               ("\\*Packages\\*" (display-buffer-below-selected)
+                               ("\\*Packages\\*" (display-buffer-in-side-window)
+                                (side . bottom)
                                 (window-height . 0.4))
-                               ("\\*WoMan" (display-buffer-below-selected)
+                               ("\\*WoMan" (display-buffer-in-side-window)
+                                (side . bottom)
                                 (window-height . 0.4))
-                               ("\\*[Hh]elp" (display-buffer-below-selected)
+                               ("\\*[Hh]elp" (display-buffer-in-side-window)
+                                (side . bottom)
                                 (window-height . 0.4))))
+#+end_src
+** Style
+#+begin_src emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
+  (require 'whitespace)
+  (setq whitespace-style '(face empty tabs line-tail trailing)
+        whitespace-line-column 80)
+  (global-whitespace-mode t)
 #+end_src
 * Keybindings
 ** Evil mode
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
-  (use-package evil
-    :init
-    (setq evil-want-integration t
-          evil-want-keybinding nil
-          evil-undo-system 'undo-redo
-          evil-vsplit-window-right t
-          evil-split-window-below t
-          evil-disable-insert-state-bindings t)
-    :config
-    (evil-mode 1))
+      (use-package evil
+        :init
+        (setq evil-want-integration t
+              evil-want-keybinding nil
+              evil-undo-system 'undo-redo
+              evil-vsplit-window-right t
+              evil-split-window-below t
+              evil-disable-insert-state-bindings t)
+        :config
+        (evil-mode 1))
+(evil-define-key 'normal 'global (kbd "TAB") 'other-window)
 #+END_SRC
 ** Leader key definitions
 *** Helper functions
@@ -92,7 +104,7 @@ Use [[https://github.com/Fanael/rainbow-delimiters][rainbow-delimiters]] for nic
         (vterm))))
 #+end_src
 *** Leader key
-Use [[https://github.com/noctuid/general.el][general]] to setup space bar as leader key in normal mode, C-SPC in
+Use [[https://github.com/noctuid/general.el][general]] to setup ',' bar as leader key in normal mode, C-SPC in
 other modes.
 #+begin_src emacs-lisp  :tangle ~/.emacs.d/GNUEmacs.el
   (use-package general
@@ -103,7 +115,7 @@ other modes.
 
     (general-create-definer mf/leader-keys
       :keymaps '(normal insert visual emacs)
-      :prefix "SPC"
+      :prefix ","
       :global-prefix "C-SPC")
 #+end_src
 **** General definitions
@@ -136,7 +148,7 @@ Commonly used bindings for different purposes; Prefix: C-c
     "w" '(:ignore t :which-key "Windows")
     "O" '(:ignore t :which-key "Org")
 
-    "SPC" '(execute-extended-command :which-key "M-x")
+    "," '(execute-extended-command :which-key "M-x")
     "qq" '(save-buffers-kill-terminal :which-key "Exit Emacs")
     "o" '(delete-other-windows :which-key "Only!")
 #+end_src
@@ -250,13 +262,12 @@ Movement in the filesystem; Prefix: C-c-f
   "l" '(windmove-right :which-key "Focus-right")
   "j" '(windmove-down :which-key "Focus Down")
   "k" '(windmove-up :which-key "Focus Up")
+  "v" '(split-window-right :which-key "Vertical-split")
+  "s" '(split-window-below :which-key "Horizontal split")
   "wc" '(delete-window :which-key "Close")
-  "wq" '(delete-window :which-key "Close")
-  "wv" '(split-window-right :which-key "Vertical-split")
-  "ws" '(split-window-below :which-key "Horizontal split")
   "wm" '(maximize-window :which-key "Maximize")
+  "wq" '(delete-window :which-key "Close")
   "w=" '(balance-windows :which-key "Balance windows")
-  "ww" '(other-window :which-key "Other window")
   ))
 #+END_SRC
 ** Hydra
@@ -609,25 +620,27 @@ Get [[http://company-mode.github.io/][autocompletion]]. Edit: try to use Emacs' 
 #+end_src
 ** Haskell
 #+begin_src emacs-lisp
-  (use-package hindent
-    :defer t
-    :hook (haskell-mode-hook . hindent-mode)
-    :config (setq hindent-reformat-buffer-on-save t))
+    (defun mf/my-haskell-hook
+      (delete-other-windows)
+      (haskell-process-load-buffer)
+      (windmove-right)
+      (mf/toggle-vterm))
+  (add-hook 'haskell-mode-hook 'mf/my-haskell-hook)
 
-  (use-package haskell-mode
-    :defer t
-    :commands haskell-mode
-    :hook (haskell-mode-hook . interactive-haskell-mode)
-    (haskell-mode-hook . haskell-indentation-mode))
+      (use-package hindent
+        :defer t
+        :commands hindent-mode
+        :hook (haskell-mode-hook . hindent-mode)
+        :config (setq hindent-reformat-buffer-on-save t))
 
-  ;; (use-package dante
-  ;;   :after haskell-mode
-  ;;   :commands 'dante-mode
-  ;;   :init
-  ;;   (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
-  ;;   (add-hook 'haskell-mode-hook 'haskell-indentation-mode)
-  ;;   (add-hook 'haskell-mode-hook 'flycheck-mode)
-  ;;   (add-hook 'haskell-mode-hook 'dante-mode))
+      (use-package dante
+        :after haskell-mode
+        :commands dante-mode
+        :init
+        (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
+        (add-hook 'haskell-mode-hook 'haskell-indentation-mode)
+        (add-hook 'haskell-mode-hook 'flycheck-mode)
+        (add-hook 'haskell-mode-hook 'dante-mode))
 #+end_src
 ** Smart parentheses
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/GNUEmacs.el
