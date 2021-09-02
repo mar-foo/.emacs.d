@@ -26,6 +26,8 @@
  mouse-yank-at-point t			        ; Yank at point rather than pointer
  help-window-select t			        ; Focus newly spawned hel windows
  visible-bell 1                         ; No bell
+	header-line-format mode-line-format
+ mode-line-format nil
  cursor-in-non-selected-windows nil)	; Hide cursor in non selected windows
 
 ;; GUI Tweaks
@@ -33,7 +35,7 @@
 (scroll-bar-mode -1)                    ; Disable scroll bar
 (tool-bar-mode -1)                      ; Disable toolbar
 (tooltip-mode -1)                       ; Disable tooltips
-(set-fringe-mode 10)
+;; (set-fringe-mode 10)
 (menu-bar-mode -1)                      ; Disable menu bar
 (fset #'yes-or-no-p #'y-or-n-p)         ; y or n instead of yes or no
 (blink-cursor-mode -1)		            ; Disable cursor blinking
@@ -42,6 +44,44 @@
 (setq show-paren-delay 0)		        ; Highlight matching parentheses
 (delete-selection-mode 1)		        ; Replace region when inserting text
  (recentf-mode 1)                         ; Keep recent file list
+
+(setq-default default-frame-alist
+			  (append (list
+					   '(font . "Go Mono:style=medium:size=12")
+					   '(left-fringe . 0)
+					   '(right-fringe . 0)
+					   '(tool-bar-lines . 0)
+					   '(menu-bar-lines . 0)
+					   '(vertical-scroll-bars . nil)))
+			  window-resize-pixelwise t
+			  frame-resize-pixelwise t)
+
+;; Header line colour
+(custom-set-faces
+ '(header-line ((t (:background "#1d2021" :height 100 :box (:line-width 1 :color "#32302f"))))))
+
+;; Header line format
+(setq-default header-line-format
+			  (list
+			   mode-line-front-space
+			   '(:eval (propertize "%*%+ "
+								   'face '(:foreground "white" :height 0.9 :weight bold)))
+			   '(:eval (propertize (concat "[" (file-name-directory buffer-file-name))
+								   'face '(:foreground "white" :height 0.9 :weight normal)))
+			   '(:eval (propertize (concat (file-name-nondirectory buffer-file-name))
+								   'face '(:foreground "#dd6f48" :height 0.9 :weight bold)))
+			   '(:eval (propertize (if (string-equal (file-name-nondirectory buffer-file-name) "") "" "]")
+								   'face '(:foreground "white" :height 0.9 :weight normal)))
+			   ;; spaces to align right https://github.com/jamesnvc/dotfiles/blob/master/emacs.d/modules/cogent-modeline.el
+			   '(:eval (propertize " " 'display
+								   `((space :align-to (- (+ right right-fringe right-margin)
+														 ,(+ 3 (string-width
+																(if (listp mode-name)
+																	(car mode-name)
+																  mode-name))))))))
+			   '(:eval (propertize (concat "[" mode-name "]")
+								   'face '(:foreground "white" :height 0.9 :weight normal)))
+				'(:eval (propertize (mode-line-remote) 'face 'default))))
 
 ;; Fonts
 (defun mf/set-font-faces ()
