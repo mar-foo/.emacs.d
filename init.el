@@ -26,7 +26,7 @@
  mouse-yank-at-point t			        ; Yank at point rather than pointer
  help-window-select t			        ; Focus newly spawned hel windows
  visible-bell 1                         ; No bell
-	header-line-format mode-line-format
+ header-line-format mode-line-format
  mode-line-format nil
  cursor-in-non-selected-windows nil)	; Hide cursor in non selected windows
 
@@ -35,7 +35,6 @@
 (scroll-bar-mode -1)                    ; Disable scroll bar
 (tool-bar-mode -1)                      ; Disable toolbar
 (tooltip-mode -1)                       ; Disable tooltips
-;; (set-fringe-mode 10)
 (menu-bar-mode -1)                      ; Disable menu bar
 (fset #'yes-or-no-p #'y-or-n-p)         ; y or n instead of yes or no
 (blink-cursor-mode -1)		            ; Disable cursor blinking
@@ -43,7 +42,7 @@
 (show-paren-mode 1)
 (setq show-paren-delay 0)		        ; Highlight matching parentheses
 (delete-selection-mode 1)		        ; Replace region when inserting text
- (recentf-mode 1)                         ; Keep recent file list
+(recentf-mode 1)                         ; Keep recent file list
 
 (setq-default default-frame-alist
 			  (append (list
@@ -63,10 +62,9 @@
 ;; Header line format
 (setq-default header-line-format
 			  (list
-			   mode-line-front-space
-			   '(:eval (propertize "%*%+ "
-								   'face '(:foreground "white" :height 0.9 :weight bold)))
-			   '(:eval (propertize (concat "[" (file-name-directory buffer-file-name))
+			   '(:eval (propertize (concat (if (display-graphic-p) " " "-") " %*%+ ")
+								   'face '(:background "#dd6f48" :foreground "black" :height 0.9 :weight bold)))
+			   '(:eval (propertize (concat " [" (file-name-directory buffer-file-name))
 								   'face '(:foreground "white" :height 0.9 :weight normal)))
 			   '(:eval (propertize (concat (file-name-nondirectory buffer-file-name))
 								   'face '(:foreground "#dd6f48" :height 0.9 :weight bold)))
@@ -81,7 +79,7 @@
 																  mode-name))))))))
 			   '(:eval (propertize (concat "[" mode-name "]")
 								   'face '(:foreground "white" :height 0.9 :weight normal)))
-				'(:eval (propertize (mode-line-remote) 'face 'default))))
+			   '(:eval (propertize (mode-line-remote) 'face 'default))))
 
 ;; Fonts
 (defun mf/set-font-faces ()
@@ -103,7 +101,7 @@
 
 ;; Tangle and compile if necessary only, then load the configuration
 ;; From tecosaur's config https://github.com/tecosaur
-(let* ((.org "~/.emacs.d/GNUEmacs.org")
+(let* ((.org "~/.emacs.d/Emacs.org")
 	   (.el (concat (file-name-sans-extension .org) ".el"))
 	   (modification-time
 		(file-attribute-modification-time (file-attributes .org))))
@@ -113,6 +111,11 @@
 	(org-babel-tangle-file .org .el "emacs-lisp")
 	(byte-compile-file .el))
   (load-file .el))
+
+
+
+;; (load-file "~/.emacs.d/Emacs.el")
+
 
 ;; Startup time and garbage collection
 (add-hook 'emacs-startup-hook
