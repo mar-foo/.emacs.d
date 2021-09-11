@@ -1,7 +1,6 @@
 #+TITLE: Emacs configuration
 #+STARTUP: overview
 #+AUTHOR: Mario Forzanini
-#+HTML_HEAD: <link rel="stylesheet" href="style/simple.css">
 * Look and Feel
 ** Icons
 #+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
@@ -133,7 +132,7 @@ Quick bookmarks; Prefix: C-c-b
 | SPC-b-r    | Rename buffer |
 #+begin_src emacs-lisp  :tangle ~/.emacs.d/Emacs.el
 "b"  'switch-to-buffer
-"C-b" 'list-buffers
+"C-b" 'bs-show
 "d"  'kill-current-buffer
 #+end_src
 **** Code
@@ -198,25 +197,26 @@ Movement in the filesystem; Prefix: C-c-f
 #+end_src
 ** Use default minibuffer
    #+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
-  (use-package marginalia
-    :init
-    (marginalia-mode))
-  (setq tab-always-indent 'complete)
-  (autoload 'ffap-file-at-point "ffap")
-  (defun complete-path-at-point+ ()
-    "Return completion data for UNIX path at point."
-    (let ((fn (ffap-file-at-point))
-          (fap (thing-at-point 'filename)))
-      (when (and (or fn (equal "/" fap))
-                 (save-excursion
-                   (search-backward fap (line-beginning-position) t)))
-        (list (match-beginning 0)
-              (match-end 0)
-              #'completion-file-name-table :exclusive 'no))))
+     (use-package marginalia
+       :init
+       (marginalia-mode))
+     (setq tab-always-indent 'complete)
+     (autoload 'ffap-file-at-point "ffap")
+     (defun complete-path-at-point+ ()
+       "Return completion data for UNIX path at point."
+       (let ((fn (ffap-file-at-point))
+             (fap (thing-at-point 'filename)))
+         (when (and (or fn (equal "/" fap))
+                    (save-excursion
+                      (search-backward fap (line-beginning-position) t)))
+           (list (match-beginning 0)
+                 (match-end 0)
+                 #'completion-file-name-table :exclusive 'no))))
 
-  (add-hook 'completion-at-point-functions
-            #'complete-path-at-point+
-            'append)
+     (add-hook 'completion-at-point-functions
+               #'complete-path-at-point+
+               'append)
+(icomplete-mode 1)
 #+end_src
 ** Corfu
 Use corfu for better completions at point
@@ -346,32 +346,33 @@ Use magit to handle git repositories
         :general (mf/leader-keys
                    "RET" '(mf/toggle-vterm :which-key "vterm")))
 #+end_src
-* Org mode
-** Setup
-#+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
-    (defun mf/org-mode-setup ()
-          (org-indent-mode)
-          (visual-line-mode 1))
-#+end_src
-** Org
-#+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
-  (use-package org
+* Mail
+#+begin_src emacs-lisp
+  (use-package notmuch
+    :load-path "/usr/share/emacs/site-lisp/notmuch/"
     :defer t
-    :hook (org-mode . mf/org-mode-setup)
-    :general (mf/leader-keys
-               "Ot" '(:ignore t :which-key "Tangle")
-               "Ott" '(org-babe-tangle :which-key "Tangle")
-               "Otl" '(org-babel-load-file :which-key "Load file"))
+    :commands notmuch
     :config
-    (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp")))
+    (require 'mm-encode)
+    (require 'mml-sec)
+    (require 'message)
+    (setq user-mail-address "mario.forzanini@studenti.unimi.it"
+          user-full-name "Mario Forzanini"
+          send-mail-function 'transport
+          sendmail-program (executable-find "msmtp")
+          mail-specify-envelope-from t
+          mail-envelope-from 'header
+          message-sendmail-envelope-from 'header
+          starttls-use-gnutls nil
+          mm-encrypt-option nil
+          mm-sign-option nil
+          mml-secure-opengpg-encrypt-to-self t
+          mml-secure-openpgp-sign-with-sender t
+          mml-secure-smime-encrypt-to-self t
+          mml-secure-smime-sign-with-sender t
+          mail-signature "----------\nMario Forzanini\nhttp://www.marioforzanini.com\n"
+          message-citation-line-format "On %d-%m-%Y, %R %z, %f wrote:\n"
+          message-citation-line-function 'message-insert-formatted-citation-line
+          message-confirm-send nil
+          message-kill-buffer-on-exit t))
 #+end_src
-** In line latex previews
-#+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/Emacs.el
-        (use-package org-fragtog
-          :defer t
-          :after org
-          :hook
-         (org-mode . org-fragtog-mode)
-         :bind (:map org-mode-map
-                     ("C-c tf" . org-fragtog-mode)))
-#+END_SRC
