@@ -17,9 +17,7 @@
                       completion-list-mode-hook
                       eshell-mode-hook
                       vterm-mode-hook
-                      helpful-mode-hook
-                      elfeed-search-mode
-                      elfeed-show-mode))
+                      helpful-mode-hook))
         (add-hook mode (lambda () (display-line-numbers-mode 0))))
 #+end_src
 ** Elisp parentheses
@@ -55,8 +53,7 @@ Use [[https://github.com/Fanael/rainbow-delimiters][rainbow-delimiters]] for nic
   (global-whitespace-mode t)
 #+end_src
 * Keybindings
-** Leader key definitions
-*** Helper functions
+** Helper functions
 #+begin_src emacs-lisp  :tangle ~/.emacs.d/Emacs.el
   (defun mf/reload-configuration ()
     "Reloads configuration"
@@ -83,7 +80,7 @@ Use [[https://github.com/Fanael/rainbow-delimiters][rainbow-delimiters]] for nic
           (switch-to-buffer "*vterm*")
         (vterm))))
 #+end_src
-*** Leader key
+** Leader key
 Use [[https://github.com/noctuid/general.el][general]] to setup ',' bar as leader key in normal mode, C-SPC in
 other modes.
 #+begin_src emacs-lisp  :tangle ~/.emacs.d/Emacs.el
@@ -124,7 +121,7 @@ Commonly used bindings for different purposes; Prefix: C-c
     "w" '(:ignore t :which-key "Windows")
     "O" '(:ignore t :which-key "Org")
 
-    "," '(execute-extended-command :which-key "M-x")
+    "C-." '(execute-extended-command :which-key "M-x")
     "qq" '(save-buffers-kill-terminal :which-key "Exit Emacs")
     "o" '(delete-other-windows :which-key "Only!")
 #+end_src
@@ -192,69 +189,6 @@ Movement in the filesystem; Prefix: C-c-f
 "w=" 'balance-windows
   ))
 #+END_SRC
-** Hydra
-#+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
-  (use-package hydra
-    :defer t
-    :commands hydra-resize/body)
-#+end_src
-*** Window resizing
-#+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
-      (defun mf/window-enlarge ()
-        (interactive)
-        (shrink-window -6 t))
-      (defun mf/window-shrink ()
-        (interactive)
-        (shrink-window 6 t))
-      (defun mf/window-taller ()
-        (interactive)
-        (shrink-window -6 nil))
-      (defun mf/window-shorter ()
-        (interactive)
-        (shrink-window 6 nil))
-      (defun mf/window-big-enlarge ()
-        (interactive)
-        (shrink-window -12 t))
-      (defun mf/window-big-shrink ()
-        (interactive)
-        (shrink-window 12 t))
-      (defun mf/window-big-taller ()
-        (interactive)
-        (shrink-window -12 nil))
-      (defun mf/window-big-shorter ()
-        (interactive)
-        (shrink-window 12 nil))
-
-      (defhydra hydra-resize (global-map "C-c r")
-        "resize"
-        ("h" mf/window-shrink)
-        ("l" mf/window-enlarge)
-        ("j" mf/window-taller)
-        ("k" mf/window-shorter)
-        ("H" mf/window-big-shrink)
-        ("L" mf/window-big-enlarge)
-        ("J" mf/window-big-taller)
-        ("K" mf/window-big-shorter)
-        ("n" windmove-down)
-        ("p" windmove-up)
-        ("b" windmove-left)
-        ("f" windmove-right)
-        ("0" delete-window)
-        ("2" split-window-below)
-        ("3" split-window-right)
-        ("q" nil))
-#+end_src
-*** Buffer cycling
-#+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
-  (defhydra hydra-buf-cycle (global-map "C-c b b")
-    "cycle"
-    ("d" kill-current-buffer)
-    ("j" scroll-up-command)
-    ("k" scroll-down-command)
-    ("n" bs-cycle-next)
-    ("p" bs-cycle-previous)
-    ("q" nil))
-#+end_src
 * Completion framework
 ** Prescient
 #+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
@@ -262,196 +196,27 @@ Movement in the filesystem; Prefix: C-c-f
     :defer t
     :hook (minibuffer-inactive-mode-hook . prescient-persistent-mode))
 #+end_src
-** Make use of the Emacs default minibuffer
-#+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
+** Use default minibuffer
+   #+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
   (use-package marginalia
     :init
     (marginalia-mode))
+  (setq tab-always-indent 'complete)
+  (autoload 'ffap-file-at-point "ffap")
+  (defun complete-path-at-point+ ()
+    "Return completion data for UNIX path at point."
+    (let ((fn (ffap-file-at-point))
+          (fap (thing-at-point 'filename)))
+      (when (and (or fn (equal "/" fap))
+                 (save-excursion
+                   (search-backward fap (line-beginning-position) t)))
+        (list (match-beginning 0)
+              (match-end 0)
+              #'completion-file-name-table :exclusive 'no))))
 
-  (use-package orderless
-    :config
-    (defun my-orderless-initialism-dispatcher (pattern _index _total)
-      "Leading initialism dispatcher using the comma suffix.
-                                   It matches PATTERN _INDEX and _TOTAL according to how Orderless parses it input."
-      (when (string-suffix-p "," pattern)
-        `(orderless-strict-leading-initialism . ,(substring pattern 0 -1))))
-    (defun my-orderless-literal-dispatcher (pattern _index _total)
-      "Literal style dispatcher using the equal sign as a suffix.
-                                   It matches PATTERN _INDEX and _TOTAL according to how Orderless parses it input."
-      (when (string-suffix-p "=" pattern )
-        `(orderless-literal . ,(substring pattern 0 -1))))
-    (defun my-orderless-flex-dispatcher (pattern _index _total)
-      "Flex dispatcher using the tilde suffix.
-                     It matches PATTERN _INDEX and _TOTAL according to how Orderless
-                     parses its input."
-      (when (string-suffix-p "~" pattern)
-        `(orderless-flex . ,(substring pattern 0 -1))))
-    (setq my-orderless-default-styles
-          '(orderless-strict-leading-initialism
-            orderless-flex
-            orderless-prefixes
-            orderless-regexp)
-          orderless-component-separator "[ &]"      ; Completion at point using & as a separator, SPC automatically exits completion
-          orderless-matching-styles my-orderless-default-styles
-          orderless-style-dispatchers
-          '(my-orderless-literal-dispatcher
-            my-orderless-initialism-dispatcher
-            my-orderless-flex-dispatcher)
-          completion-styles '(orderless))
-    (let ((map minibuffer-local-completion-map))
-      ;; SPC should never complete, use it for orderless groups'
-      (define-key map (kbd "SPC") nil)
-      (define-key map (kbd "?") nil)))
-#+end_src
-From [[https://www.protesilaos.com][protesilaos]] config
-#+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
-  (defun prot-minibuffer-focus-minibuffer ()
-    "Focus the active minibuffer."
-    (interactive)
-    (let ((mini (active-minibuffer-window)))
-      (when mini
-        (select-window mini))))
-
-  (defun prot-minibuffer--fit-completions-window ()
-    "Fit Completions' buffer to its window."
-    (fit-window-to-buffer (get-buffer-window "*Completions*")
-                          (floor (frame-height) 2) 1))
-
-  (defun prot-common-number-negative ( n )
-    "Make N negative."
-    (if (and (numberp n) (> n 0))
-        (* -1 n)
-      (error "%s is not a valid positive number" n)))
-
-
-  (defun prot-minibuffer--switch-to-completions ()
-    "Subroutine for switching to the completions' buffer."
-    (unless (get-buffer-window "*Completions*" 0)
-      (minibuffer-completion-help))
-    (switch-to-completions)
-    (prot-minibuffer--fit-completions-window))
-
-  (defun prot-minibuffer-switch-to-completions-top ()
-    "Switch to the top of the completions' buffer.
-                    Meant to be bound in `minibuffer-local-completion-map'."
-    (interactive)
-    (prot-minibuffer--switch-to-completions)
-    (goto-char (point-min))
-    (next-completion 1))
-
-  (defun prot-minibuffer-switch-to-completions-bottom ()
-    "Switch to the bottom of the completions' buffer.
-                    Meant to be bound in `minibuffer-local-completion-map'."
-    (interactive)
-    (prot-minibuffer--switch-to-completions)
-    (goto-char (point-max))
-    (next-completion -1)
-    (goto-char (point-at-bol))
-    (recenter
-     (- -1
-        (min (max 0 scroll-margin)
-             (truncate (/ (window-body-height) 4.0))))
-     t))
-
-  (defun prot-minibuffer-next-completion-or-mini (&optional arg)
-    "Move to the next completion or switch to the minibuffer.
-                    This performs a regular motion for optional ARG lines, but when
-                    point can no longer move in that direction it switches to the
-                    minibuffer."
-    (interactive "p")
-    (cond
-     ((and (bobp)   ; see hack in `prot-minibuffer--clean-completions'
-           (get-text-property (point) 'invisible))
-      (forward-char 1)
-      (next-completion (or arg 1)))
-     ((or (eobp)
-          (eq (point-max)
-              (save-excursion (forward-line 1) (point))))
-      (prot-minibuffer-focus-minibuffer))
-     (t
-      (next-completion (or arg 1))))
-    (setq this-command 'next-line))
-
-  (defun prot-minibuffer-previous-completion-or-mini (&optional arg)
-    "Move to the next completion or switch to the minibuffer.
-                    This performs a regular motion for optional ARG lines, but when
-                    point can no longer move in that direction it switches to the
-                    minibuffer."
-    (interactive "p")
-    (let ((num (prot-common-number-negative arg)))
-      (if (or (bobp)
-              (eq (point) (1+ (point-min)))) ; see hack in `prot-minibuffer--clean-completions'
-          (prot-minibuffer-focus-minibuffer)
-        (next-completion (or num 1)))))
-  ;; Copied from icomplete.el
-  (defun prot-minibuffer--field-beg ()
-    "Determine beginning of completion."
-    (if (window-minibuffer-p)
-        (minibuffer-prompt-end)
-      (nth 0 completion-in-region--data)))
-  (defun prot-minibuffer--completion-category ()
-    "Return completion category."
-    (let* ((beg (prot-minibuffer--field-beg))
-           (md (completion--field-metadata beg)))
-      (alist-get 'category (cdr md))))
-  (defun prot-minibuffer-backward-updir ()
-    "Delete char before point or go up a directory.
-    Must be bound to `minibuffer-local-filename-completion-map'."
-    (interactive)
-    (if (and (eq (char-before) ?/)
-             (eq (prot-minibuffer--completion-category) 'file))
-        (save-excursion
-          (goto-char (1- (point)))
-          (when (search-backward "/" (point-min) t)
-            (delete-region (1+ (point)) (point-max))))
-      (call-interactively 'backward-delete-char)))
-#+end_src
-** Minibuffer completions
-Adjust completions buffer size (and all temp buffers)
-#+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
-  (setq temp-buffer-max-height 10)
-  (temp-buffer-resize-mode)
-#+end_src
-Override completion style for buffer and file name completions
-(~/.em/el/ expands to ~/.emacs.d/elpa no matter what text there is
-befor the ~)
-#+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
-  (file-name-shadow-mode 1)
-  (setq completion-styles '(orderless partial-completion))
-  (setq completion-category-overrides
-        '((buffer (styles . (substring flex orderless)))
-          (file (styles . (partial-completion orderless)))))
-#+end_src
-Set important variables
-#+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
-  (setq completion-cycle-threshold nil)
-  (setq completion-flex-nospace nil)
-  (setq completion-pcm-complete-word-inserts-delimiters t)
-  (setq completion-show-help nil)
-  (setq completion-auto-help t)
-  (setq completion-ignore-case t)
-  (setq-default case-fold-search t)
-  (setq read-buffer-completion-ignore-case t)
-  (setq read-file-name-completion-ignore-case t)
-  (setq completions-format 'vertical)
-  (setq completions-detailed t)
-  (setq resize-mini-windows nil)
-  (setq minibuffer-eldef-shorten-default t)
-  (setq echo-keystrokes 0.25)
-  (file-name-shadow-mode 1)
-  (minibuffer-electric-default-mode 1)
-#+end_src
-Keybindings
-#+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
-  (let ((map completion-list-mode-map))
-    (define-key map (kbd "C-n") #'prot-minibuffer-next-completion-or-mini)
-    (define-key map (kbd "C-p") #'prot-minibuffer-previous-completion-or-mini))
-  (let ((map minibuffer-local-completion-map))
-    (define-key map (kbd "C-n") #'prot-minibuffer-switch-to-completions-top)
-    (define-key map (kbd "C-p") #'prot-minibuffer-switch-to-completions-bottom)
-    (define-key map (kbd "RET") #'minibuffer-force-complete-and-exit))
-  (let ((map minibuffer-local-filename-completion-map))
-    (define-key map (kbd "<M-backspace>") #'prot-minibuffer-backward-updir))
+  (add-hook 'completion-at-point-functions
+            #'complete-path-at-point+
+            'append)
 #+end_src
 ** Corfu
 Use corfu for better completions at point
@@ -477,6 +242,7 @@ source files
     ([remap describe-variable] . helpful-variable)
     ([remap describe-command] . helpful-command)
     ([remap describe-key] . helpful-key)
+    ([remap describe-function] . helpful-function)
     (:map helpful-mode-map
           ("q" . mf/quit-and-kill)					; Quitting help buffer kills them too
           ("n" . next-line)
@@ -487,26 +253,6 @@ source files
       (quit-window t)))
 #+end_src
 * Programming
-** Autocompletion
-Get [[http://company-mode.github.io/][autocompletion]]. Edit: try to use Emacs' built in completion-at-point
-#+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
-  (setq tab-always-indent 'complete)
-  (autoload 'ffap-file-at-point "ffap")
-  (defun complete-path-at-point+ ()
-    "Return completion data for UNIX path at point."
-    (let ((fn (ffap-file-at-point))
-          (fap (thing-at-point 'filename)))
-      (when (and (or fn (equal "/" fap))
-                 (save-excursion
-                   (search-backward fap (line-beginning-position) t)))
-        (list (match-beginning 0)
-              (match-end 0)
-              #'completion-file-name-table :exclusive 'no))))
-
-  (add-hook 'completion-at-point-functions
-            #'complete-path-at-point+
-            'append)
-#+end_src
 ** Projectile
 #+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
   (use-package projectile
@@ -515,18 +261,31 @@ Get [[http://company-mode.github.io/][autocompletion]]. Edit: try to use Emacs' 
     :hook
     (c-mode . projectile-mode)
     (c++-mode . projectile-mode)
+    (go-mode . projectile-mode)
     (haskell-mode . projectile-mode)
     (emacs-lisp-mode . projectile-mode))
 #+end_src
 ** Go
 #+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
-  (use-package go-mode
-    :defer t
-    :commands go-mode)
+  '(defun go-fmt()
+     (when (eq major-mode 'go-mode)
+       (add-hook 'before-save-hook 'gofmt-before-save)))
+
+      (use-package go-mode
+        :defer t
+        :commands go-mode
+        :config
+        (add-hook 'go-mode-hook 'gofmt-before-save))
+
+  ;; Requires gocode binary ``go get github.com/mdempsky/gocode
+      (use-package go-complete
+        :defer t
+        :after go-mode
+        :config
+        (add-hook 'completion-at-point-functions 'go-complete-at-point))
 #+end_src
 ** Haskell
 #+begin_src emacs-lisp
-
   (use-package hindent
     :defer t
     :commands hindent-mode
@@ -558,55 +317,26 @@ Get [[http://company-mode.github.io/][autocompletion]]. Edit: try to use Emacs' 
 ** Git
 Use magit to handle git repositories
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/Emacs.el
-(use-package magit
-  :defer t
-:commands magit
-:general (mf/leader-keys
-		  "gb" 'magit-branch-checkout
-		  "gc" '(:ignore t)
-		  "gcb" 'magit-branch-and-checkout
-		  "gcc" 'magit-commit-create
-		  "gcr" 'magit-init
-		  "gcR" 'magit-clone
-		  "gf" '(:ignore t)
-		  "gfc" 'magit-show-commit
-		  "gfg" 'magit-find-git-config-file
-		  "gg" 'magit-status
-		  "gt" 'git-timemachine-toggle
-		  "gB" 'magit-blame-addition
-		  "gC" 'magit-clone
-		  "gD" 'magit-file-delete
-		  "gF" 'magit-fetch
-		  "gG" 'magit-status-here
-		  "gL" 'magit-log
-		  "gS" 'magit-stage-file
-		  "gU" 'magit-unstage-file))
+  (use-package magit
+    :defer t
+  :commands magit
+  :general (mf/leader-keys
+            "gb" 'magit-branch-checkout
+            "gc" '(:ignore t)
+            "gcb" 'magit-branch-and-checkout
+            "gcc" 'magit-commit-create
+            "gcr" 'magit-init
+            "gcR" 'magit-clone
+            "gg" 'magit-status
+            "gC" 'magit-clone
+            "gD" 'magit-file-delete
+            "gF" 'magit-fetch
+            "gG" 'magit-status-here
+            "gL" 'magit-log
+            "gS" 'magit-stage-file
+            "gU" 'magit-unstage-file))
 #+END_SRC
 * Shell
-*** eshell
-#+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
-  (defun mf/configure-eshell ()
-    (add-hook 'eshell-pre-command-hook 'eshell-save-some-history)
-    (add-to-list 'eshell-output-filter-functions 'eshell-truncate-buffer))
-
-  (use-package eshell-git-prompt
-    :defer t
-    :after eshell)
-  (use-package eshell
-    :defer t
-    :commands eshell
-    :hook (eshell-first-time-mode . mf/configure-eshell)
-    :config
-    (setq eshell-history-size 5000
-          eshell-buffer-maximum-lines 5000
-          eshell-hist-ignoredups t
-          eshell-scroll-to-bottom-on-input t)
-    (with-eval-after-load 'esh-opt
-      (setq eshell-destroy-buffer-when-process-dies t)
-      (setq eshell-visual-commands '("htop" "sh"))
-      (eshell-git-prompt-use-theme 'powerline)))
-#+end_src
-*** vterm
 #+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
       (use-package vterm
         :defer t

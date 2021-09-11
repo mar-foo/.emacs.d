@@ -57,6 +57,10 @@
 
 ;; Header line colour
 (custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(header-line ((t (:background "#1d2021" :height 100 :box (:line-width 1 :color "#32302f"))))))
 
 ;; Header line format
@@ -142,12 +146,7 @@
  '(jdee-db-spec-breakpoint-face-colors (cons "#131033" "#546A90"))
  '(objed-cursor-color "#e61f44")
  '(package-selected-packages
-   '(go-mode page-break-lines dante hindent vterm visual-fill-column use-package smartparens rainbow-delimiters projectile prescient org-fragtog org-bullets orderless marginalia magit hydra helpful gruvbox-theme general evil-collection eshell-git-prompt emojify corfu all-the-icons))
+   '(go-complete go-mode page-break-lines dante hindent vterm visual-fill-column use-package smartparens rainbow-delimiters projectile prescient org-fragtog org-bullets orderless marginalia magit hydra helpful gruvbox-theme general evil-collection eshell-git-prompt emojify corfu all-the-icons))
  '(rustic-ansi-faces
    ["#0c0a20" "#e61f44" "#a7da1e" "#ffd400" "#1ea8fc" "#ff2afc" "#42c6ff" "#f2f3f7"]))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+
