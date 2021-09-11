@@ -26,8 +26,6 @@
  mouse-yank-at-point t			        ; Yank at point rather than pointer
  help-window-select t			        ; Focus newly spawned hel windows
  visible-bell 1                         ; No bell
- header-line-format mode-line-format
- mode-line-format nil
  cursor-in-non-selected-windows nil)	; Hide cursor in non selected windows
 
 ;; GUI Tweaks
@@ -64,7 +62,7 @@
  '(header-line ((t (:background "#1d2021" :height 100 :box (:line-width 1 :color "#32302f"))))))
 
 ;; Header line format
-(setq-default header-line-format
+(setq-default mode-line-format
 			  (list
 			   '(:eval (propertize (concat (if (display-graphic-p) " " "-") " %*%+ ")
 								   'face '(:background "#dd6f48" :foreground "black" :height 0.9 :weight bold)))
@@ -116,11 +114,6 @@
 	(byte-compile-file .el))
   (load-file .el))
 
-
-
-;; (load-file "~/.emacs.d/Emacs.el")
-
-
 ;; Startup time and garbage collection
 (add-hook 'emacs-startup-hook
 		  (lambda ()
@@ -148,5 +141,6 @@
  '(package-selected-packages
    '(go-complete go-mode page-break-lines dante hindent vterm visual-fill-column use-package smartparens rainbow-delimiters projectile prescient org-fragtog org-bullets orderless marginalia magit hydra helpful gruvbox-theme general evil-collection eshell-git-prompt emojify corfu all-the-icons))
  '(rustic-ansi-faces
-   ["#0c0a20" "#e61f44" "#a7da1e" "#ffd400" "#1ea8fc" "#ff2afc" "#42c6ff" "#f2f3f7"]))
+   ["#0c0a20" "#e61f44" "#a7da1e" "#ffd400" "#1ea8fc" "#ff2afc" "#42c6ff" "#f2f3f7"])
+ '(send-mail-function 'sendmail-send-it))
 
