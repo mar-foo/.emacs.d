@@ -6,19 +6,6 @@
 #+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
   (use-package all-the-icons)
 #+end_src
-** Line numbers
-#+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
-      (column-number-mode)
-      (global-display-line-numbers-mode t)
-      (menu-bar--display-line-numbers-mode-relative)
-
-      (dolist (mode '(term-mode-hook
-                      completion-list-mode-hook
-                      eshell-mode-hook
-                      vterm-mode-hook
-                      helpful-mode-hook))
-        (add-hook mode (lambda () (display-line-numbers-mode 0))))
-#+end_src
 ** Elisp parentheses
 Use [[https://github.com/Fanael/rainbow-delimiters][rainbow-delimiters]] for nice parentheses coloring
 #+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
@@ -62,7 +49,7 @@ Use [[https://github.com/Fanael/rainbow-delimiters][rainbow-delimiters]] for nic
   (defun mf/edit-configuration ()
     "Edit emacs configuration"
     (interactive)
-    (find-file "~/.emacs.d/GNUEmacs.org"))
+    (find-file "~/.emacs.d/Emacs.org"))
 
   (defun mf/find-recentf ()
     "Open a recent file"
@@ -80,8 +67,6 @@ Use [[https://github.com/Fanael/rainbow-delimiters][rainbow-delimiters]] for nic
         (vterm))))
 #+end_src
 ** Leader key
-Use [[https://github.com/noctuid/general.el][general]] to setup ',' bar as leader key in normal mode, C-SPC in
-other modes.
 #+begin_src emacs-lisp  :tangle ~/.emacs.d/Emacs.el
   (use-package general
     :init
@@ -91,45 +76,21 @@ other modes.
       :prefix "C-.")
 #+end_src
 **** General definitions
-Commonly used bindings for different purposes; Prefix: C-c
-| Keybinding | Action              |
-|------------+---------------------|
-| SPC-b      | Buffers prefix      |
-| SPC-f      | Files prefix        |
-| SPC-h      | Help prefix         |
-| SPC-i      | Insert prefix       |
-| SPC-m      | Major mode prefix   |
-| SPC-O      | Org prefix          |
-| SPC-q      | Quit prefix         |
-| SPC-q-q    | Exit Emacs          |
-| SPC-w      | Window prefix       |
-| SPC-/      | Music prefix        |
-| SPC-SPC    | M-x                 |
 #+begin_src emacs-lisp  :tangle ~/.emacs.d/Emacs.el
   (mf/leader-keys
-    "a" '(:ignore t :which-key "Applications")
-    "b" '(:ignore t :which-key "Buffers")
-    "c" '(:ignore t :which-key "Code")
-    "f" '(:ignore t :which-key "Files")
-    "g" '(:ignore t :which-key "Git")
-    "H" '(:ignore t :which-key "Help")
-    "i" '(:ignore t :which-key "Insert")
-    "j" '(:ignore t :which-key "Jump")
-    "q" '(:ignore t :which-key "Quit")
-    "t" '(:ignore t :which-key "Toggle")
-    "w" '(:ignore t :which-key "Windows")
-    "O" '(:ignore t :which-key "Org")
+	"b" '(:ignore t :which-key "Buffers")
+	"c" '(:ignore t :which-key "Code")
+	"f" '(:ignore t :which-key "Files")
+	"g" '(:ignore t :which-key "Git")
+	"q" '(:ignore t :which-key "Quit")
+	"w" '(:ignore t :which-key "Windows")
 
-    "C-." '(execute-extended-command :which-key "M-x")
-    "qq" '(save-buffers-kill-terminal :which-key "Exit Emacs")
-    "o" '(delete-other-windows :which-key "Only!")
+	"C-." '(execute-extended-command :which-key "M-x")
+	"qq" '(save-buffers-kill-terminal :which-key "Exit Emacs")
+	"o" '(delete-other-windows :which-key "Only!")
+	"/" 'occur
 #+end_src
 **** Buffer management
-Quick bookmarks; Prefix: C-c-b
-| Keybinding | Action        |
-|------------+---------------|
-| SPC-b-d    | Delete buffer |
-| SPC-b-r    | Rename buffer |
 #+begin_src emacs-lisp  :tangle ~/.emacs.d/Emacs.el
 "b"  'switch-to-buffer
 "C-b" 'bs-show
@@ -144,13 +105,6 @@ Quick bookmarks; Prefix: C-c-b
 "c(" 'check-parens
 #+END_SRC
 **** File management
-Movement in the filesystem; Prefix: C-c-f
-| Keybinding | Action                   |
-|------------+--------------------------|
-| SPC-f-s    | Save buffer              |
-| SPC-f-e    | Emacs prefix             |
-| SPC-f-e-d  | Edit emacs configuration |
-| SPC-f-e-R  | Reload emacs configuration |
 #+begin_src emacs-lisp  :tangle ~/.emacs.d/Emacs.el
 "fd" 'dired
 "ff" 'find-file
@@ -161,20 +115,6 @@ Movement in the filesystem; Prefix: C-c-f
 "fs" 'save-buffer
 #+end_src
 **** Windows
-    Manage windows; Prefix: SPC-w
-| Keybinding | Action           |
-|------------+------------------|
-| SPC-h      | Focus left       |
-| SPC-l      | Focus right      |
-| SPC-j      | Focus down       |
-| SPC-k      | Focus up         |
-| SPC-w-c    | Close            |
-| SPC-w-q    | Close            |
-| SPC-w-v    | Vertical split   |
-| SPC-w-s    | Horizontal split |
-| SPC-w-m    | Maximize         |
-| SPC-w-=    | Balance windows  |
-| SPC-w-w    | Other-window     |
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/Emacs.el
 "h" 'windmove-left
 "l" 'windmove-right
@@ -267,25 +207,25 @@ source files
 #+end_src
 ** Go
 #+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
-  '(defun go-fmt()
-     (when (eq major-mode 'go-mode)
-       (add-hook 'before-save-hook 'gofmt-before-save)))
+  (defun go-fmt()
+	(when (eq major-mode 'go-mode)
+	  (add-hook 'before-save-hook 'gofmt-before-save)))
 
-      (use-package go-mode
-        :defer t
-        :commands go-mode
-        :config
-        (add-hook 'go-mode-hook 'gofmt-before-save))
+  (use-package go-mode
+	:defer t
+	:commands go-mode
+	:config
+	(add-hook 'go-mode-hook 'gofmt-before-save))
 
   ;; Requires gocode binary ``go get github.com/mdempsky/gocode
-      (use-package go-complete
-        :defer t
-        :after go-mode
-        :config
-        (add-hook 'completion-at-point-functions 'go-complete-at-point))
+  (use-package go-complete
+	:defer t
+	:after go-mode
+	:config
+	(add-hook 'completion-at-point-functions 'go-complete-at-point))
 #+end_src
 ** Haskell
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
   (use-package hindent
     :defer t
     :commands hindent-mode
@@ -301,19 +241,6 @@ source files
     (add-hook 'haskell-mode-hook 'flycheck-mode)
     (add-hook 'haskell-mode-hook 'dante-mode))
 #+end_src
-** Smart parentheses
-#+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/Emacs.el
-  (use-package smartparens
-    :defer t
-    :commands smartparens-mode
-    :hook
-    ((prog-mode . smartparens-mode)
-    (emacs-lisp-mode . smartparens-mode)
-    (org-mode . smartparens-mode)
-    (scheme-mode . smartparens-mode))
-    :config
-    (require 'smartparens-config))
-#+END_SRC
 ** Git
 Use magit to handle git repositories
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/Emacs.el
@@ -347,32 +274,51 @@ Use magit to handle git repositories
                    "RET" '(mf/toggle-vterm :which-key "vterm")))
 #+end_src
 * Mail
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle ~/.emacs.d/Emacs.el
   (use-package notmuch
-    :load-path "/usr/share/emacs/site-lisp/notmuch/"
-    :defer t
-    :commands notmuch
-    :config
-    (require 'mm-encode)
-    (require 'mml-sec)
-    (require 'message)
-    (setq user-mail-address "mario.forzanini@studenti.unimi.it"
-          user-full-name "Mario Forzanini"
-          send-mail-function 'transport
-          sendmail-program (executable-find "msmtp")
-          mail-specify-envelope-from t
-          mail-envelope-from 'header
-          message-sendmail-envelope-from 'header
-          starttls-use-gnutls nil
-          mm-encrypt-option nil
-          mm-sign-option nil
-          mml-secure-opengpg-encrypt-to-self t
-          mml-secure-openpgp-sign-with-sender t
-          mml-secure-smime-encrypt-to-self t
-          mml-secure-smime-sign-with-sender t
-          mail-signature "----------\nMario Forzanini\nhttp://www.marioforzanini.com\n"
-          message-citation-line-format "On %d-%m-%Y, %R %z, %f wrote:\n"
-          message-citation-line-function 'message-insert-formatted-citation-line
-          message-confirm-send nil
-          message-kill-buffer-on-exit t))
+	:load-path "/usr/share/emacs/site-lisp/notmuch/"
+	:defer t
+	:commands notmuch
+	:general
+	(mf/leader-keys
+	  "m" 'notmuch)
+	:config
+	(require 'mm-encode)
+	(require 'mml-sec)
+	(require 'message)
+	(setq user-mail-address "mario.forzanini@studenti.unimi.it"
+		  user-full-name "Mario Forzanini"
+		  send-mail-function 'transport
+		  sendmail-program (executable-find "msmtp")
+		  mail-specify-envelope-from t
+		  mail-envelope-from 'header
+		  message-sendmail-envelope-from 'header
+		  starttls-use-gnutls nil
+		  mm-encrypt-option nil
+		  mm-sign-option nil
+		  mml-secure-opengpg-encrypt-to-self t
+		  mml-secure-openpgp-sign-with-sender t
+		  mml-secure-smime-encrypt-to-self t
+		  mml-secure-smime-sign-with-sender t
+		  mail-signature "----------\nMario Forzanini\nhttp://www.marioforzanini.com\n"
+		  message-citation-line-format "On %d-%m-%Y, %R %z, %f wrote:\n"
+		  message-citation-line-function 'message-insert-formatted-citation-line
+		  message-confirm-send nil
+		  message-kill-buffer-on-exit t)
+	(setq notmuch-saved-searches
+		  `((:name "inbox"
+				   :query "tag:inbox"
+				   :key "i"
+				   :sort-order newer-first)
+			(:name "unread"
+				   :query "tag:unread"
+				   :key "u"
+				   :sort-order newer-first)
+			(:name "unimi"
+				   :query "tag:uni"
+				   :sort-order newer-first)
+			(:name "9front"
+				   :query "tag:9front"
+				   :key "9"
+				   :sort-order newer-first))))
 #+end_src
