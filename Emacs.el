@@ -4,26 +4,9 @@
 (require 'mf-look-and-feel)
 (require 'mf-notmuch)
 (require 'mf-completion)
-
-;;; Keybindings
-(define-key emacs-lisp-mode-map (kbd "C-M-d") #'mf/delete-sexp)
-
-(use-package general
-  :init
-  (general-override-mode 1)
-  :config
-  (general-create-definer mf/leader-keys
-    :prefix "C-c")
-  (mf/leader-keys
-	"i" 'mf/infos
-	"RET" 'mf/toggle-eshell
-	"m" 'notmuch
-	"o" 'delete-other-windows
-	"/" 'occur
-	"d"  'kill-current-buffer
-	"cc" 'compile
-	"cr" 'recompile
-	"c(" 'check-parens))
+; mf-keybindings has to be loaded after everything else, it needs some
+; autoloads to be defined
+(require 'mf-keybindings)
 
 ;;; Programming
 (use-package projectile
@@ -37,22 +20,11 @@
   (emacs-lisp-mode . projectile-mode))
 
 ;; Golang
-(defun go-fmt()
-  (when (eq major-mode 'go-mode)
-	(add-hook 'before-save-hook 'gofmt-before-save)))
-
 (use-package go-mode
   :defer t
   :commands go-mode
   :config
   (add-hook 'go-mode-hook 'gofmt-before-save))
-
-; Requires gocode binary ``go get github.com/mdempsky/gocode
-(use-package go-complete
-  :defer t
-  :after go-mode
-  :config
-  (add-hook 'completion-at-point-functions 'go-complete-at-point))
 
 ;; Haskell
 (use-package hindent
