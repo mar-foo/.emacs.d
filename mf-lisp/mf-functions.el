@@ -2,16 +2,10 @@
 ;;; Code:
 
 ;;;###autoload
-(defun mf/ensure-package(pack)
-  (unless
-	  (package-installed-p pack)
-	(package-install pack)))
-
-;;;###autoload
-(defun mf/reload-configuration()
-  "Reloads configuration"
+(defun mf/delete-sexp()
   (interactive)
-  (load-file (concat user-emacs-directory "init.el")))
+  (mark-sexp)
+  (delete-active-region))
 
 ;;;###autoload
 (defun mf/edit-configuration()
@@ -26,6 +20,29 @@
   (find-file (completing-read "Recent File: " recentf-list nil t)))
 
 ;;;###autoload
+(defun mf/infos()
+  (interactive)
+  (shell-command (executable-find "infos")))
+
+;;;###autoload
+(defun mf/ensure-package(pack)
+  (unless
+	  (package-installed-p pack)
+	(package-install pack)))
+
+;;;###autoload
+(defun mf/reload-configuration()
+  "Reloads configuration"
+  (interactive)
+  (load-file (concat user-emacs-directory "init.el")))
+
+;;;###autoload
+(defun mf/select-completion-and-exit()
+  (interactive)
+  (icomplete-force-complete)
+  (icomplete-ret))
+
+;;;###autoload
 (defun mf/toggle-eshell (&optional use-generic-p)
   "Toggle vterm window respecting buffer-alist configuration.
 If there is a prefix argument, switch to the vterm buffer."
@@ -35,17 +52,5 @@ If there is a prefix argument, switch to the vterm buffer."
 	(if use-generic-p
 		(switch-to-buffer "*eshell*")
 	  (eshell))))
-
-;;;###autoload
-(defun mf/delete-sexp()
-  (interactive)
-  (mark-sexp)
-  (delete-active-region))
-
-;;;###autoload
-(defun mf/infos()
-  (interactive)
-  (shell-command (executable-find "infos")))
-
 (provide 'mf-functions)
 ;;; mf-functions.el ends here
