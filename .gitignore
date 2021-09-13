@@ -11,3 +11,10 @@ GNUEmacs.el~
 transient/
 emojis/
 recentf~
+mf-lisp/mf-autoloads.el~
+mf-lisp/mf-completion.el~
+mf-lisp/mf-functions.el~
+mf-lisp/mf-look-and-feel.el~
+mf-lisp/mf-notmuch.el~
+mf-lisp/mf-org.el~
+mf-lisp/mf-packages.el~
