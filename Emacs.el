@@ -60,4 +60,19 @@
   (unless
 	  (fboundp 'magit-status)
 	(autoload #'magit-status "magit-status" nil t)))
+
+;; Pass
+(mf/install password-store)
+(progn
+  (unless
+	  (fboundp 'password-store-copy)
+	(autoload #'password-store-copy "password-store-copy" nil t))
+  (unless
+	  (fboundp 'password-store-insert)
+	(autoload #'password-store-insert "password-store-insert" nil t))
+  (unless
+	  (fboundp 'password-store-insert)
+	(autoload #'password-store-generate "password-store-generate" nil t))
+  (require 'epa-file)
+  (setq epa-pinentry-mode 'loopback))
 ;;; Emacs.el ends here

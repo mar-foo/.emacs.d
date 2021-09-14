@@ -47,7 +47,7 @@
  '(jdee-db-spec-breakpoint-face-colors (cons "#131033" "#546A90"))
  '(objed-cursor-color "#e61f44")
  '(package-selected-packages
-   '(exwm modus-themes haskell-mode org-roam notmuch go-mode hindent visual-fill-column projectile prescient magit))
+   '(password-store exwm modus-themes haskell-mode org-roam notmuch go-mode hindent visual-fill-column projectile prescient magit))
  '(rustic-ansi-faces
    ["#0c0a20" "#e61f44" "#a7da1e" "#ffd400" "#1ea8fc" "#ff2afc" "#42c6ff" "#f2f3f7"])
  '(send-mail-function 'sendmail-send-it)
