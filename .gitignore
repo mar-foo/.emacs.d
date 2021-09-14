@@ -14,6 +14,7 @@ exwm.el
 init.el~
 mf-lisp/mf-autoloads.el~
 mf-lisp/mf-completion.el~
+mf-lisp/mf/mf-exwm.el~
 mf-lisp/mf-functions.el~
 mf-lisp/mf-look-and-feel.el~
 mf-lisp/mf-notmuch.el~

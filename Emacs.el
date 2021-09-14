@@ -1,5 +1,6 @@
 ;;; Emacs.el --- Use package driven emacs configuration
 ;;; Code:
+(require 'mf-exwm)
 (require 'mf-autoloads)
 (require 'mf-look-and-feel)
 (require 'mf-notmuch)
