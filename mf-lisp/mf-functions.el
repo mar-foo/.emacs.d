@@ -44,13 +44,17 @@
 
 ;;;###autoload
 (defun mf/toggle-eshell (&optional use-generic-p)
-  "Toggle vterm window respecting buffer-alist configuration.
-If there is a prefix argument, switch to the vterm buffer."
+  "Toggle eshell window respecting buffer-alist configuration.
+If there is a prefix argument, switch to the eshell buffer."
   (interactive "P")
   (if (get-buffer-window "*eshell*")
 	  (delete-window (get-buffer-window "*eshell*"))
 	(if use-generic-p
-		(switch-to-buffer "*eshell*")
+		(progn
+		  (eshell)
+		  (delete-window (get-buffer-window "*eshell*"))
+		(switch-to-buffer "*eshell*"))
 	  (eshell))))
+
 (provide 'mf-functions)
 ;;; mf-functions.el ends here
