@@ -16,6 +16,7 @@
       mail-specify-envelope-from t
       mail-envelope-from 'header
       message-sendmail-envelope-from 'header
+	  notmuch-fcc-dirs "Sent"
       starttls-use-gnutls nil
       mm-encrypt-option nil
       mm-sign-option nil
@@ -43,6 +44,9 @@
 		  (:name "9front"
 				 :query "tag:9front"
 				 :key "9"
+				 :sort-order newer-first)
+		  (:name "sent"
+				 :query "tag:sent"
 				 :sort-order newer-first)))
 
 (provide 'mf-notmuch)
