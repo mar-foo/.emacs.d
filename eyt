@@ -1,0 +1,13 @@
+#!/bin/sh
+getResults(){
+echo "$response" | grep -oP "$1" | awk -F\" -v p="$2" '{ print $1 "\t" p $NF}'
+}
+
+read -r query
+squery=$(echo "$query" | sed 's|+|%2B|g;s|#|%23|g;s|&|%26|g;s| |+|g')
+response="$(curl -s "https://www.youtube.com/results?search_query=$squery") |\
+sed 's|\\.||g')"
+vgrep='"videoRenderer":{"videoId":"\K.{11}".+?"text":".+?[^\\](?=")'
+videoids="$(getResults $vgrep)"
+partialJSON="$(echo -e "$videoids" | awk -F'	' '{ print "{\"id\": \"" $1 "\", \"title\": \"" $2 "\"}," }')"
+echo "{\"videos\": [$partialJSON]}" | sed 's|,]|]|'
