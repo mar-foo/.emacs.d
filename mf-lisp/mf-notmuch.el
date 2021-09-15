@@ -34,12 +34,9 @@
 				 :query "tag:inbox"
 				 :key "i"
 				 :sort-order newer-first)
-		  (:name "unread"
-				 :query "tag:unread"
-				 :key "u"
-				 :sort-order newer-first)
 		  (:name "unimi"
-			 :query "tag:uni"
+				 :query "tag:uni"
+				 :key "u"
 				 :sort-order newer-first)
 		  (:name "9front"
 				 :query "tag:9front"
@@ -47,7 +44,11 @@
 				 :sort-order newer-first)
 		  (:name "sent"
 				 :query "tag:sent"
-				 :sort-order newer-first)))
+				 :sort-order newer-first))
+		notmuch-hello-logo 'nil
+		notmuch-hello-sections '(notmuch-hello-insert-header
+								 notmuch-hello-insert-saved-searches
+								 notmuch-hello-insert-alltags))
 
 (provide 'mf-notmuch)
 ;;; mf-notmuch.el ends here
