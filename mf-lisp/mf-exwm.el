@@ -77,13 +77,13 @@
   (add-hook 'exwm-update-class-hook 'mf/exwm--update-class)
   (add-hook 'exwm-manage-finish-hook #'mf/manage--window-by-class)
   ;;; PRESENTAZIONE
-  ;; (require 'exwm-randr)
-  ;; (setq exwm-randr-workspace-output-plist '(0 "VGA1"))
-  ;; (add-hook 'exwm-randr-screen-change-hook
-  ;; 			(lambda()
-  ;; 			  (start-process-shell-command
-  ;; 			   "xrandr" nil "xrandr --output VGA1 --left-of LVDS1 --auto")))
-  ;; (exwm-randr-enable)
+  (require 'exwm-randr)
+  (setq exwm-randr-workspace-output-plist '(0 "VGA1"))
+  (add-hook 'exwm-randr-screen-change-hook
+			(lambda()
+			  (start-process-shell-command
+			   "xrandr" nil "xrandr --output VGA1 --left-of LVDS1 --auto")))
+  (exwm-randr-enable)
   (exwm-enable))
 
 (provide 'mf-exwm)

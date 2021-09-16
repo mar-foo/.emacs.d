@@ -40,5 +40,9 @@
 	(fboundp 'mf/youtube)
 	(define-key global-map (kbd "C-. y") #'mf/youtube))
 
+(if
+	(fboundp 'mf/presentation-setup)
+	(define-key global-map (kbd "C-. C-p") #'mf/presentation-setup))
+
 (provide 'mf-keybindings)
 ;;; mf-keybindings.el ends here
