@@ -9,9 +9,10 @@
 (define-key global-map (kbd "C-. w") #'window-configuration-to-register)
 (define-key global-map (kbd "C-. j") #'jump-to-register)
 (define-key global-map (kbd "C-S-d") #'backward-kill-word)
+
 (if
-	(fboundp 'notmuch)
-	(define-key global-map (kbd "C-. m") #'notmuch))
+	(fboundp 'dired-mode-map)
+	(define-key dired-mode-map (kbd "q") #'(lambda() (interactive) (quit-window t))))
 
 ;; My functions
 (if
@@ -37,17 +38,6 @@
 (if
 	(fboundp 'mf/youtube)
 	(define-key global-map (kbd "C-. y") #'mf/youtube))
-
-;; Org Roam
-(if
-	(fboundp 'org-roam-capture)
-	(define-key global-map (kbd "C-. o") #'org-roam-capture))
-(if
-	(fboundp 'org-roam-node-find)
-	(define-key global-map (kbd "C-. n f") #'org-roam-node-find))
-(if
-	(fboundp 'org-roam-node-insert)
-	(define-key global-map (kbd "C-. n i") #'org-roam-node-insert))
 
 (provide 'mf-keybindings)
 ;;; mf-keybindings.el ends here
