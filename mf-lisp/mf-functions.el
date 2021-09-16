@@ -61,10 +61,11 @@ If there is a prefix argument, switch to the eshell buffer."
 		(switch-to-buffer "*eshell*"))
 	  (eshell))))
 
+;;;###autoload
 (defun mf/mpv(url)
   "Plays url in mpv"
   (interactive)
-  (start-process-shell-command "mpv" nil (concat "mpv '" url "'")))
+  (start-process-shell-command "mpv" nil (concat "mpv " url)))
 
 ;;;###autoload
 (defun mf/youtube(title)
@@ -75,9 +76,10 @@ If there is a prefix argument, switch to the eshell buffer."
 		 (ids (seq-map (lambda (vid)
 						 (format "%s -$- %s"
 								 (plist-get vid :title)
-								 (plist-get vid :id))) videos))
+								 (plist-get vid :id)))
+					   videos))
 		 (chosen-id (cdr (split-string (completing-read "Title: " ids) " -$- " t)))
-		 (url (concat "https://youtu.be/" (car chosen-id))))
+		 (url (concat "https://www.youtube.com/watch?v=" (car chosen-id))))
 	(mf/mpv url)))
 
 (provide 'mf-functions)
