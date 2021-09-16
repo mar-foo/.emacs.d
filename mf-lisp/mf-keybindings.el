@@ -8,6 +8,7 @@
 (define-key global-map (kbd "C-. r") #'point-to-register)
 (define-key global-map (kbd "C-. w") #'window-configuration-to-register)
 (define-key global-map (kbd "C-. j") #'jump-to-register)
+(define-key global-map (kbd "C-x C-b") #'(lambda () (interactive) (ibuffer t)))
 (define-key global-map (kbd "C-S-d") #'backward-kill-word)
 
 (if
