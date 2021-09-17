@@ -78,7 +78,7 @@
   (add-hook 'exwm-manage-finish-hook #'mf/manage--window-by-class)
   ;;; PRESENTAZIONE
   (require 'exwm-randr)
-  (setq exwm-randr-workspace-output-plist '(0 "VGA1"))
+  (setq exwm-randr-workspace-output-plist '(1 "VGA1" 2 "VGA1" 3 "VGA1" 4 "VGA1"))
   (add-hook 'exwm-randr-screen-change-hook
 			(lambda()
 			  (start-process-shell-command
