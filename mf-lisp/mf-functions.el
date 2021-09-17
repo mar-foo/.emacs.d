@@ -61,11 +61,18 @@ If there is a prefix argument, switch to the eshell buffer."
 		(switch-to-buffer "*eshell*"))
 	  (eshell))))
 
+(defun mf/yank-to-string()
+  (rotate-yank-pointer 0)
+  (car kill-ring-yank-pointer))
+
 ;;;###autoload
-(defun mf/mpv(url)
+(defun mf/mpv(&optional url)
   "Plays url in mpv"
   (interactive)
-  (start-process-shell-command "mpv" nil (concat "mpv " url)))
+  (if (called-interactively-p)
+	  (let ((url (mf/yank-to-string)))
+		(start-process-shell-command "mpv" nil (concat "mpv " url)))
+	(start-process-shell-command "mpv" nil (concat "mpv " url))))
 
 ;;;###autoload
 (defun mf/youtube(title)
