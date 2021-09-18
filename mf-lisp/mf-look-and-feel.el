@@ -53,6 +53,10 @@
                              ("\\*[Hh]elp" (display-buffer-in-side-window)
                               (side . bottom)
                               (window-height . 0.4)
+							  (slot . 1))
+							 ("*Libera.Chat" (display-buffer-in-side-window)
+							  (side . bottom)
+							  (window-height . 0.4)
 							  (slot . 1))))
 
 (require 'whitespace)
