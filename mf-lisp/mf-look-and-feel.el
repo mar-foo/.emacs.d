@@ -17,7 +17,6 @@
 					   '(menu-bar-lines . 0)
 					   '(left-margin-width . 1)
 					   '(right-margin-width . 1)
-					   '(alpha . (90 . 90))
 					   '(vertical-scroll-bars . nil)))
 			  fringes-outside-margins t
 			  window-resize-pixelwise t
