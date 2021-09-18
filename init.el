@@ -17,8 +17,10 @@
 (delete-selection-mode 1)		        ; Replace region when inserting text
 (recentf-mode 1)                         ; Keep recent file list
 
-(mf/install modus-themes)
-(load-theme 'modus-operandi t)
+;; (mf/install modus-themes)
+;; (load-theme 'modus-operandi t)
+(mf/install monochrome-theme)
+(load-theme 'monochrome-bright t)
 
 (load-file (concat user-emacs-directory "Emacs.el"))
 
@@ -47,7 +49,7 @@
  '(jdee-db-spec-breakpoint-face-colors (cons "#131033" "#546A90"))
  '(objed-cursor-color "#e61f44")
  '(package-selected-packages
-   '(vertico icomplete-vertical password-store exwm modus-themes haskell-mode org-roam notmuch go-mode hindent visual-fill-column projectile prescient magit))
+   '(monochrome-theme monospace-theme monospace-themes vertico icomplete-vertical password-store exwm modus-themes haskell-mode org-roam notmuch go-mode hindent visual-fill-column projectile prescient magit))
  '(rustic-ansi-faces
    ["#0c0a20" "#e61f44" "#a7da1e" "#ffd400" "#1ea8fc" "#ff2afc" "#42c6ff" "#f2f3f7"])
  '(send-mail-function 'sendmail-send-it)
@@ -57,5 +59,24 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(icomplete-selected-match ((t (:weight bold)))))
+ '(completions-common-part ((t (:foreground "black" :weight bold))))
+ '(completions-first-difference ((t (:underline "black" :weight semi-bold))))
+ '(error ((t (:background "white" :foreground "#900000" :slant italic :weight bold))))
+ '(font-lock-function-name-face ((t (:foreground "black" :weight semi-bold))))
+ '(fringe ((t (:background "white" :foreground "black"))))
+ '(highlight ((t (:background "#e0e0e0" :foreground "black"))))
+ '(hl-line ((t (:background "#e0e0e0"))))
+ '(icomplete-selected-match ((t (:weight bold))))
+ '(magit-branch-remote ((t (:foreground "black" :underline t :slant oblique))))
+ '(magit-section-heading ((t (:extend t :foreground "black" :weight bold))))
+ '(mode-line ((t (:background "#e0e0e0" :foreground "#303030" :box (:line-width (1 . -1) :style flat-button)))))
+ '(notmuch-search-date ((t (:foreground "black" :slant oblique :weight normal))))
+ '(notmuch-search-matching-authors ((t (:foreground "black" :weight semi-bold))))
+ '(notmuch-search-subject ((t (:foreground "#000000" :weight light))))
+ '(notmuch-search-unread-face ((t (:inherit bold :underline t))))
+ '(notmuch-tag-added ((t (:underline "black"))))
+ '(notmuch-tag-face ((t (:inherit shadow :foreground "#505050" :weight normal))))
+ '(notmuch-tag-unread ((t (:foreground "black" :weight bold))))
+ '(warning ((t (:background "#b0b0b0" :foreground "black"))))
+ '(whitespace-trailing ((t (:background "red1")))))
 (put 'downcase-region 'disabled nil)
