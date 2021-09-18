@@ -15,29 +15,13 @@
 					   '(font . "Go Mono:style=medium:size=12")
 					   '(tool-bar-lines . 0)
 					   '(menu-bar-lines . 0)
-					   '(left-margin-width . 1)
-					   '(right-margin-width . 1)
+					   '(internal-border-width . 15)
+					   '(right-fringe . 1)
+					   '(left-fringe . 1)
 					   '(vertical-scroll-bars . nil)))
 			  fringes-outside-margins t
 			  window-resize-pixelwise t
 			  frame-resize-pixelwise t)
-
-;; Mode line format
-;; (setq-default mode-line-format
-;; 			  (list
-;; 			   '(:eval (propertize (concat (if (display-graphic-p) " " "-") " %*%+ ")
-;; 								   'face '(:background "#10387c" :foreground "black" :height 0.9 :weight bold)))
-;; 			   '(:eval (propertize (concat " [" (file-name-directory buffer-file-name))
-;; 								   'face '(:foreground "black" :height 0.9 :weight normal)))
-;; 			   '(:eval (propertize (concat (file-name-nondirectory buffer-file-name))
-;; 								   'face '(:foreground "#10387c" :height 0.9 :weight bold)))
-;; 			   '(:eval (propertize (if (string-equal (file-name-nondirectory buffer-file-name) "") "" "]")
-;; 								   'face '(:foreground "black" :height 0.9 :weight normal)))
-;; 			   '(:eval (propertize (concat (concat " [" mode-name ) "] ")
-;; 								   'face '(:foreground "black" :height 0.9 :weight normal)))))
-;; (custom-set-faces
-;;  '(mode-line ((t (:background "#ffffff" :foreground "#f4f4f4" :box nil :overline nil :underline nil))))
-;;  '(mode-line-inactive ((t (:background "#aaaaaa" :foreground "#bfc0c4" :box nil :overline nil :underline nil)))))
 
 (setq display-buffer-alist '(("\\*eshell\\*"  (display-buffer-in-side-window)
                               (side . bottom)
