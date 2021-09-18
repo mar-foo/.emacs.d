@@ -16,16 +16,11 @@
           #'complete-path-at-point+
           'append)
 
-(icomplete-vertical-mode 1)
 (setq completion-styles '(partial-completion substring initials flex)
 	  completion-category-overrides
 	  '((file (styles initials basic))))
-(setq icomplete-delay-completions-threshold 0
-	  icomplete-max-delay-chars 0
-	  icomplete-compute-delay 0
-	  icomplete-show-matches-on-no-input t
-	  icomplete-with-completion-tables t
-	  icomplete-in-buffer t)
+(mf/install vertico)
+(vertico-mode 1)
 
 (provide 'mf-completion)
 ;;; mf-completion.el ends here
