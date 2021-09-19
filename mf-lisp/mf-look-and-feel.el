@@ -9,6 +9,7 @@
 (global-hl-line-mode 1)			        ; Highlight current line
 (show-paren-mode 1)
 (setq show-paren-delay 0)		        ; Highlight matching parentheses
+(fringe-mode)
 
 (setq-default default-frame-alist
 			  (append (list
@@ -16,8 +17,8 @@
 					   '(tool-bar-lines . 0)
 					   '(menu-bar-lines . 0)
 					   '(internal-border-width . 15)
-					   '(right-fringe . 1)
-					   '(left-fringe . 1)
+					   '(right-fringe . 5)
+					   '(left-fringe . 5)
 					   '(vertical-scroll-bars . nil)))
 			  fringes-outside-margins t
 			  window-resize-pixelwise t
