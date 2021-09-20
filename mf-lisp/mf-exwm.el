@@ -7,7 +7,7 @@
 
 (defun mf/manage--window-by-class()
   (pcase exwm-class-name
-	("Firefox" (exwm-workspace-move-window 3))))
+	("Firefox" (exwm-workspace-move-window 1))))
 
 (defun mf/volume (action)
   (interactive)
@@ -16,7 +16,7 @@
 (progn
   (mf/install exwm)
   (require 'exwm-config)
-  (setq exwm-workspace-number 5
+  (setq exwm-workspace-number 2
 		exwm-input-prefix-keys
 		'(?\C-x
 		  ?\C-c
@@ -52,15 +52,15 @@
 							(mf/volume "+")))
 		  (,(kbd "s-)") . (lambda () (interactive) (exwm-workspace-move-window 0)))
 		  (,(kbd "s-!") . (lambda () (interactive) (exwm-workspace-move-window 1)))
-		  (,(kbd "s-@") . (lambda () (interactive) (exwm-workspace-move-window 2)))
-		  (,(kbd "s-#") . (lambda () (interactive) (exwm-workspace-move-window 3)))
-		  (,(kbd "s-$") . (lambda () (interactive) (exwm-workspace-move-window 4)))
+		  ;; (,(kbd "s-@") . (lambda () (interactive) (exwm-workspace-move-window 2)))
+		  ;; (,(kbd "s-#") . (lambda () (interactive) (exwm-workspace-move-window 3)))
+		  ;; (,(kbd "s-$") . (lambda () (interactive) (exwm-workspace-move-window 4)))
 		  ,@(mapcar (lambda (i)
 					  `(,(kbd (format "s-%d" i)) .
 						(lambda ()
 						  (interactive)
 						  (exwm-workspace-switch-create ,i))))
-					(number-sequence 0 4)))
+					(number-sequence 0 1)))
 		exwm-input-simulation-keys
 		'((,(kbd "C-b") . [left])
 		  (,(kbd "C-f") . [right])
@@ -78,7 +78,7 @@
   (add-hook 'exwm-manage-finish-hook #'mf/manage--window-by-class)
   ;;; PRESENTAZIONE
   (require 'exwm-randr)
-  (setq exwm-randr-workspace-output-plist '(1 "VGA1" 2 "VGA1" 3 "VGA1" 4 "VGA1"))
+  (setq exwm-randr-workspace-output-plist '(1 "VGA1"))
   (add-hook 'exwm-randr-screen-change-hook
 			(lambda()
 			  (start-process-shell-command
