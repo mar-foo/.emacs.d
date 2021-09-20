@@ -13,7 +13,7 @@
   (eval-after-load 'org-mode
 	(progn
 	  (setq org-agenda-files
-			'("~/Documents/Personal/agenda.org")
+			'("~/Documents/Personal/agenda.org" "~/Documents/University/orario-2122.org")
 			org-archive-location "~/Documents/Personal/agenda.org::* Archive"
 			org-agenda-window-setup 'other-window
 			org-agenda-restore-windows-after-quit nil
