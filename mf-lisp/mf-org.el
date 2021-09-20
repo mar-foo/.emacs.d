@@ -23,7 +23,7 @@
 			org-log-into-drawer t
 			org-capture-templates
 			'(("a" "Agenda" entry
-n			   (file+headline "~/Documents/Personal/agenda.org" "Agenda")
+			   (file+headline "~/Documents/Personal/agenda.org" "Agenda")
 			   "** TODO %^{Action}\nSCHEDULED:%^T\n" :time-prompt t)
 			  ("t" "Teaching" entry
 			   (file+headline "~/Documents/Personal/agenda.org" "Teaching")
@@ -36,7 +36,11 @@ n			   (file+headline "~/Documents/Personal/agenda.org" "Agenda")
 			org-todo-keyword-faces
 			'(("TODO" . org-todo)
 			  ("DONE" . org-done)
-			  ("NO" . error)))
+			  ("NO" . error))
+			org-agenda-custom-commands
+			'(("a" "Agenda for current week or day"
+			   ((agenda "")
+				(todo)))))
 	  ;; I like my display-buffer-alist and would like it to be respected
 	  (defun my-switch-to-buffer-other-window (orig-func &rest args)
 		(apply #'switch-to-buffer-other-window args))
