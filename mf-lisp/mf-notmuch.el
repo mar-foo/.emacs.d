@@ -39,6 +39,10 @@
 				 :query "tag:uni"
 				 :key "u"
 				 :sort-order newer-first)
+		  (:name "unread"
+				 :query "tag:unread"
+				 :key "U"
+				 :sort-order newer-first)
 		  (:name "9front"
 				 :query "tag:9front"
 				 :key "9"
