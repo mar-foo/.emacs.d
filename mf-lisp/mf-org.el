@@ -32,9 +32,10 @@
 			   (file+headline "~/Documents/Personal/agenda.org" "Uni")
 			   "*** TODO %^{Action}%?"))
 			org-todo-keywords
-			'((sequence "TODO(t)" "|" "DONE(d)" "NO(n)"))
+			'((sequence "TODO(t)" "WAITING(w)" "|" "DONE(d)" "NO(n)"))
 			org-todo-keyword-faces
 			'(("TODO" . org-todo)
+			  ("WAITING" . (:inherit org-todo :foreground "#b0b0b0"))
 			  ("DONE" . org-done)
 			  ("NO" . error))
 			org-agenda-custom-commands
