@@ -16,13 +16,18 @@
 					   '(font . "Go Mono:style=medium:size=12")
 					   '(tool-bar-lines . 0)
 					   '(menu-bar-lines . 0)
-					   '(internal-border-width . 15)
 					   '(right-fringe . 5)
 					   '(left-fringe . 5)
 					   '(vertical-scroll-bars . nil)))
 			  fringes-outside-margins t
 			  window-resize-pixelwise t
 			  frame-resize-pixelwise t)
+(setq-default initial-frame-alist default-frame-alist)
+(add-hook 'window-configuration-change-hook
+		  (lambda()
+			(unless
+				(or (eq major-mode 'minibuffer-mode) (eq major-mode 'exwm-mode))
+			(set-window-margins (car (get-buffer-window-list (current-buffer) nil t)) 5 5))))
 
 (setq display-buffer-alist '(("\\*eshell\\*"  (display-buffer-in-side-window)
                               (side . bottom)
