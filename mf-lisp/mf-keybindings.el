@@ -1,7 +1,7 @@
 ;; mf-keybindings.el --- Keybinding configuration -*- lexical-binding: t -*-
 ;;; Code:
 (define-key global-map (kbd "C-. C-.") #'execute-extended-command)
-(define-key global-map (kbd "C-. .") #'comment-line)
+(define-key global-map (kbd "C-. ,") #'comment-line)
 (define-key global-map (kbd "C-. /") #'occur)
 (define-key global-map (kbd "C-. d") #'kill-current-buffer)
 (define-key global-map (kbd "C-. c") #'compile)
@@ -11,9 +11,18 @@
 (define-key global-map (kbd "C-x C-b") #'(lambda () (interactive) (ibuffer t)))
 (define-key global-map (kbd "C-S-d") #'backward-kill-word)
 
+;; Dired
 (if
 	(fboundp 'dired-mode-map)
 	(define-key dired-mode-map (kbd "q") #'(lambda() (interactive) (quit-window t))))
+
+;; Org
+(if
+	(fboundp 'org-capture)
+	(define-key global-map (kbd "C-. .") #'org-capture))
+(if
+	(fboundp 'org-agenda)
+	(define-key global-map (kbd "C-. a") #'org-agenda))
 
 ;; My functions
 (if
