@@ -58,7 +58,7 @@
 							  (slot . 0))
 							 ("\\*Org Agenda\\*" (display-buffer-in-side-window)
 							  (side . bottom)
-							  (window-width . 0.3))))
+							  (window-height . 0.4))))
 
 (require 'whitespace)
 (setq whitespace-style '(face empty line-tail trailing)
