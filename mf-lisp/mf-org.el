@@ -13,12 +13,14 @@
   (eval-after-load 'org-mode
 	(progn
 	  (setq org-agenda-files
-			'("~/Documents/Personal/agenda.org" "~/Documents/University/orario-2122.org")
+			'("~/Documents/Personal/agenda.org")
 			org-archive-location "~/Documents/Personal/agenda.org::* Archive"
 			org-agenda-window-setup 'other-window
 			org-agenda-restore-windows-after-quit nil
+			org-agenda-sticky nil
 			org-agenda-skip-archived-trees t
 			org-agenda-start-with-log-mode t
+			org-agenda-include-diary t
 			org-log-done 'time
 			org-log-into-drawer t
 			org-capture-templates
@@ -46,6 +48,8 @@
 	  (defun my-switch-to-buffer-other-window (orig-func &rest args)
 		(apply #'switch-to-buffer-other-window args))
 	  (advice-add 'org-switch-to-buffer-other-window :around #'my-switch-to-buffer-other-window))))
+
+(setq diary-file (file-truename "~/Documents/Personal/diary"))
 
 (progn
   (mf/install org-roam)
