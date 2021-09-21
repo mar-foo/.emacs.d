@@ -94,6 +94,27 @@
   (defun mf/org-roam-refresh-agenda-files()
 	(interactive)
 	(setq org-agenda-files (mf/org-roam-list-notes-by-tag "Teaching"))
-	(add-to-list 'org-agenda-files "~/Documents/Personal/agenda.org")))
+	(add-to-list 'org-agenda-files "~/Documents/Personal/agenda.org"))
+  (mf/org-roam-refresh-agenda-files)
+  (defun mf/org-roam-teaching-finalize-hook()
+	"Adds the captured project file to `org-agenda-files' if the
+capture was not aborted"
+	(remove-hook 'org-capture-after-finalize-hook 'mf/org-roam-teaching-finalize-hook)
+	(unless org-note-abort
+	  (with-current-buffer (org-capture-get :buffer)
+		(add-to-list 'org-agenda-files (buffer-file-name)))))
+  (defun mf/org-roam-find-teaching()
+	(interactive)
+	(add-hook 'org-capture-after 'mf/org-roam-teaching-finalize-hook)
+	(org-roam-node-find
+	 nil
+	 nil
+	 (mf/org-roam-filter-by-tag "Teaching")
+	 :templates
+	 '(("t" "Teaching" plain "* Agenda\n** TODO %^{Action}\n%?"
+		:if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Teaching")
+		:unnarrowed t))))
+  (define-key global-map (kbd "C-. n t") #'mf/org-roam-find-teaching))
+
 (provide 'mf-org)
 ;;; mf-org.el ends here
