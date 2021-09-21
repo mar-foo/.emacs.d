@@ -10,5 +10,7 @@
   (add-hook 'erc-mode-hook '(lambda() (whitespace-mode -1)))
   (setq erc-autojoin-channels-alist
 		'(("irc.libera.chat" "#emacs")
-		("localhost" "&bitlbee"))))
+		  ("localhost" "&bitlbee"))))
+
+(provide 'mf-erc)
 ;;; mf-erc.el ends here
