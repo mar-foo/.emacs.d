@@ -2,7 +2,7 @@
 ;;; Code:
 (define-key global-map (kbd "C-. C-.") #'execute-extended-command)
 (define-key global-map (kbd "C-. ,") #'comment-line)
-(define-key global-map (kbd "C-. /") #'occur)
+(define-key global-map (kbd "C-. /") #'eww)
 (define-key global-map (kbd "C-. d") #'kill-current-buffer)
 (define-key global-map (kbd "C-. c") #'compile)
 (define-key global-map (kbd "C-. r") #'point-to-register)
