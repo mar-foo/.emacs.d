@@ -35,7 +35,7 @@
 
 (if
 	(fboundp 'help-mode-map)
-			 (define-key help-mode-map (kbd "q") #'mf/quit-and-kill))
+	(define-key help-mode-map (kbd "q") #'mf/quit-and-kill))
 
 (if
 	(fboundp 'minibuffer-mode-map)

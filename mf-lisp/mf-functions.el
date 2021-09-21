@@ -31,7 +31,7 @@
   (shell-command (executable-find "infos")))
 
 ;;;###autoload
-(defun mf/quit-and-kill ()
+(defun mf/quit-and-kill()
   (interactive)
   (quit-window t))
 
