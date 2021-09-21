@@ -20,6 +20,7 @@
  '(jdee-db-active-breakpoint-face-colors (cons "#131033" "#1ea8fc"))
  '(jdee-db-requested-breakpoint-face-colors (cons "#131033" "#a7da1e"))
  '(jdee-db-spec-breakpoint-face-colors (cons "#131033" "#546A90"))
+ '(mpc-browser-tags '(Album|Playlist))
  '(objed-cursor-color "#e61f44")
  '(package-selected-packages
    '(use-package monochrome-theme vertico password-store exwm modus-themes haskell-mode org-roam notmuch go-mode hindent visual-fill-column projectile prescient magit))
