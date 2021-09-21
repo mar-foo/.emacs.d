@@ -28,8 +28,15 @@
 			'(("a" "Agenda" entry
 			   (file+headline "~/Documents/Personal/agenda.org" "Agenda")
 			   "** TODO %^{Action}\nSCHEDULED:%^T\n" :time-prompt t)
-			  ("t" "Teaching" entry
+			  ("t" "Teaching")
+			  ("tt" "Teaching General" entry
 			   (file+headline "~/Documents/Personal/Notes/20210913174909-teaching.org" "Agenda")
+			   "** TODO %^{Action}\n%?")
+			  ("tb" "CBI" entry
+			   (file+headline "~/Documents/Personal/Notes/20210921201618-cbi2021.org" "Agenda")
+			   "** TODO %^{Action}\n%?")
+			  ("tp" "CPA" entry
+			   (file+headline "~/Documents/Personal/Notes/20210921201649-cpa2021.org" "Agenda")
 			   "** TODO %^{Action}\n%?")
 			  ("u" "Uni" entry
 			   (file+headline "~/Documents/Personal/agenda.org" "Uni")
