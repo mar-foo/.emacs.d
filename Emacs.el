@@ -3,6 +3,8 @@
 (require 'mf-exwm)
 (require 'mf-autoloads)
 (require 'mf-look-and-feel)
+(require 'mf-mpc)
+(require 'mf-erc)
 (require 'mf-notmuch)
 (require 'mf-completion)
 (require 'mf-org)
