@@ -1,9 +1,7 @@
 ;;; mf-mpc.el --- Configuration for mpc.el -*- lexical-binding: t -*-
 ;;; Code:
+(require 'mpc)
 (progn
-  (unless
-	  (fboundp 'mpc)
-	(autoload 'mpc "mpc" nil t))
   (define-key mpc-mode-map (kbd "SPC") #'mpc-toggle-play)
   (define-key mpc-mode-map (kbd "p") #'previous-line)
   (define-key mpc-mode-map (kbd "n") #'next-line)
