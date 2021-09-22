@@ -50,6 +50,8 @@
 		  (:name "sent"
 				 :query "tag:sent"
 				 :sort-order newer-first))
+		notmuch-tree-show-out nil
+		notmuch-unthreaded-show-out nil
 		notmuch-hello-logo 'nil
 		notmuch-hello-sections '(notmuch-hello-insert-header
 								 notmuch-hello-insert-saved-searches
