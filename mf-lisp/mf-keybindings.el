@@ -18,12 +18,12 @@
 	(define-key dired-mode-map (kbd "q") #'(lambda() (interactive) (quit-window t))))
 
 ;; Org
-(if
-	(fboundp 'org-capture)
-	(define-key global-map (kbd "C-. .") #'org-capture))
-(if
-	(fboundp 'org-agenda)
-	(define-key global-map (kbd "C-. a") #'org-agenda))
+(define-key global-map (kbd "C-. .") #'org-capture)
+(define-key global-map (kbd "C-. a") #'org-agenda)
+(define-key global-map (kbd "C-. o") #'org-roam-capture)
+(define-key global-map (kbd "C-. n f") #'org-roam-node-find)
+(define-key global-map (kbd "C-. n i") #'org-roam-node-insert)
+(define-key global-map (kbd "C-. n t") #'mf/org-roam-find-teaching)
 
 ;; My functions
 (if

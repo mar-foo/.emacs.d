@@ -77,32 +77,36 @@
   (unless
 	  (fboundp 'org-roam-capture)
 	(autoload #'org-roam-capure "org-roam-capture" nil t))
-  (define-key global-map (kbd "C-. o") #'org-roam-capture)
-  (define-key global-map (kbd "C-. n f") #'org-roam-node-find)
-  (define-key global-map (kbd "C-. n i") #'org-roam-node-insert)
+  (unless
+	  (fboundp 'org-roam-node-list)
+	(autoload #'org-roam-node-list "org-roam" nil t))
   (setq org-roam-directory (file-truename "~/Documents/Personal/Notes/")
 		org-roam-v2-ack t)
   (add-hook 'org-roam-mode-hook 'org-roam-db-autosync-mode)
   (defun mf/org-roam-filter-by-tag (tag-name)
 	(lambda (node)
 	  (member tag-name (org-roam-node-tags node))))
+
   (defun mf/org-roam-list-notes-by-tag (tag-name)
 	(mapcar #'org-roam-node-file
 			(seq-filter
 			 (mf/org-roam-filter-by-tag tag-name)
 			 (org-roam-node-list))))
+
   (defun mf/org-roam-refresh-agenda-files()
 	(interactive)
 	(setq org-agenda-files (mf/org-roam-list-notes-by-tag "Teaching"))
 	(add-to-list 'org-agenda-files "~/Documents/Personal/agenda.org"))
   (mf/org-roam-refresh-agenda-files)
+
   (defun mf/org-roam-teaching-finalize-hook()
 	"Adds the captured project file to `org-agenda-files' if the
-capture was not aborted"
+  capture was not aborted"
 	(remove-hook 'org-capture-after-finalize-hook 'mf/org-roam-teaching-finalize-hook)
 	(unless org-note-abort
 	  (with-current-buffer (org-capture-get :buffer)
 		(add-to-list 'org-agenda-files (buffer-file-name)))))
+
   (defun mf/org-roam-find-teaching()
 	(interactive)
 	(add-hook 'org-capture-after 'mf/org-roam-teaching-finalize-hook)
