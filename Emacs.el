@@ -74,7 +74,9 @@
 	(autoload #'magit "magit" nil t))
   (unless
 	  (fboundp 'magit-status)
-	(autoload #'magit-status "magit-status" nil t)))
+	(autoload #'magit-status "magit" nil t))
+  (eval-after-load 'magit
+	'(message "Loaded magit")))
 
 ;; Pass
 (mf/install password-store)
