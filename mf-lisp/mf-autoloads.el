@@ -27,9 +27,6 @@
 (unless
 	(fboundp #'mf/youtube)
   (autoload #'mf/youtube "mf-functions" nil t))
-(unless
-	(fboundp #'mf/presentation-setup)
-  (autoload #'mf/presentation-setup "mf-presentazione" nil t))
 
 (provide 'mf-autoloads)
 ;;; mf-autoloads.el ends here
