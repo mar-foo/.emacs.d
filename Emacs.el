@@ -20,11 +20,18 @@
 ;;; Programming
 ;; Golang
 (mf/install go-mode)
+(mf/install company-go)
 (progn
   (unless
 	  (fboundp 'go-mode)
 	(autoload #'go-mode "go-mode" nil t))
-  (add-hook 'go-mode-hook 'gofmt-before-save))
+  (unless
+	  (fboundp 'gofmt-before-save)
+	(autoload #'gofmt-before-save "gofmt-before-save" nil t))
+  (eval-after-load 'go-mode
+	'(progn
+	   (message "Loaded go-mode")
+	   (add-hook 'go-mode-hook 'gofmt-before-save))))
 
 ;; Haskell
 (mf/install haskell-mode)
