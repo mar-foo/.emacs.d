@@ -19,8 +19,16 @@
 (setq completion-styles '(partial-completion substring initials flex)
 	  completion-category-overrides
 	  '((file (styles initials basic))))
+
 (mf/install vertico)
-(vertico-mode 1)
+(eval-after-load 'minibuffer
+  '(progn
+	 (message "Loaded vertico")
+	 (vertico-mode 1)))
+
+(mf/install company)
+(eval-after-load 'company
+  '(message "Loaded company"))
 
 (provide 'mf-completion)
 ;;; mf-completion.el ends here
