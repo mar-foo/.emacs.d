@@ -76,6 +76,9 @@
   (unless
 	  (fboundp 'password-store-insert)
 	(autoload #'password-store-generate "password-store-generate" nil t))
-  (require 'epa-file)
-  (setq epa-pinentry-mode 'loopback))
+  (eval-after-load 'password-store
+	'(progn
+	   (message "Loaded password-store")
+	   (require 'epa-file)
+	   (setq epa-pinentry-mode 'loopback))))
 ;;; Emacs.el ends here
