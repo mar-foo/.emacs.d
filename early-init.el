@@ -23,7 +23,7 @@
  '(mpc-browser-tags '(Album|Playlist))
  '(objed-cursor-color "#e61f44")
  '(package-selected-packages
-   '(use-package monochrome-theme vertico password-store exwm modus-themes haskell-mode org-roam notmuch go-mode hindent visual-fill-column projectile prescient magit))
+   '(all-the-icons ob-go use-package monochrome-theme vertico password-store exwm modus-themes haskell-mode org-roam go-mode hindent visual-fill-column projectile prescient magit))
  '(rustic-ansi-faces
    ["#0c0a20" "#e61f44" "#a7da1e" "#ffd400" "#1ea8fc" "#ff2afc" "#42c6ff" "#f2f3f7"])
  '(send-mail-function 'sendmail-send-it)
@@ -68,6 +68,7 @@
  '(notmuch-tree-match-tag-face ((t (:foreground "black" :weight bold))))
  '(org-agenda-done ((t (:foreground "ForestGreen" :underline t :slant oblique :weight bold))))
  '(org-agenda-structure ((t (:foreground "black"))))
+ '(org-block ((t (:inherit shadow :extend t :background "#eeeeee"))))
  '(org-document-info ((t (:foreground "black"))))
  '(org-document-title ((t (:foreground "black" :weight bold))))
  '(org-done ((t (:foreground "green" :underline t :slant oblique :weight bold))))
