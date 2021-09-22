@@ -12,11 +12,10 @@
 ; autoloads to be defined
 (require 'mf-keybindings)
 
-(progn
-  (unless
-	(fboundp 'dired-mode)
-	(autoload #'dired-mode "dired" nil t))
-  (add-hook 'dired-mode-hook 'dired-hide-details-mode))
+(eval-after-load 'dired
+  '(progn
+	 (message "Loaded dired-mode")
+	 (add-hook 'dired-mode-hook 'dired-hide-details-mode)))
 
 ;;; Programming
 (mf/install projectile)
