@@ -56,7 +56,7 @@
   (setq hindent-reformat-buffer-on-save t))
 
 ;; C
-(add-hook 'c-mode-hook '(lambda()
+(add-hook 'c-mode-hook #'(lambda()
 						  (c-set-style "k&r")))
 
 ;; Git

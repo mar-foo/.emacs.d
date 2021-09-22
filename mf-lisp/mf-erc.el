@@ -7,7 +7,7 @@
   (unless
 	  (fboundp #'erc-tls)
 	(autoload #'erc-tls "erc" nil t))
-  (add-hook 'erc-mode-hook '(lambda() (whitespace-mode -1)))
+  (add-hook 'erc-mode-hook #'(lambda() (whitespace-mode -1)))
   (setq erc-autojoin-channels-alist
 		'(("irc.libera.chat" "#emacs")
 		  ("localhost" "&bitlbee"))))
