@@ -18,17 +18,6 @@
 	 (add-hook 'dired-mode-hook 'dired-hide-details-mode)))
 
 ;;; Programming
-(mf/install projectile)
-(progn
-  (unless
-	(fboundp 'projectile-mode)
-  (autoload #'projectile-mode "projectile" nil t))
-(add-hook 'c-mode-hook 'projectile-mode)
-(add-hook 'c++-mode-hook 'projectile-mode)
-(add-hook 'go-mode 'projectile-mode)
-(add-hook 'haskell-mode 'projectile-mode)
-(add-hook 'emacs-lisp-mode 'projectile-mode))
-
 ;; Golang
 (mf/install go-mode)
 (progn
