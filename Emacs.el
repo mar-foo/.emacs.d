@@ -35,20 +35,32 @@
 
 ;; Haskell
 (mf/install haskell-mode)
+(mf/install company-ghci)
 (progn
   (unless
 	  (fboundp 'haskell-mode)
 	(autoload #'haskell-mode "haskell-mode" nil t))
-  (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
-  (add-hook 'haskell-mode-hook 'haskell-indent-mode))
+  (unless
+	  (fboundp 'interactive-haskell-mode)
+	(autoload #'interactive-haskell-mode "haskell-mode" nil t))
+  (unless
+	  (fboundp 'haskell-indent-mode)
+	(autoload #'haskell-indent-mode "haskell-mode" nil t))
+  (eval-after-load 'haskell-mode
+	'(progn
+	   (message "Loaded haskell-mode")
+	   (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
+	   (add-hook 'haskell-mode-hook 'haskell-indent-mode))))
 
 (mf/install hindent)
-(progn
-  (unless
-	  (fboundp 'hindent-mode)
-	(autoload #'hindent-mode "hindent" nil t))
-  (add-hook 'haskell-mode-hook 'hindent-mode)
-  (setq hindent-reformat-buffer-on-save t))
+(unless
+	(fboundp 'hindent-mode)
+  (autoload #'hindent-mode "hindent" nil t))
+(eval-after-load 'haskell-mode
+  '(progn
+	 (message "Loaded hindent")
+	 (add-hook 'haskell-mode-hook 'hindent-mode)
+	 (setq hindent-reformat-buffer-on-save t)))
 
 ;; C
 (add-hook 'c-mode-hook #'(lambda()
