@@ -16,7 +16,7 @@
           #'complete-path-at-point+
           'append)
 
-(setq completion-styles '(partial-completion substring initials flex)
+(setq completion-styles '(partial-completion flex substring initials)
 	  completion-category-overrides
 	  '((file (styles initials basic))))
 
@@ -25,10 +25,6 @@
   '(progn
 	 (message "Loaded vertico")
 	 (vertico-mode 1)))
-
-(mf/install company)
-(eval-after-load 'company
-  '(message "Loaded company"))
 
 (provide 'mf-completion)
 ;;; mf-completion.el ends here

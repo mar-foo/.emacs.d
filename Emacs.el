@@ -23,7 +23,6 @@
 ;;; Programming
 ;; Golang
 (mf/install go-mode)
-(mf/install company-go)
 (progn
   (unless
 	  (fboundp 'go-mode)
@@ -38,7 +37,6 @@
 
 ;; Haskell
 (mf/install haskell-mode)
-(mf/install company-ghci)
 (progn
   (unless
 	  (fboundp 'haskell-mode)

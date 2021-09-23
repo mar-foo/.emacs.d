@@ -23,7 +23,7 @@
  '(mpc-browser-tags '(Album|Playlist))
  '(objed-cursor-color "#e61f44")
  '(package-selected-packages
-   '(company-ghci company-go elisp--witness--lisp company all-the-icons ob-go monochrome-theme vertico password-store exwm modus-themes haskell-mode org-roam go-mode hindent visual-fill-column projectile prescient magit))
+   '(go-complete gcmh elisp--witness--lisp all-the-icons ob-go monochrome-theme vertico password-store exwm modus-themes haskell-mode org-roam go-mode hindent visual-fill-column projectile prescient magit))
  '(rustic-ansi-faces
    ["#0c0a20" "#e61f44" "#a7da1e" "#ffd400" "#1ea8fc" "#ff2afc" "#42c6ff" "#f2f3f7"])
  '(send-mail-function 'sendmail-send-it)
@@ -33,10 +33,6 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(company-scrollbar-bg ((t (:background "#e0e0e0"))))
- '(company-scrollbar-fg ((t (:background "black"))))
- '(company-tooltip-common ((t (:foreground "#2f2f2f" :slant oblique))))
- '(company-tooltip-selection ((t (:background "#b0b0b0" :foreground "black" :weight semi-bold))))
  '(completions-common-part ((t (:foreground "black" :weight bold))))
  '(completions-first-difference ((t (:underline "black" :weight semi-bold))))
  '(erc-current-nick-face ((t (:foreground "black" :weight bold))))
