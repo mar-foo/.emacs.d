@@ -65,7 +65,23 @@
 
 (setq diary-file (file-truename "~/Documents/Personal/diary"))
 
-
+;; Org tree slide
+(mf/install org-tree-slide)
+(unless
+	(fboundp #'org-tree-slide-mode)
+  (autoload #'org-tree-slide-mode "org-tree-slide" nil t))
+(eval-after-load 'org
+  '(progn
+	 (define-key org-mode-map (kbd "C-c C-p") #'org-tree-slide-mode)
+	 (eval-after-load 'org-tree-slide
+	   '(progn
+		  (setq org-tree-slide-header nil)
+		  (define-key org-tree-slide-mode-map (kbd "n") #'org-tree-slide-move-next-tree)
+		  (define-key org-tree-slide-mode-map (kbd "p") #'org-tree-slide-move-previous-tree)
+		  (define-key org-tree-slide-mode-map (kbd "RET") #'org-tree-slide-move-next-tree)
+		  (define-key org-tree-slide-mode-map (kbd "+") #'mf/big-font)
+		  (define-key org-tree-slide-mode-map (kbd "-") #'(lambda() (interactive) (mf/big-font t)))))))
+;; Org roam
 (eval-after-load 'org
   '(progn
 	 (mf/install org-roam)

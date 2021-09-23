@@ -2,6 +2,13 @@
 ;;; Code:
 
 ;;;###autoload
+(defun mf/big-font(&optional use-generic-p)
+  (interactive "P")
+  (if use-generic-p
+	  (text-scale-decrease 4)
+	(text-scale-increase 4)))
+
+;;;###autoload
 (defun mf/delete-sexp()
   (interactive)
   (mark-sexp)
