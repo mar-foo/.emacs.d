@@ -15,9 +15,14 @@
 (mf/install gcmh)
 (gcmh-mode 1)
 
+;;; Dired
+(mf/install dired-filter)
 (eval-after-load 'dired
   '(progn
 	 (message "Loaded dired-mode")
+	 (setq dired-kill-when-opening-new-dired-buffer t)
+	 (add-hook 'dired-mode-hook 'dired-hide-details-mode)
+	 (add-hook 'dired-mode-hook 'dired-filter-mode)))
 
 ;; Git
 (mf/install magit)
