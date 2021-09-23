@@ -1,7 +1,6 @@
 #+TITLE: Emacs configuration
 #+AUTHOR: Mar-foo
 * My Emacs - EXWM configuration
-My configuration is stored in Emacs.org, I actually load Emacs.el at
-startup because this doesn't require loading org-mode which is a
-pain. Most packages are lazy-loaded but I'm still figuring out how to
-manage all of them consistently
+My configuration is stored in Emacs.el. I lazy-load most packages and
+I don't use `use-package'
+
