@@ -16,7 +16,7 @@
           #'complete-path-at-point+
           'append)
 
-(setq completion-styles '(partial-completion flex substring initials)
+(setq completion-styles '(substring partial-completion initials flex)
 	  completion-category-overrides
 	  '((file (styles initials basic))))
 
