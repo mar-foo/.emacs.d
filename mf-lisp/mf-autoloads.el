@@ -1,6 +1,9 @@
 ;;; mf-autoloads.el --- List of autoloads for custom Elisp modules -*- lexical-binding: t -*-
 ;;; Code:
 (unless
+	(fboundp #'mf/big-font)
+  (autoload #'mf/big-font "mf-functions" nil t))
+(unless
     (fboundp #'mf/delete-sexp)
   (autoload #'mf/delete-sexp "mf-functions" nil t))
 (unless
@@ -15,6 +18,9 @@
 (unless
     (fboundp #'mf/find-recentf)
   (autoload #'mf/find-recentf "mf-functions" nil t))
+(unless
+	(fboundp #'mf/quit-and-kill)
+  (autoload #'mf/quit-and-kill "mf-functions" nil t))
 (unless
     (fboundp #'mf/reload-configuration)
   (autoload #'mf/reload-configuration "mf-functions" nil t))
