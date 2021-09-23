@@ -23,7 +23,7 @@
  '(mpc-browser-tags '(Album|Playlist))
  '(objed-cursor-color "#e61f44")
  '(package-selected-packages
-   '(go-complete gcmh elisp--witness--lisp all-the-icons ob-go monochrome-theme vertico password-store exwm modus-themes haskell-mode org-roam go-mode hindent visual-fill-column projectile prescient magit))
+   '(org-tree-slide dired-filter go-complete gcmh all-the-icons ob-go monochrome-theme vertico password-store exwm haskell-mode org-roam go-mode hindent prescient magit))
  '(rustic-ansi-faces
    ["#0c0a20" "#e61f44" "#a7da1e" "#ffd400" "#1ea8fc" "#ff2afc" "#42c6ff" "#f2f3f7"])
  '(send-mail-function 'sendmail-send-it)
