@@ -1,6 +1,6 @@
 ;; init.el --- Emacs initalization file -*- lexical-binding: t -*-
 ;; Raise garbage collection threshold to speed up init time
-(setq gc-cons-threshold (* 50 1000 1000))
+(setq gc-cons-threshold most-positive-fixnum)
 
 ;; Better defaults
 (setq-default
@@ -18,8 +18,6 @@
 (delete-selection-mode 1)		        ; Replace region when inserting text
 (recentf-mode 1)                         ; Keep recent file list
 
-;; (mf/install modus-themes)
-;; (load-theme 'modus-operandi t)
 (mf/install monochrome-theme)
 (load-theme 'monochrome-bright t)
 
@@ -36,4 +34,3 @@
 
 (setq gc-cons-threshold (* 2 1000 1000))
 ;;; init.el ends here
-(put 'upcase-region 'disabled nil)
