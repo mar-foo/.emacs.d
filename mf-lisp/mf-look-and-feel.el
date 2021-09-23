@@ -74,5 +74,17 @@
       whitespace-line-column 80)
 (global-whitespace-mode t)
 
+(mf/install mini-frame)
+(setq mini-frame-show-parameters
+	  '((top . 0.2)
+		(width . 0.8)
+		(left . 0.5))
+	  mini-frame-internal-border-color "black")
+(mini-frame-mode 1)
+(defun mini-frame-get-background-color ()
+  "Set background color for mini-frame"
+  (let ((color (format "#%s" "ffffff")))
+	color))
+
 (provide 'mf-look-and-feel)
 ;;; mf-look-and-feel.el ends here
