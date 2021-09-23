@@ -18,8 +18,8 @@
 (delete-selection-mode 1)		        ; Replace region when inserting text
 (recentf-mode 1)                         ; Keep recent file list
 
-(mf/install monochrome-theme)
-(load-theme 'monochrome-bright t)
+(add-to-list 'custom-theme-load-path (concat user-emacs-directory "mf-lisp/themes/"))
+(load-theme 'mf t)
 
 (load-file (concat user-emacs-directory "Emacs.el"))
 
