@@ -1,17 +1,21 @@
 ;;; Emacs.el --- Use package driven emacs configuration
 ;;; Code:
+;;; Configuration modules used
 (require 'mf-exwm)
-(require 'mf-autoloads)
 (require 'mf-look-and-feel)
+(require 'mf-autoloads)
 (require 'mf-mpc)
 (require 'mf-erc)
+(require 'mf-gnus)
 (require 'mf-notmuch)
 (require 'mf-completion)
 (require 'mf-org)
+(require 'mf-programming)
 ; mf-keybindings has to be loaded after everything else, it needs some
 ; autoloads to be defined
 (require 'mf-keybindings)
 
+;;; Manage garbage collection
 (mf/install gcmh)
 (gcmh-mode 1)
 
