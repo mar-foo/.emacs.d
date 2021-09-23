@@ -12,6 +12,9 @@
 ; autoloads to be defined
 (require 'mf-keybindings)
 
+(mf/install gcmh)
+(gcmh-mode 1)
+
 (eval-after-load 'dired
   '(progn
 	 (message "Loaded dired-mode")
