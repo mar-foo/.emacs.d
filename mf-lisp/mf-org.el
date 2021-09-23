@@ -1,5 +1,6 @@
 ;;; mf-org.el --- My configuration for Org mode and Org Roam -*- lexical-binding: t -*-
 ;;; Code:
+;; Org mode
 (progn
   (unless
 	  (fboundp #'org-mode)
@@ -57,7 +58,8 @@
 		'((emacs-lisp . t)
 		  (shell . t)
 		  (awk . t)
-		  (go . t)))
+		  (go . t)
+		  (C . t)))
 	   ;; I like my display-buffer-alist and would like it to be respected
 	   (defun my-switch-to-buffer-other-window (orig-func &rest args)
 		 (apply #'switch-to-buffer-other-window args))
