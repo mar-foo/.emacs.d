@@ -1,11 +1,12 @@
 ;;; mf-mu4e.el --- My mu4e configuration -*- lexical-binding: t -*-
 ;;; Code:
-(add-to-list 'load-path "/usr/share/emacs/site-lisp/mu/")
+(add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e/")
 (unless
 	(fboundp #'mu4e)
-  (autoload #'mu4e "/usr/share/emacs/site-lisp/mu/mu4e")
+  (autoload #'mu4e "mu4e" nil t))
 (eval-after-load 'mu4e
   '(progn
+	 (message "Mu4e loaded")
      (require 'smtpmail)
      (setq user-mail-address "mario.forzanini@studenti.unimi.it"
            user-full-name "Mario Forzanini"
