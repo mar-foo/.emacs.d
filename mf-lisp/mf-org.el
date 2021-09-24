@@ -14,6 +14,7 @@
   (eval-after-load 'org
 	'(progn
 	   (message "Loaded org-mode")
+	   (require 'org-tempo)
 	   (setq org-archive-location "~/Documents/Personal/agenda.org::* Archive"
 			 org-agenda-window-setup 'other-window
 			 org-agenda-restore-windows-after-quit nil
@@ -52,6 +53,12 @@
 				((agenda "")
 				 (todo))))
 			 org-confirm-babel-evaluate nil)
+	   (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+	   (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+	   (add-to-list 'org-structure-template-alist '("go" . "src go"))
+	   (add-to-list 'org-structure-template-alist '("sc" . "src c"))
+	   (add-to-list 'org-structure-template-alist '("scp" . "src c++"))
+	   (add-to-list 'org-structure-template-alist '("hs" . "src haskell"))
 	   (mf/install ob-go)
 	   (org-babel-do-load-languages
 		'org-babel-load-languages
