@@ -19,7 +19,10 @@
 (recentf-mode 1)                         ; Keep recent file list
 
 (add-to-list 'custom-theme-load-path (concat user-emacs-directory "mf-lisp/themes/"))
-(load-theme 'mf t)
+(if
+	(>= (string-to-number (format-time-string "%H")) 19)
+	(load-theme 'mf-dark t)
+  (load-theme 'mf t))
 
 (load-file (concat user-emacs-directory "Emacs.el"))
 
