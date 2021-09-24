@@ -7,6 +7,7 @@
 (define-key global-map (kbd "C-. c") #'compile)
 (define-key global-map (kbd "C-. d") #'kill-current-buffer)
 (define-key global-map (kbd "C-. j") #'jump-to-register)
+(define-key global-map (kbd "C-. m") #'mu4e)
 (define-key global-map (kbd "C-. o") #'other-window)
 (define-key global-map (kbd "C-. p") #'mpc)
 (define-key global-map (kbd "C-. r") #'point-to-register)
