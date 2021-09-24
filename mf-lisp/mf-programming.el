@@ -47,5 +47,21 @@
 (add-hook 'c-mode-hook #'(lambda()
 						   (c-set-style "k&r")))
 
+;;; LSP
+(mf/install lsp-mode)
+(add-hook 'c-mode-hook 'lsp)
+(add-hook 'c++-mode-hook 'lsp)
+(add-hook 'go-mode-hook 'lsp)
+(eval-after-load 'lsp-mode
+  '(progn
+	 (message "Lsp-mode loaded")
+	 (setq read-process-output-max (* 1024 1024)
+		 lsp-idle-delay 0.5
+		 lsp-headerline-breadcrumb-enable nil
+		 lsp-lens-enable nil
+		 lsp-modeline-diagnostics-enable nil
+		 lsp-clangd-binary-path (executable-find "clangd")
+		 lsp-enable-snippet nil)))
+
 (provide 'mf-programming)
 ;;; mf-programming.el ends here
