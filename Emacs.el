@@ -7,7 +7,7 @@
 (require 'mf-mpc)
 (require 'mf-erc)
 (require 'mf-gnus)
-(require 'mf-notmuch)
+(require 'mf-mu4e)
 (require 'mf-completion)
 (require 'mf-org)
 (require 'mf-programming)
