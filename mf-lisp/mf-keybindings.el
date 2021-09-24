@@ -6,6 +6,7 @@
 (define-key global-map (kbd "C-. b") #'switch-to-buffer)
 (define-key global-map (kbd "C-. c") #'compile)
 (define-key global-map (kbd "C-. d") #'kill-current-buffer)
+(define-key global-map (kbd "C-. g") #'magit-status)
 (define-key global-map (kbd "C-. j") #'jump-to-register)
 (define-key global-map (kbd "C-. m") #'mu4e)
 (define-key global-map (kbd "C-. o") #'other-window)
