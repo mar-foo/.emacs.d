@@ -189,7 +189,7 @@
 
 						;; Mode line faces
 						'(mode-line ((t (:box (:line-width -1 :style flat-button)
-											  :background "#1e1e1e" :foreground "#bababa"))))
+											  :background "#1e1e1e" :foreground "white"))))
 						'(mode-line-inactive ((t (:box (:line-width -1 :style flat-button)
 													   :background "black"
 													   :foreground "#808080"))))
