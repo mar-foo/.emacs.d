@@ -6,6 +6,7 @@
 (eval-after-load 'mpc
   '(progn
 	 (message "Loaded mpc")
+	 (setq mpc-browser-tags '(Album|Playlist))
 	 (define-key mpc-tagbrowser-mode-map (kbd "a") #'mpc-playlist-add)
 	 (define-key mpc-mode-map (kbd "k") #'mpc-stop)
 	 (define-key mpc-mode-map (kbd "n") #'next-line)
