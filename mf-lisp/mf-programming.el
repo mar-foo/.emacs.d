@@ -13,7 +13,7 @@
   (eval-after-load 'go-mode
 	'(progn
 	   (message "Loaded go-mode")
-	   (add-hook 'go-mode-hook 'gofmt-before-save))))
+	   (add-hook 'go-mode-hook #'gofmt-before-save)))
 
 ;; Haskell
 (mf/install haskell-mode)
