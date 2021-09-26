@@ -24,6 +24,11 @@
 	(load-theme 'mf-dark t)
   (load-theme 'mf t))
 
+(defmacro mf/autoload-func (&rest body)
+  `(unless
+	   (fboundp #',(plist-get body :func))
+	 (autoload #',(plist-get body :func) ,(plist-get body :file) nil t)))
+
 (load-file (concat user-emacs-directory "Emacs.el"))
 
 ;; Startup time and garbage collection

@@ -1,9 +1,9 @@
 ;;; mf-mu4e.el --- My mu4e configuration -*- lexical-binding: t -*-
 ;;; Code:
 (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e/")
-(unless
-	(fboundp #'mu4e)
-  (autoload #'mu4e "mu4e" nil t))
+(mf/autoload-func
+ :func mu4e
+ :file "mu4e")
 (eval-after-load 'mu4e
   '(progn
 	 (message "Mu4e loaded")

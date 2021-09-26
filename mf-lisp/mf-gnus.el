@@ -1,9 +1,9 @@
 ;;; mf-gnus.el --- Configuration for gnus -*- lexical-binding: t -*-
 ;;; Code:
 (progn
-  (unless
-	  (fboundp 'gnus)
-	(autoload #'gnus "gnus" nil t))
+  (mf/autoload-func
+   :func gnus
+   :file "gnus")
   (eval-after-load 'gnus
 	'(progn
 	   (setq gnus-select-method '(nntp "news.gwene.org"))

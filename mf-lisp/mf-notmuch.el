@@ -2,9 +2,9 @@
 ;;; Code:
 (progn
   (add-to-list 'load-path "/usr/share/emacs/site-lisp/notmuch/")
-  (unless
-      (fboundp 'notmuch)
-	(autoload #'notmuch "notmuch" nil t))
+  (mf/autoload-func
+   :func notmuch
+   :file "notmuch")
   (define-key global-map (kbd "C-. m") #'notmuch)
   (eval-after-load 'notmuch
 	'(progn

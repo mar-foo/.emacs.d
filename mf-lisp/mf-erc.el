@@ -1,12 +1,12 @@
 ;;; mf-erc.el --- Configuration for ERC -*- lexical-binding: t -*-
 ;;; Code:
 (progn
-  (unless
-	  (fboundp #'erc)
-	(autoload #'erc "erc" nil t))
-  (unless
-	  (fboundp #'erc-tls)
-	(autoload #'erc-tls "erc" nil t))
+  (mf/autoload-func
+   :func erc
+   :file "erc")
+  (mf/autoload-func
+   :func erc-tls
+   :file "erc")
   (eval-after-load 'erc
 	'(progn
 	   (message "Loaded erc")

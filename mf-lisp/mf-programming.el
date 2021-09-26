@@ -4,12 +4,12 @@
 ;; Golang
 (mf/install go-mode)
 (progn
-  (unless
-	  (fboundp 'go-mode)
-	(autoload #'go-mode "go-mode" nil t))
-  (unless
-	  (fboundp 'gofmt-before-save)
-	(autoload #'gofmt-before-save "gofmt-before-save" nil t))
+  (mf/autoload-func
+   :func go-mode
+   :file "go-mode")
+  (mf/autoload-func
+   :func gofmt-before-save
+   :file "go-mode")
   (eval-after-load 'go-mode
 	'(progn
 	   (message "Loaded go-mode")
@@ -17,31 +17,27 @@
 
 ;; Haskell
 (mf/install haskell-mode)
+(mf/install hindent)
 (progn
-  (unless
-	  (fboundp 'haskell-mode)
-	(autoload #'haskell-mode "haskell-mode" nil t))
-  (unless
-	  (fboundp 'interactive-haskell-mode)
-	(autoload #'interactive-haskell-mode "haskell-mode" nil t))
-  (unless
-	  (fboundp 'haskell-indent-mode)
-	(autoload #'haskell-indent-mode "haskell-mode" nil t))
+  (mf/autoload-func
+   :func haskell-mode
+   :file "haskell-mode")
+  (mf/autoload-func
+   :func interactive-haskell-mode
+   :file "haskell-mode")
+  (mf/autoload-func
+   :func haskell-indent-mode
+   :file "haskell-mode")
+  (mf/autoload-func
+   :func hindent-mode
+   :file "hindent")
   (eval-after-load 'haskell-mode
 	'(progn
 	   (message "Loaded haskell-mode")
 	   (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
-	   (add-hook 'haskell-mode-hook 'haskell-indent-mode))))
-
-(mf/install hindent)
-(unless
-	(fboundp 'hindent-mode)
-  (autoload #'hindent-mode "hindent" nil t))
-(eval-after-load 'haskell-mode
-  '(progn
-	 (message "Loaded hindent")
-	 (add-hook 'haskell-mode-hook 'hindent-mode)
-	 (setq hindent-reformat-buffer-on-save t)))
+	   (add-hook 'haskell-mode-hook 'haskell-indent-mode)
+	   (add-hook 'haskell-mode-hook 'hindent-mode)
+	   (setq hindent-reformat-buffer-on-save t))))
 
 ;; C
 (add-hook 'c-mode-hook #'(lambda()
@@ -49,9 +45,9 @@
 
 ;;; LSP
 (mf/install lsp-mode)
-(add-hook 'c-mode-hook 'lsp)
-(add-hook 'c++-mode-hook 'lsp)
-(add-hook 'go-mode-hook 'lsp)
+(mf/autoload-func
+ :func lsp
+ :file "lsp-mode")
 (eval-after-load 'lsp-mode
   '(progn
 	 (message "Lsp-mode loaded")

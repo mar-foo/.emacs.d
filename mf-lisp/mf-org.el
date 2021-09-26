@@ -2,15 +2,15 @@
 ;;; Code:
 ;; Org mode
 (progn
-  (unless
-	  (fboundp #'org-mode)
-	(autoload #'org-mode "org-mode" nil t))
-  (unless
-	  (fboundp #'org-capture)
-	(autoload #'org-capture "org-mode" nil t))
-  (unless
-	  (fboundp #'org-agenda)
-	(autoload #'org-agenda "org-mode" nil t))
+  (mf/autoload-func
+   :func org-mode
+   :file "org-mode")
+  (mf/autoload-func
+   :func org-capture
+   :file "org-mode")
+  (mf/autoload-func
+   :func org-agenda
+   :file "org-mode")
   (eval-after-load 'org
 	'(progn
 	   (message "Loaded org-mode")
@@ -76,9 +76,9 @@
 
 ;; Org tree slide
 (mf/install org-tree-slide)
-(unless
-	(fboundp #'org-tree-slide-mode)
-  (autoload #'org-tree-slide-mode "org-tree-slide" nil t))
+(mf/autoload-func
+ :func org-tree-slide-mode
+ :file "org-tree-slide")
 (eval-after-load 'org
   '(progn
 	 (define-key org-mode-map (kbd "C-c C-p") #'org-tree-slide-mode)
@@ -94,22 +94,21 @@
 (eval-after-load 'org
   '(progn
 	 (mf/install org-roam)
-
-	 (unless
-		 (fboundp 'org-roam-find-node)
-	   (autoload #'org-roam-find-node "org-roam-find-node" nil t))
-	 (unless
-		 (fboundp 'org-roam-insert-node)
-	   (autoload #'org-roam-insert-node "org-roam-insert-node" nil t))
-	 (unless
-		 (fboundp 'org-roam-capture)
-	   (autoload #'org-roam-capure "org-roam-capture" nil t))
-	 (unless
-		 (fboundp 'org-roam-node-list)
-	   (autoload #'org-roam-node-list "org-roam-node-list" nil t))
-	 (unless
-		 (fboundp 'org-roam-db-autosync-mode)
-	   (autoload #'org-roam-db-autosync-mode "org-roam-db-autosync-mode" nil t))
+	 (mf/autoload-func
+	  :func org-roam-find-node
+	  :file "org-roam")
+	 (mf/autoload-func
+	  :func org-roam-insert-node
+	  :file "org-roam")
+	 (mf/autoload-func
+	  :func org-roam-capture
+	  :file "org-roam")
+	 (mf/autoload-func
+	  :func org-roam-node-list
+	  :file "org-roam")
+	 (mf/autoload-func
+	  :func org-roam-db-autosync-mode
+	  :file "org-roam")
 	 (advice-add 'org-agenda :after #'(lambda(&rest r) (require 'org-roam)))  ; I use some org-roam nodes as agenda buffers so org-agenda needs org-roam to be loaded
 	 (eval-after-load 'org-roam
 	   '(progn

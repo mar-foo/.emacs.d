@@ -1,8 +1,8 @@
 ;;; mf-mpc.el --- Configuration for mpc.el -*- lexical-binding: t -*-
 ;;; Code:
-(unless
-	(fboundp #'mpc)
-  (autoload #'mpc "mpc" nil t))
+(mf/autoload-func
+ :func mpc
+ :file "mpc")
 (eval-after-load 'mpc
   '(progn
 	 (message "Loaded mpc")

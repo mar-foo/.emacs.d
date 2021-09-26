@@ -1,6 +1,6 @@
 ;;; Emacs.el --- Use package driven emacs configuration
 ;;; Code:
-;;; Configuration modules used
+;; Configuration modules used
 (require 'mf-exwm)
 (require 'mf-look-and-feel)
 (require 'mf-autoloads)
@@ -31,27 +31,27 @@
 ;; Git
 (mf/install magit)
 (progn
-  (unless
-	  (fboundp 'magit)
-	(autoload #'magit "magit" nil t))
-  (unless
-	  (fboundp 'magit-status)
-	(autoload #'magit-status "magit" nil t))
+  (mf/autoload-func
+   :func magit
+   :file "magit")
+  (mf/autoload-func
+   :func magit-status
+   :file "magit")
   (eval-after-load 'magit
 	'(message "Loaded magit")))
 
 ;; Pass
 (mf/install password-store)
 (progn
-  (unless
-	  (fboundp 'password-store-copy)
-	(autoload #'password-store-copy "password-store-copy" nil t))
-  (unless
-	  (fboundp 'password-store-insert)
-	(autoload #'password-store-insert "password-store-insert" nil t))
-  (unless
-	  (fboundp 'password-store-insert)
-	(autoload #'password-store-generate "password-store-generate" nil t))
+  (mf/autoload-func
+   :func password-store-copy
+   :file "password-store")
+  (mf/autoload-func
+   :func password-store-insert
+   :file "password-store")
+  (mf/autoload-func
+   :func password-store-generate
+   :file "password-store")
   (eval-after-load 'password-store
 	'(progn
 	   (message "Loaded password-store")

@@ -27,9 +27,9 @@
 	 (vertico-mode 1)))
 
 (mf/install company)
-(unless
-	(fboundp #'company-mode)
-  (autoload #'company-mode "company" nil t))
+(mf/autoload-func
+ :func company-mode
+ :file "company")
 (eval-after-load 'lsp-mode
   '(progn
 	 (add-hook 'lsp-mode-hook 'company-mode)

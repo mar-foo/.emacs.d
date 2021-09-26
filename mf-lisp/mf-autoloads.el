@@ -1,38 +1,22 @@
 ;;; mf-autoloads.el --- List of autoloads for custom Elisp modules -*- lexical-binding: t -*-
 ;;; Code:
-(unless
-	(fboundp #'mf/big-font)
-  (autoload #'mf/big-font "mf-functions" nil t))
-(unless
-    (fboundp #'mf/delete-sexp)
-  (autoload #'mf/delete-sexp "mf-functions" nil t))
-(unless
-    (fboundp #'mf/edit-configuration)
-  (autoload #'mf/edit-configuration "mf-functions" nil t))
-(unless
-    (fboundp #'mf/ensure-package)
-  (autoload #'mf/ensure-package "mf-functions" nil t))
-(unless
-    (fboundp #'mf/infos)
-  (autoload #'mf/infos "mf-functions" nil t))
-(unless
-    (fboundp #'mf/find-recentf)
-  (autoload #'mf/find-recentf "mf-functions" nil t))
-(unless
-	(fboundp #'mf/quit-and-kill)
-  (autoload #'mf/quit-and-kill "mf-functions" nil t))
-(unless
-    (fboundp #'mf/reload-configuration)
-  (autoload #'mf/reload-configuration "mf-functions" nil t))
-(unless
-	(fboundp #'mf/select-completion-and-exit)
-  (autoload #'mf/select-completion-and-exit "mf-functions" nil t))
-(unless
-    (fboundp #'mf/toggle-eshell)
-  (autoload #'mf/toggle-eshell "mf-functions" nil t))
-(unless
-	(fboundp #'mf/youtube)
-  (autoload #'mf/youtube "mf-functions" nil t))
+(defmacro mf/my-func-autoload (func)
+  `(unless
+	  (fboundp #',func)
+	(autoload #',func "mf-functions" nil t)))
+
+(mf/my-func-autoload mf/big-font)
+(mf/my-func-autoload mf/delete-sexp)
+(mf/my-func-autoload mf/edit-configuration)
+(mf/my-func-autoload mf/ensure-package)
+(mf/my-func-autoload mf/eww)
+(mf/my-func-autoload mf/infos)
+(mf/my-func-autoload mf/find-recentf)
+(mf/my-func-autoload mf/quit-and-kill)
+(mf/my-func-autoload mf/reload-configuration)
+(mf/my-func-autoload mf/select-completion-and-exit)
+(mf/my-func-autoload mf/toggle-eshell)
+(mf/my-func-autoload mf/youtube)
 
 (provide 'mf-autoloads)
 ;;; mf-autoloads.el ends here
