@@ -10,6 +10,7 @@
 (require 'mf-mu4e)
 (require 'mf-completion)
 (require 'mf-org)
+(require 'mf-hacks)
 (require 'mf-programming)
 ; mf-keybindings has to be loaded after everything else, it needs some
 ; autoloads to be defined
