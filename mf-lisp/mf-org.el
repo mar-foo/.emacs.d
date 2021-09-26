@@ -68,9 +68,10 @@
 		  (go . t)
 		  (C . t)))
 	   ;; I like my display-buffer-alist and would like it to be respected
-	   (defun my-switch-to-buffer-other-window (orig-func &rest args)
+	   (defun mf/switch-to-buffer-other-window (orig-func &rest args)
 		 (apply #'switch-to-buffer-other-window args))
-	   (advice-add 'org-switch-to-buffer-other-window :around #'my-switch-to-buffer-other-window))))
+	   (advice-add 'org-agenda-get-restriction-and-command :around #'mf/org-agenda-get-restriction-and-command)
+	   (advice-add 'org-switch-to-buffer-other-window :around #'mf/switch-to-buffer-other-window))))
 
 (setq diary-file (file-truename "~/Documents/Personal/diary"))
 
