@@ -67,12 +67,34 @@
 		 (slot . 0))
 		("\\*Org Agenda\\*" (display-buffer-in-side-window)
 		 (side . bottom)
-		 (window-height . 0.4))))
+		 (window-height . 0.4))
+		("\\*Org Todo\\*" (display-buffer-in-side-window)
+		 (side . bottom)
+		 (slot . 1))))
+
 
 (require 'whitespace)
 (setq whitespace-style '(face empty line-tail trailing)
       whitespace-line-column 80)
 (global-whitespace-mode t)
+
+;; From doom-themes package
+(defface mf-visual-bell '((t :background "#900000"))
+  "Face for the visual bell")
+
+(defun mf/visual-bell()
+  "Blink the modeline red. Set `ring-bell-function' to this to use it."
+  (let ((bell-cookie (face-remap-add-relative 'mode-line 'mf-visual-bell)))
+	(force-mode-line-update)
+	(run-with-timer 0.15 nil
+					(lambda (cookie buf)
+					  (with-current-buffer buf
+						(face-remap-remove-relative cookie)
+						(force-mode-line-update)))
+					bell-cookie
+					(current-buffer))))
+
+(setq ring-bell-function #'mf/visual-bell)
 
 (provide 'mf-look-and-feel)
 ;;; mf-look-and-feel.el ends here
