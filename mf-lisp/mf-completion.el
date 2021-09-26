@@ -39,7 +39,9 @@
 		  (define-key company-active-map (kbd "<tab>") #'company-complete-selection)
 		  (define-key lsp-mode-map (kbd "<tab>") #'company-indent-or-complete-common)
 		  (setq company-minimum-prefix-length 3
-				company-idle-delay nil)))))
+				company-idle-delay nil)
+		  (eval-after-load 'yasnippet
+			'(define-key company-mode-map (kbd "<backtab>") 'company-yasnippet))))))
 
 (provide 'mf-completion)
 ;;; mf-completion.el ends here
