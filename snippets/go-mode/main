@@ -1,0 +1,6 @@
+# name: main
+# type: snippet
+# --
+func main() {
+	 $0
+}

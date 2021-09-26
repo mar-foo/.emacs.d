@@ -1,0 +1,7 @@
+# name: func
+# type: snippet
+# --
+// $2($3) ${5:...}
+func ${2:name}(${3:params}) $4 {
+	 $0
+}

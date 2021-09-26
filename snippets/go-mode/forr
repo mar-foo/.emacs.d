@@ -1,0 +1,6 @@
+# name: forr
+# type: snippet
+# --
+for $1 := range $2 {
+	$0
+}
