@@ -26,6 +26,7 @@
 						'(cursor ((t (:background "white"))))
 
 						;; Highlighting faces
+						'(bookmark-face ((t (:foreground "black" :background "#cccccc"))))
 						'(fringe ((t (:foreground "white" :background "black"))))
 						'(highlight ((t (:foreground "white" :background "#1e1e1e"))))
 						'(hl-line ((t (:background "#303030"))))
@@ -33,7 +34,7 @@
 						'(lazy-highlight ((t (:foreground "black" :background "#303030"))))
 						'(linum ((t (:foreground "#f0f0f0" :slant italic))))
 						'(match ((t (:background "green"))))
-						'(region ((t (:extend t :foreground "white" :background "#303030"))))
+						'(region ((t (:extend t :foreground "white" :background "#505050"))))
 						'(secondary-selection ((t (:foreground: "white" :background "#303030"))))
 						'(trailing-whitespace ((t (:background "red"))))
 
