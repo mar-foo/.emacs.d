@@ -27,6 +27,15 @@
 	(package-install pack)))
 
 ;;;###autoload
+(defun mf/eww ()
+  (interactive)
+  (with-temp-buffer
+	(insert-file-contents "~/.local/share/bookmarks.txt")
+	(let* ((links (buffer-string))
+		   (bookmarks (split-string links)))
+	  (eww (completing-read "URL: " bookmarks)))))
+
+;;;###autoload
 (defun mf/find-recentf()
   "Open a recent file list"
   (interactive)
