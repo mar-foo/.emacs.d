@@ -1,6 +1,5 @@
 ;;; mf-programming.el --- My configuration for programming languages that I use
 ;;; Code:
-;;; Programming
 ;; Golang
 (mf/install go-mode)
 (progn
@@ -13,7 +12,7 @@
   (eval-after-load 'go-mode
 	'(progn
 	   (message "Loaded go-mode")
-	   (add-hook 'go-mode-hook #'gofmt-before-save)))
+	   (add-hook 'go-mode-hook #'gofmt-before-save))))
 
 ;; Haskell
 (mf/install haskell-mode)
@@ -43,6 +42,15 @@
 (add-hook 'c-mode-hook #'(lambda()
 						   (c-set-style "k&r")))
 
+;; Yasnippet
+(mf/install yasnippet)
+(mf/autoload-func
+ :func yas-minor-mode
+ :file "yasnippet")
+(eval-after-load 'yasnippet
+  '(progn
+	 (setq yas-snippet-dirs '((concat user-emacs-directory "snippets")))))
+
 ;;; LSP
 (mf/install lsp-mode)
 (mf/autoload-func
@@ -52,12 +60,12 @@
   '(progn
 	 (message "Lsp-mode loaded")
 	 (setq read-process-output-max (* 1024 1024)
-		 lsp-idle-delay 0.5
-		 lsp-headerline-breadcrumb-enable nil
-		 lsp-lens-enable nil
-		 lsp-modeline-diagnostics-enable nil
-		 lsp-clangd-binary-path (executable-find "clangd")
-		 lsp-enable-snippet nil)))
+		   lsp-idle-delay 0.5
+		   lsp-headerline-breadcrumb-enable nil
+		   lsp-lens-enable nil
+		   lsp-modeline-diagnostics-enable nil
+		   lsp-clangd-binary-path (executable-find "clangd")
+		   lsp-enable-snippet nil)))
 
 (provide 'mf-programming)
 ;;; mf-programming.el ends here
