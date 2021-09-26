@@ -64,6 +64,17 @@
   (icomplete-ret))
 
 ;;;###autoload
+(defun mf/switch-theme ()
+  (interactive)
+  (if (string= (car custom-enabled-themes) "mf")
+	  (progn
+		(load-theme 'mf-dark t)
+		(disable-theme 'mf))
+	(progn
+	  (load-theme 'mf)
+	  (disable-theme 'mf-dark))))
+
+;;;###autoload
 (defun mf/toggle-eshell (&optional use-generic-p)
   "Toggle eshell window respecting buffer-alist configuration.
 If there is a prefix argument, switch to the eshell buffer."

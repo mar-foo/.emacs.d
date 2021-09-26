@@ -22,6 +22,7 @@
 (mf/leader "p" mpc)
 (mf/leader "r" point-to-register)
 (mf/leader "s" query-replace-regexp)
+(mf/leader "t" mf/switch-theme)
 (mf/leader "w" window-configuration-to-register)
 (mf/leader "1" delete-other-windows)
 (mf/leader "2" split-window-below)

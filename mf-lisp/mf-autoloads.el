@@ -15,6 +15,7 @@
 (mf/my-func-autoload mf/quit-and-kill)
 (mf/my-func-autoload mf/reload-configuration)
 (mf/my-func-autoload mf/select-completion-and-exit)
+(mf/my-func-autoload mf/switch-theme)
 (mf/my-func-autoload mf/toggle-eshell)
 (mf/my-func-autoload mf/youtube)
 
