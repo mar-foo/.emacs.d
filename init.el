@@ -20,7 +20,8 @@
 
 (add-to-list 'custom-theme-load-path (concat user-emacs-directory "mf-lisp/themes/"))
 (if
-	(>= (string-to-number (format-time-string "%H")) 19)
+	(or (>= (string-to-number (format-time-string "%H")) 19)
+		(<= (string-to-number (format-time-string "%H")) 8))
 	(load-theme 'mf-dark t)
   (load-theme 'mf t))
 
