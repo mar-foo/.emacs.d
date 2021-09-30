@@ -217,6 +217,13 @@
 						'(notmuch-tree-match-author-face ((t (:foreground "white" :weight semi-bold))))
 						'(notmuch-tree-match-tag-face ((t (:foreground "white" :weight bold))))
 
+						;; Orderless
+						'(orderless-match-face-0 ((t (:foreground "white" :underline t  :weight bold))))
+						'(orderless-match-face-1 ((t (:inherit orderless-match-face-0))))
+						'(orderless-match-face-2 ((t (:inherit orderless-match-face-0))))
+						'(orderless-match-face-3 ((t (:inherit orderless-match-face-0))))
+						'(orderless-match-face-4 ((t (:inherit orderless-match-face-0))))
+
 						;; Org-mode
 						'(org-agenda-done ((t (:foreground "ForestGreen" :underline t :slant oblique :weight bold))))
 						'(org-agenda-structure ((t (:foreground "white"))))
