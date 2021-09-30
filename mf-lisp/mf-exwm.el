@@ -74,7 +74,12 @@
   (define-key exwm-mode-map (kbd "C-q") #'exwm-input-send-next-key)
   (add-hook 'exwm-update-class-hook 'mf/exwm--update-class)
   (add-hook 'exwm-manage-finish-hook #'mf/manage--window-by-class)
-  ;;; PRESENTAZIONE
+  (add-hook 'exwm-floating-setup-hook #'exwm-layout-toggle-mode-line)
+  (add-hook 'exwm-init-hook
+			(lambda ()
+			  (exwm-randr-refresh)
+			  (exwm-workspace-switch 1)
+			  (switch-to-buffer "*scratch*")))
   (require 'exwm-randr)
   (setq exwm-randr-workspace-output-plist '(1 "VGA1"))
   (add-hook 'exwm-randr-screen-change-hook
