@@ -1,4 +1,4 @@
-;;; monochrome-bright-theme.el --- A bright Emacs 24 theme for your focused hacking sessions during the day
+;;; mf-theme.el --- A bright Emacs 24 theme for your focused hacking sessions during the day
 
 ;; Copyright (C) 2011-2014 Xavier Noria
 ;; Copyright (C) 2021 Mario Forzanini
@@ -8,11 +8,11 @@
 ;;
 ;; Just throw this file into ~/.emacs.d and
 ;;
-;; M-x load-theme RET mf-mono-light RET
+;; M-x load-theme RET mf RET
 ;;
 ;; or put in your init file
 ;;
-;; (load-theme 'mf-mono-light)
+;; (load-theme 'mf)
 ;;
 ;; This theme is based on monochrome-bright theme.
 ;;
