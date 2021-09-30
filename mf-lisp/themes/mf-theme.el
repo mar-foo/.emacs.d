@@ -241,6 +241,11 @@
 						'(org-time-grid ((t (:foreground "#a0a0a0"))))
 						'(org-todo ((t (:foreground "black" :underline t :slant oblique :weight bold))))
 						'(org-upcoming-deadline ((t (:foreground "black" :weight semi-bold))))
+
+						;; Org-roam
+						'(org-roam-preview-heading ((t (:inherit org-block))))
+						'(org-roam-preview-heading-highlight ((t (:inherit org-roam-preview-heading))))
+
 						;; Show-paren
 						'(show-paren-match ((t (:background "#303030"))))
 						'(show-paren-mismatch ((t (:background "red"))))
