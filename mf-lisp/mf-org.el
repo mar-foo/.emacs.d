@@ -52,7 +52,15 @@
 			 '(("a" "Agenda for current week or day"
 				((agenda "")
 				 (todo))))
-			 org-confirm-babel-evaluate nil)
+			 org-confirm-babel-evaluate nil
+			 org-html-doctype "html4-strict"
+			 org-html-head ""
+			 org-html-head-extra ""
+			 org-html-head-include-default-style nil
+			 org-html-head-include-scripts nil
+			 org-html-preamble nil
+			 org-html-postamble nil
+			 org-html-use-infojs nil)
 	   (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
 	   (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
 	   (add-to-list 'org-structure-template-alist '("go" . "src go"))
