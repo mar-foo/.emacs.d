@@ -189,11 +189,10 @@
 						'(completions-first-difference ((t (:underline "white" :weight semi-bold))))
 
 						;; Mode line faces
-						'(mode-line ((t (:box (:line-width -1 :style flat-button)
-											  :background "#1e1e1e" :foreground "white"))))
-						'(mode-line-inactive ((t (:box (:line-width -1 :style flat-button)
-													   :background "black"
-													   :foreground "#808080"))))
+						'(mode-line ((t (:background "#1e1e1e" :foreground "white"
+													 :box (:line-width 4 :color "#1e1e1e" :style flat-button)))))
+						'(mode-line-inactive ((t (:background "black" :foreground "#808080"
+															  :box (:line-width 4 :color "black")))))
 
 						;; MuMaMo
 						'(mumamo-background-chunk-major ((t (:background "black"))))
