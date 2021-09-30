@@ -68,8 +68,8 @@
 						'(minibuffer-prompt ((t (:weight bold :foreground "#bababa"))))
 						'(escape-glyph ((t (:foreground "#bababa"))))
 						'(error ((t (:weight bold :slant italic :foreground "#900000"))))
-						'(warning ((t (:background "#b0b0b0" :foreground "white"))))
-						'(success ((t (:background "#bababa" :foreground "green"))))
+						'(warning ((t (:foreground "white" :background "black" :inherit font-lock-warning-face))))
+						'(success ((t (:foreground "green"))))
 
 						;; EShell
 						'(eshell-prompt ((t (:foreground "white" :bold t))))
