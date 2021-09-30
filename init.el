@@ -1,8 +1,6 @@
 ;; init.el --- Emacs initalization file -*- lexical-binding: t -*-
-;; Raise garbage collection threshold to speed up init time
 (setq gc-cons-threshold most-positive-fixnum)
 
-;; Better defaults
 (setq-default
  tab-always-indent 'complete		    ; First tab indents, second one completes
  tab-width 4				            ; Smaller width for tab characters
@@ -17,29 +15,18 @@
 (fset #'yes-or-no-p #'y-or-n-p)         ; y or n instead of yes or no
 (delete-selection-mode 1)		        ; Replace region when inserting text
 (recentf-mode 1)                         ; Keep recent file list
+(load-file custom-file)
 
-(add-to-list 'custom-theme-load-path (concat user-emacs-directory "mf-lisp/themes/"))
-(if
-	(or (>= (string-to-number (format-time-string "%H")) 19)
-		(<= (string-to-number (format-time-string "%H")) 8))
-	(load-theme 'mf-dark t)
-  (load-theme 'mf t))
+(require 'mf-dashboard)
+(mf-dashboard-setup-startup-hook)
 
 (defmacro mf/autoload-func (&rest body)
   `(unless
 	   (fboundp #',(plist-get body :func))
 	 (autoload #',(plist-get body :func) ,(plist-get body :file) nil t)))
 
-(load-file (concat user-emacs-directory "Emacs.el"))
+(require 'mf-config)
 
-;; Startup time and garbage collection
-(add-hook 'emacs-startup-hook
-		  (lambda ()
-			(message "Emacs ready in %s with %d garbage collections"
-					 (format "%.2f seconds"
-							 (float-time
-							  (time-subtract after-init-time before-init-time)))
-					 gcs-done)))
-
-(setq gc-cons-threshold (* 2 1000 1000))
+(mf/install gcmh)
+(gcmh-mode 1)
 ;;; init.el ends here
