@@ -12,7 +12,7 @@
  visible-bell 1                         ; No bell
  auto-save-default nil                  ; Stop all the #filename# madness
  create-lockfiles nil
- custom-file (concat user-emacs-directory "early-init.el")
+ custom-file (concat user-emacs-directory "custom.el")
  cursor-in-non-selected-windows nil)	; Hide cursor in non selected windows
 (fset #'yes-or-no-p #'y-or-n-p)         ; y or n instead of yes or no
 (delete-selection-mode 1)		        ; Replace region when inserting text
