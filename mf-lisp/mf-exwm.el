@@ -2,6 +2,10 @@
 ;;; Code:
 (display-battery-mode)
 
+(setq display-time-default-load-average nil
+	  display-time-format "%H:%M")
+(display-time-mode)
+
 (defun mf/exwm--update-class()
   (exwm-workspace-rename-buffer exwm-class-name))
 
