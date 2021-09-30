@@ -90,7 +90,7 @@
  :file "org-tree-slide")
 (eval-after-load 'org
   '(progn
-	 (define-key org-mode-map (kbd "C-c C-p") #'org-tree-slide-mode)
+	 (define-key org-mode-map (kbd "C-c p") #'org-tree-slide-mode)
 	 (eval-after-load 'org-tree-slide
 	   '(progn
 		  (setq org-tree-slide-header nil)
