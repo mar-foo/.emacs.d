@@ -1,6 +1,6 @@
 ;;; mf-programming.el --- My configuration for programming languages that I use
 ;;; Code:
-;; Golang
+
 (mf/install go-mode)
 (progn
   (mf/autoload-func
@@ -14,7 +14,6 @@
 	   (message "Loaded go-mode")
 	   (add-hook 'go-mode-hook #'gofmt-before-save))))
 
-;; Haskell
 (mf/install haskell-mode)
 (mf/install hindent)
 (progn
@@ -38,18 +37,17 @@
 	   (add-hook 'haskell-mode-hook 'hindent-mode)
 	   (setq hindent-reformat-buffer-on-save t))))
 
-;; C
 (add-hook 'c-mode-hook #'(lambda()
 						   (c-set-style "k&r")))
 
 ;; Yasnippet
-(mf/install yasnippet)
-(mf/autoload-func
- :func yas-minor-mode
- :file "yasnippet")
-(eval-after-load 'yasnippet
-  '(progn
-	 (setq yas-snippet-dirs '((concat user-emacs-directory "snippets")))))
+   (mf/install yasnippet)
+   (mf/autoload-func
+	:func yas-minor-mode
+	:file "yasnippet")
+   (eval-after-load 'yasnippet
+	 '(progn
+		(setq yas-snippet-dirs '("~/.emacs.d/snippets"))))
 
 ;;; LSP
 (mf/install lsp-mode)
