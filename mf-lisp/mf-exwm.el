@@ -11,7 +11,8 @@
 
 (defun mf/manage--window-by-class()
   (pcase exwm-class-name
-	("Firefox" (exwm-workspace-move-window 1))))
+	("Firefox" (exwm-workspace-move-window 1))
+	("mpv" (exwm-layout-toggle-mode-line))))
 
 (defun mf/volume (action)
   (interactive)
