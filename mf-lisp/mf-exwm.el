@@ -22,6 +22,7 @@
   (mf/install exwm)
   (require 'exwm-config)
   (setq exwm-workspace-number 2
+		exwm-workspace-warp-cursor t
 		exwm-input-prefix-keys
 		'(?\C-x
 		  ?\C-c
@@ -89,5 +90,7 @@
   (exwm-randr-enable)
   (exwm-enable))
 
+
+
 (provide 'mf-exwm)
-;;; mf-exwm.el ends here
+	;;; mf-exwm.el ends here
