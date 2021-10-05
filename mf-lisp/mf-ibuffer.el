@@ -4,15 +4,17 @@
   '(progn
 	 (setq ibuffer-saved-filter-groups
 		   '(("default"
-			  ("Exwm" (mode . exwm-mode))
+			  ("EXWM" (mode . exwm-mode))
 			  ("Programming" (derived-mode . prog-mode))
 			  ("Mail" (derived-mode . mu4e-compose-mode))
 			  ("Org" (name . "^.*org$"))
 			  ("Org-roam" (name . "[0-9]+-.*.org"))
 			  ("Shell" (or (mode . eshell-mode) (name . "^st-256color")))
+			  ("PDF" (name . "^.*pdf$"))
 			  ("IRC" (mode . erc-mode))
+			  ("Man" (name . "\\*Man "))
 			  ("Magit" (derived-mode . magit-mode))
-			  ("Dired" (mode . dired-mode))
+			  ("Dired" (mode . dired-mode))a
 			  ("Web" (or (mode . eww-mode) (name . "^Firefox")))
 			  ("Emacs" (or (name . "\\*scratch\\*")
 						   (name . "\\*Messages\\*")
@@ -27,16 +29,19 @@
 	 (eval-after-load 'org-agenda
 	   '(setq ibuffer-saved-filter-groups
 			  '(("default"
-				 ("Exwm" (mode . exwm-mode))
+				 ("EXWM" (mode . exwm-mode))
 				 ("Programming" (derived-mode . prog-mode))
 				 ("Mail" (derived-mode . mu4e-compose-mode))
 				 ("Agenda" (or (name . "diary")
 							   (name . "agenda.org")
+							   (name . "\\*Org Agenda\\*")
 							   (predicate -contains-p org-agenda-files (buffer-file-name))))
 				 ("Org" (name . "^.*org$"))
 				 ("Org-roam" (name . "[0-9]+-.*.org"))
 				 ("Shell" (or (mode . eshell-mode) (name . "^st-256color")))
+				 ("PDF" (name . "^.*pdf$"))
 				 ("IRC" (mode . erc-mode))
+				 ("Man" (name . "\\*Man "))
 				 ("Magit" (derived-mode . magit-mode))
 				 ("Dired" (mode . dired-mode))
 				 ("Web" (or (mode . eww-mode) (name . "^Firefox")))
