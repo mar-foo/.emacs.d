@@ -1,6 +1,7 @@
 #+TITLE: Emacs configuration
 #+AUTHOR: Mario Forzanini
 #+HTML_HEAD:<link rel="stylesheet" type="text/css" href="/pub/style.css">
+
 #+startup: overview
 * early-init.el
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "early-init.el")
@@ -82,71 +83,55 @@ Load look and feel configuration from mf-look-and-feel.el as early as possible
  #+end_src
 *** display-buffer-alist
  #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-look-and-feel.el")
-   (setq display-buffer-alist
-		 '(("\\*eshell\\*"  (display-buffer-in-side-window)
-			(side . bottom)
-			(window-height . 0.4)
-			(slot . 0))
-		   ("\\*compilation\\*" (display-buffer-in-side-window)
-			(side . bottom)
-			(window-height . 0.4)
-			(slot . 1))
-		   ("\\*Flymake diagnostics for" (display-buffer-below-selected)
-			(window-height . 0.2))
-		   ("\\*slime-repl " (display-buffer-below-selected)
-			(window-height . 0.3))
-		   ("\\*inferior-lisp\\*" (display-buffer-below-selected)
-			(window-height . 0.2))
-		   ("\\*sldb " (display-buffer-below-selected)
-			(window-height . 0.3))
-		   ("\\*Packages\\*" (display-buffer-in-side-window)
-			(side . bottom)
-			(window-height . 0.4))
-		   ("\\*\\(Wo\\)\?Man" (display-buffer-in-side-window)
-			(side . bottom)
-			(window-height . 0.4)
-			(slot . 2))
-		   ("\\*[Hh]elp" (display-buffer-in-side-window)
-			(side . bottom)
-			(window-height . 0.4)
-			(slot . 1))
-		   ("*Libera.Chat" (display-buffer-in-side-window)
-			(side . bottom)
-			(window-height . 0.4)
-			(slot . 1))
-		   ("\\*MPC-Songs\\*" (display-buffer-in-side-window)
-			(side . bottom)
-			(window-height . 0.4)
-			(slot . 0))
-		   ("\\*MPC Album|Playlists\\*" (display-buffer-in-side-window)
-			(side . bottom)
-			(window-height . 0.4)
-			(slot . 1))
-		   ("\\*Agenda Commands\\*" (display-buffer-in-side-window)
-			(side . bottom)
-			(window-height . 0.4)
-			(slot . 1))
-		   ("\\*Org Select\\*" (display-buffer-in-side-window)
-			(side . bottom)
-			(window-height . 0.4)
-			(slot . 0))
-		   ("\\*Org Export Dispatcher\\*" (display-buffer-in-side-window)
-			(side . bottom)
-			(window-height . 0.4)
-			(slot . 1))
-		   ("\\*Org Agenda\\*" (display-buffer-in-side-window)
-			(side . bottom)
-			(window-height . 0.4))
-		   ("\\*Org Todo\\*" (display-buffer-in-side-window)
-			(side . bottom)
-			(slot . 1))))
+	(setq display-buffer-alist
+		  '(("\\*eshell\\*"  (display-buffer-in-side-window)
+			 (side . bottom)
+			 (window-height . 0.4)
+			 (slot . 0))
+			("\\*Packages\\*" (display-buffer-in-side-window)
+			 (side . bottom)
+			 (window-height . 0.4))
+			("\\*\\(Wo\\)\?Man" (display-buffer-in-side-window)
+			 (side . bottom)
+			 (window-height . 0.4)
+			 (slot . 1))
+			("\\*[Hh]elp" (display-buffer-in-side-window)
+			 (side . bottom)
+			 (window-height . 0.4)
+			 (slot . 1))
+			("*Libera.Chat" (display-buffer-in-side-window)
+			 (side . bottom)
+			 (window-height . 0.4)
+			 (slot . 1))
+			("\\*MPC-Songs\\*" (display-buffer-in-side-window)
+			 (side . bottom)
+			 (window-height . 0.4)
+			 (slot . 0))
+			("\\*MPC Album|Playlists\\*" (display-buffer-in-side-window)
+			 (side . bottom)
+			 (window-height . 0.4)
+			 (slot . 1))
+			("\\*Agenda Commands\\*" (display-buffer-in-side-window)
+			 (side . bottom)
+			 (window-height . 0.4)
+			 (slot . 1))
+			("\\*Org Select\\*" (display-buffer-in-side-window)
+			 (side . bottom)
+			 (window-height . 0.4)
+			 (slot . 0))
+			("\\*Org Agenda\\*" (display-buffer-in-side-window)
+			 (side . bottom)
+			 (window-height . 0.4))
+			("\\*Org Todo\\*" (display-buffer-in-side-window)
+			 (side . bottom)
+			 (slot . 1))))
 #+end_src
 *** Whitespace mode
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-look-and-feel.el")
 	(require 'whitespace)
 	(setq whitespace-style '(face empty line-tail trailing)
 		  whitespace-line-column 80)
-	(global-whitespace-mode)
+	(global-whitespace-mode t)
 #+end_src
 *** Visual bell
 	Flash the modeline red instead of the default bell
@@ -169,20 +154,6 @@ Load look and feel configuration from mf-look-and-feel.el as early as possible
 
 	(setq ring-bell-function #'mf/visual-bell)
  #+end_src
-*** Mini-modeline mode
- #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-look-and-feel.el")
-   (mf/install mini-modeline)
-   (setq mini-modeline-face-attr `(:background ,(face-attribute 'mode-line-inactive :background)))
-   (mini-modeline-mode)
-#+end_src
-Fix the redisplaying of the modeline when changing theme
-   #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-look-and-feel.el")
-   (advice-add #'load-theme :after #'(lambda (&rest r)
-									   (mini-modeline-mode -1)
-									   (setq mini-modeline-face-attr `(:background ,(face-attribute 'mode-line-inactive :background)))
-									   (mini-modeline-mode)))
-#+end_src
-
 *** Handle themes
  Load light theme from 08:00 to 19:00, dark theme otherwise
  #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-look-and-feel.el")
@@ -194,9 +165,10 @@ Fix the redisplaying of the modeline when changing theme
 	 (load-theme 'mf t))
  #+end_src
  #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-look-and-feel.el")
-	 (provide 'mf-look-and-feel)
-	 ;;; mf-look-and-feel.el ends here
+   (provide 'mf-look-and-feel)
+   ;;; mf-look-and-feel.el ends here
  #+end_src
+
 * init.el
 ** Garbage collection
 Raise garbage collection threshold to speed up init time
@@ -206,22 +178,21 @@ Raise garbage collection threshold to speed up init time
 #+end_src
 ** Better defaults
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "init.el")
-   (setq-default
-	tab-always-indent 'complete		    ; First tab indents, second one completes
-	tab-width 4				            ; Smaller width for tab characters
-	sentence-end-double-space nil		    ; Use a single space after dots
-	mouse-yank-at-point t			        ; Yank at point rather than pointer
-	help-window-select t			        ; Focus newly spawned help windows
-	visible-bell 1                         ; No bell
-	auto-save-default nil                  ; Stop all the #filename# madness
-	create-lockfiles nil
-	backup-directory-alist '(("." . "~/.cache/emacs-saves/"))
-	custom-file (concat user-emacs-directory "custom.el")
-	cursor-in-non-selected-windows nil)	; Hide cursor in non selected windows
-   (fset #'yes-or-no-p #'y-or-n-p)         ; y or n instead of yes or no
-   (delete-selection-mode 1)		        ; Replace region when inserting text
-   (recentf-mode 1)                         ; Keep recent file list
-   (load-file custom-file)
+  (setq-default
+   tab-always-indent 'complete		    ; First tab indents, second one completes
+   tab-width 4				            ; Smaller width for tab characters
+   sentence-end-double-space nil		    ; Use a single space after dots
+   mouse-yank-at-point t			        ; Yank at point rather than pointer
+   help-window-select t			        ; Focus newly spawned help windows
+   visible-bell 1                         ; No bell
+   auto-save-default nil                  ; Stop all the #filename# madness
+   create-lockfiles nil
+   custom-file (concat user-emacs-directory "custom.el")
+   cursor-in-non-selected-windows nil)	; Hide cursor in non selected windows
+  (fset #'yes-or-no-p #'y-or-n-p)         ; y or n instead of yes or no
+  (delete-selection-mode 1)		        ; Replace region when inserting text
+  (recentf-mode 1)                         ; Keep recent file list
+  (load-file custom-file)
 #+end_src
 ** Dashboard
    #+begin_src emacs-lisp :tangle (concat user-emacs-directory "init.el")
@@ -229,23 +200,8 @@ Raise garbage collection threshold to speed up init time
 	 (mf-dashboard-setup-startup-hook)
  #+end_src
    #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-dashboard.el")
-		  ;;; mf-dashboard.el --- Custom welcome screen for Emacs -*- lexical-binding: t -*-
-		  ;;; Code:
-	 (defgroup mf-dashboard nil
-	   "My startup screen"
-	   :group 'applications)
-
-	 (defvar dashboard-mode-map
-	   (let ((map (make-sparse-keymap)))
-		 (define-key map (kbd "b") 'switch-to-buffer)
-		 (define-key map (kbd "f") 'find-file)
-		 (define-key map (kbd "g") 'mf-dashboard-init)
-		 (define-key map (kbd "j") 'bookmark-jump)
-		 (define-key map (kbd "n") 'next-line)
-		 (define-key map (kbd "p") 'previous-line)
-		 map)
-	   "Keymap for dashboard mode.")
-
+	 ;;; mf-dashboard.el --- Custom welcome screen for Emacs -*- lexical-binding: t -*-
+	 ;;; Code:
 	 (define-derived-mode dashboard-mode fundamental-mode "Dashboard"
 	   "Startup screen major mode"
 	   :group 'mf-dashboard
@@ -259,10 +215,9 @@ Raise garbage collection threshold to speed up init time
 			 truncate-lines t
 			 inhibit-startup-screen t))
 
-	 (defcustom mf-dashboard-title "Emacs is a decent operating system only lacking a good text editor"
-	   "Title to be displayed in the dashboard"
-	   :type '(string)
-	   :group 'mf-dashboard)
+	 (defgroup mf-dashboard nil
+	   "My startup screen"
+	   :group 'applications)
 
 	 (defconst mf-dashboard-buffer-name "*dashboard*"
 	   "Startup screen buffer name")
@@ -287,7 +242,7 @@ Raise garbage collection threshold to speed up init time
 	   (with-current-buffer (get-buffer-create mf-dashboard-buffer-name)
 		 (let ((buffer-read-only nil))
 		   (erase-buffer)
-		   (mf-dashboard-insert-title)
+		   (mf-dashboard-insert-image)
 		   (mf-dashboard-insert-init-info))
 		 (dashboard-mode)))
 
@@ -298,21 +253,37 @@ Raise garbage collection threshold to speed up init time
 											 2)))
 							?\ )))
 
-	 (defun mf-dashboard-insert-title ()
+	 (defun mf-dashboard-insert-image ()
 	   "Insert banner at the top of the dashboard"
-	   (goto-char (point-min))
-	   (while (< (count-lines 1 (point)) (- (/ (window-height nil 'floor) 2) 3))
-		   (insert "\n")
-		   (forward-line))
-	   (when mf-dashboard-title
-		 (mf-dashboard-center-line mf-dashboard-title)
-		 (insert (format "%s\n\n" (propertize mf-dashboard-title 'face 'mf-dashboard-logo-title)))))
+	   (goto-char (point-max))
+	   (let ((banner (concat user-emacs-directory "logo.png") )
+			 (buffer-read-only nil))
+		 (when banner
+		   (if (image-type-available-p (intern (file-name-extension banner)))
+			   (when (file-exists-p banner)
+				 (let* ((title "Emacs is a decent operating system just lacking a good text editor.")
+						(spec
+						 (cond ((image-type-available-p 'imagemagick)
+								(apply 'create-image banner 'imagemagick nil))
+							   (t
+								(apply 'create-image banner nil nil))))
+						(size (when (fboundp 'image-size) (image-size spec)))
+						(width (car size))
+						(left-margin (max 0 (floor (- (window-width )width) 2))))
+				   (goto-char (point-min))
+				   (insert "\n")
+				   (insert (make-string left-margin ?\ ))
+				   (insert-image spec)
+				   (insert "\n\n")
+				   (when title
+					 (mf-dashboard-center-line title)
+					 (insert (format "%s\n\n" (propertize title 'face 'mf-dashboard-logo-title))))))))))
 
 	 (defun mf-dashboard-insert-init-info ()
 	   "Insert init info"
 	   (interactive)
-	   (let* ((init-time (emacs-init-time "%.2f seconds"))
-			  (info (format "Emacs ready in %s with %d garbage collections" (propertize init-time 'face 'font-lock-keyword-face) gcs-done))
+	   (let* ((init-time (format "%.2f seconds" (float-time (time-subtract after-init-time before-init-time))))
+			  (info (format "Emacs ready in %s with %d garbage collections" (propertize init-time 'face 'font-lock-keyword) gcs-done))
 			  (buffer-read-only nil))
 		 (mf-dashboard-center-line info)
 		 (insert info)))
@@ -336,11 +307,11 @@ Raise garbage collection threshold to speed up init time
 		   (with-selected-window space-win
 			 (mf-dashboard-init)))))
 
-		  ;;;autoload
+	 ;;;autoload
 	 (defun mf-dashboard-setup-startup-hook ()
 	   "Setup post initialization hooks.
-		  If a command line argument is provided, assume a filename and
-		  skip displaying the dashboard."
+	 If a command line argument is provided, assume a filename and
+	 skip displaying the dashboard."
 	   (add-hook 'after-init-hook (lambda ()
 									(mf-dashboard-init)))
 	   (add-hook 'emacs-startup-hook (lambda()
@@ -350,7 +321,7 @@ Raise garbage collection threshold to speed up init time
 									   (run-hooks 'mf-dashboard-after-initialize-hook))))
 
 	 (provide 'mf-dashboard)
-		  ;;; mf-dashboard.el ends here
+	 ;;; mf-dashboard.el ends here
    #+end_src
 ** Autoload macro
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "init.el")
@@ -364,15 +335,12 @@ Load the actual config
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "init.el")
   (require 'mf-config)
 #+end_src
-#+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-config.el")
-  ;;; mf-config.el --- Load configuration modules -*- lexical-binding: t
-  ;;; Code
-#+end_src
 ** mf-exwm.el
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-config.el")
   (require 'mf-exwm)
 #+end_src
 *** Display battery
+	Display the battery percentage when using exwm
  #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-exwm.el")
   ;;; mf-exwm.el --- EXWM configuration -*- lexical-binding: t -*-
   ;;; Code:
@@ -386,18 +354,17 @@ Load the actual config
 	#+end_src
 *** Helper functions
  #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-exwm.el")
-	  (defun mf/exwm--update-class()
-		(exwm-workspace-rename-buffer exwm-class-name))
+  (defun mf/exwm--update-class()
+	(exwm-workspace-rename-buffer exwm-class-name))
 
-	  (defun mf/manage--window-by-class()
-		(pcase exwm-class-name
-		  ("Firefox" (exwm-workspace-move-window 1))
-		  ("mpv" (unless mini-modeline-mode
-				   exwm-layout-toggle-mode-line))))
+  (defun mf/manage--window-by-class()
+	(pcase exwm-class-name
+	  ("Firefox" (exwm-workspace-move-window 1))
+	  ("mpv" (exwm-layout-toggle-mode-line))))
 
-	  (defun mf/volume (action)
-		(interactive)
-		(start-process-shell-command "amixer" nil (concat "amixer sset Master 5%" action)))
+  (defun mf/volume (action)
+	(interactive)
+	(start-process-shell-command "amixer" nil (concat "amixer sset Master 5%" action)))
 #+end_src
 *** Configuration
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-exwm.el")
@@ -454,7 +421,6 @@ Load the actual config
 			(,(kbd "C-v") . [next])
 			(,(kbd "C-d") . [delete])
 			(,(kbd "C-k") . [S-end delete]))
-		  exwm-layout-show-all-buffers t
 		  exwm-workspace-show-all-buffers t)
 	(define-key exwm-mode-map (kbd "C-q") #'exwm-input-send-next-key)
 	(add-hook 'exwm-update-class-hook 'mf/exwm--update-class)
@@ -474,11 +440,12 @@ Load the actual config
 	(exwm-randr-enable)
 	(exwm-enable))
 
+
+
   (provide 'mf-exwm)
 	  ;;; mf-exwm.el ends here
   #+end_src
 *** Sxrc
-	Shell script that runs at Xorg activation (using =sx=).
 	#+begin_src shell :tangle (if (eq exwm-state 1) (file-truename "~/.config/sx/sxrc") no) :tangle-mode (if (eq exwm-state 1) (identity #o755) (identity #o664))
 	  #!/bin/sh
 	  pgrep mpd || mpd &
@@ -487,21 +454,6 @@ Load the actual config
 	  export _JAVA_AWT_WM_NONREPARENTING=1
 	  exec emacs -mm --debug-init
     #+end_src
-*** Xmodmap
-	Switch Caps_Lock and Left_Control keys to prevent the =Emacs' pinky=.
-	#+begin_src fundamental :tangle (if (eq exwm-state 1) (file-truename "~/.Xmodmap") no)
-	  !
-	  ! Swap Caps_Lock and Control_L
-	  !
-	  remove Lock = Caps_Lock
-	  remove Control = Control_L
-	  remove Control = Caps_Lock
-	  remove Lock = Control_L
-	  keysym Control_L =Caps_Lock
-	  keysym Caps_Lock = Control_L
-	  add Lock = Caps_Lock
-	  add Control = Control_L
-	#+end_src
 ** mf-autoloads.el
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-config.el")
   (require 'mf-autoloads)
@@ -588,27 +540,25 @@ Rewrite mpc function to respect display-buffer-alist
 #+end_src
 Configure erc, the built-in IRC client
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-erc.el")
-  ;;; mf-erc.el --- Configuration for ERC -*- lexical-binding: t -*-
-  ;;; Code:
-  (progn
-	(mf/autoload-func
-	 :func erc
-	 :file "erc")
-	(mf/autoload-func
-	 :func erc-tls
-	 :file "erc")
-	(eval-after-load 'erc
-	  '(progn
-		 (message "Loaded erc")
-		 (add-hook 'erc-mode-hook #'(lambda()
-									  (whitespace-mode)
-									  (whitespace-mode -1)))
-		 (setq erc-autojoin-channels-alist
-			   '(("irc.libera.chat" "#emacs")
-				 ("localhost" "&bitlbee"))))))
+ ;;; mf-erc.el --- Configuration for ERC -*- lexical-binding: t -*-
+ ;;; Code:
+ (progn
+   (mf/autoload-func
+	:func erc
+	:file "erc")
+   (mf/autoload-func
+	:func erc-tls
+	:file "erc")
+   (eval-after-load 'erc
+	 '(progn
+		(message "Loaded erc")
+		(add-hook 'erc-mode-hook #'(lambda() (whitespace-mode -1)))
+		(setq erc-autojoin-channels-alist
+			  '(("irc.libera.chat" "#emacs")
+				("localhost" "&bitlbee"))))))
 
-  (provide 'mf-erc)
-  ;;; mf-erc.el ends here
+ (provide 'mf-erc)
+ ;;; mf-erc.el ends here
 #+end_src
 ** mf-gnus.el
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-config.el")
@@ -803,7 +753,6 @@ Configure the completion framework
 				 ("WAITING" . (:inherit org-todo :foreground "#b0b0b0"))
 				 ("DONE" . org-done)
 				 ("NO" . error))
-			   org-use-fast-todo-selection 'expert
 			   org-agenda-custom-commands
 			   '(("a" "Agenda for current week or day"
 				  ((agenda "")
@@ -931,390 +880,212 @@ Configure the completion framework
 #+end_src
 Hack =org-agenda-dispatcher= behaviour to make it respect =display-buffer-alist=
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-hacks.el")
-	;;; mf-hacks.el --- Ugly solutions to problems -*- lexical-binding: t -*-
-	;;; Code:
-  (eval-after-load 'org-agenda
-	'(defun mf/org-agenda-get-restriction-and-command (orig-func prefix-descriptions)
-	   "The user interface for selecting an agenda command. Fixed when the agenda buffer is displayed in a side window. "
-	   (catch 'exit
-		 (let* ((bfn (buffer-file-name (buffer-base-buffer)))
-				(restrict-ok (and bfn (derived-mode-p 'org-mode)))
-				(region-p (org-region-active-p))
-				(custom org-agenda-custom-commands)
-				(selstring "")
-				restriction second-time
-				c entry key type match prefixes rmheader header-end custom1 desc
-				line lines left right n n1)
-		   (save-window-excursion
-			 ;; (delete-other-windows) ; Fix showing agenda in side window
-			 (switch-to-buffer-other-window " *Agenda Commands*")
-			 (erase-buffer)
-			 (insert (eval-when-compile
-					   (let ((header
-							  (copy-sequence
-							   "Press key for an agenda command:
-	--------------------------------        <   Buffer, subtree/region restriction
-	a   Agenda for current week or day      >   Remove restriction
-	t   List of all TODO entries            e   Export agenda views
-	m   Match a TAGS/PROP/TODO query        T   Entries with special TODO kwd
-	s   Search for keywords                 M   Like m, but only TODO entries
-	/   Multi-occur                         S   Like s, but only TODO entries
-	?   Find :FLAGGED: entries              C   Configure custom agenda commands
-	,*   Toggle sticky agenda views          #   List stuck projects (!=configure)
-	"))
-							 (start 0))
-						 (while (string-match
-								 "\\(^\\|   \\|(\\)\\(\\S-\\)\\( \\|=\\)"
-								 header start)
-						   (setq start (match-end 0))
-						   (add-text-properties (match-beginning 2) (match-end 2)
-												'(face bold) header))
-						 header)))
-			 (setq header-end (point-marker))
-			 (while t
-			   (setq custom1 custom)
-			   (when (eq rmheader t)
-				 (org-goto-line 1)
-				 (re-search-forward ":" nil t)
-				 (delete-region (match-end 0) (point-at-eol))
-				 (forward-char 1)
-				 (looking-at "-+")
-				 (delete-region (match-end 0) (point-at-eol))
-				 (move-marker header-end (match-end 0)))
-			   (goto-char header-end)
-			   (delete-region (point) (point-max))
+ ;;; mf-hacks.el --- Ugly solutions to problems -*- lexical-binding: t -*-
+ ;;; Code:
+ (eval-after-load 'org-agenda
+   '(defun mf/org-agenda-get-restriction-and-command (orig-func prefix-descriptions)
+	 "The user interface for selecting an agenda command. Fixed when the agenda buffer is displayed in a side window. "
+	 (catch 'exit
+	   (let* ((bfn (buffer-file-name (buffer-base-buffer)))
+			  (restrict-ok (and bfn (derived-mode-p 'org-mode)))
+			  (region-p (org-region-active-p))
+			  (custom org-agenda-custom-commands)
+			  (selstring "")
+			  restriction second-time
+			  c entry key type match prefixes rmheader header-end custom1 desc
+			  line lines left right n n1)
+		 (save-window-excursion
+		   ;; (delete-other-windows) ; Fix showing agenda in side window
+		   (switch-to-buffer-other-window " *Agenda Commands*")
+		   (erase-buffer)
+		   (insert (eval-when-compile
+					 (let ((header
+							(copy-sequence
+							 "Press key for an agenda command:
+ --------------------------------        <   Buffer, subtree/region restriction
+ a   Agenda for current week or day      >   Remove restriction
+ t   List of all TODO entries            e   Export agenda views
+ m   Match a TAGS/PROP/TODO query        T   Entries with special TODO kwd
+ s   Search for keywords                 M   Like m, but only TODO entries
+ /   Multi-occur                         S   Like s, but only TODO entries
+ ?   Find :FLAGGED: entries              C   Configure custom agenda commands
+ *   Toggle sticky agenda views          #   List stuck projects (!=configure)
+ "))
+						   (start 0))
+					   (while (string-match
+							   "\\(^\\|   \\|(\\)\\(\\S-\\)\\( \\|=\\)"
+							   header start)
+						 (setq start (match-end 0))
+						 (add-text-properties (match-beginning 2) (match-end 2)
+											  '(face bold) header))
+					   header)))
+		   (setq header-end (point-marker))
+		   (while t
+			 (setq custom1 custom)
+			 (when (eq rmheader t)
+			   (org-goto-line 1)
+			   (re-search-forward ":" nil t)
+			   (delete-region (match-end 0) (point-at-eol))
+			   (forward-char 1)
+			   (looking-at "-+")
+			   (delete-region (match-end 0) (point-at-eol))
+			   (move-marker header-end (match-end 0)))
+			 (goto-char header-end)
+			 (delete-region (point) (point-max))
 
-			   ;; Produce all the lines that describe custom commands and prefixes
-			   (setq lines nil)
-			   (while (setq entry (pop custom1))
-				 (setq key (car entry) desc (nth 1 entry)
-					   type (nth 2 entry)
-					   match (nth 3 entry))
-				 (if (> (length key) 1)
-					 (cl-pushnew (string-to-char key) prefixes :test #'equal)
+			 ;; Produce all the lines that describe custom commands and prefixes
+			 (setq lines nil)
+			 (while (setq entry (pop custom1))
+			   (setq key (car entry) desc (nth 1 entry)
+					 type (nth 2 entry)
+					 match (nth 3 entry))
+			   (if (> (length key) 1)
+				   (cl-pushnew (string-to-char key) prefixes :test #'equal)
+				 (setq line
+					   (format
+						"%-4s%-14s"
+						(org-add-props (copy-sequence key)
+							'(face bold))
+						(cond
+						 ((string-match "\\S-" desc) desc)
+						 ((eq type 'agenda) "Agenda for current week or day")
+						 ((eq type 'agenda*) "Appointments for current week or day")
+						 ((eq type 'alltodo) "List of all TODO entries")
+						 ((eq type 'search) "Word search")
+						 ((eq type 'stuck) "List of stuck projects")
+						 ((eq type 'todo) "TODO keyword")
+						 ((eq type 'tags) "Tags query")
+						 ((eq type 'tags-todo) "Tags (TODO)")
+						 ((eq type 'tags-tree) "Tags tree")
+						 ((eq type 'todo-tree) "TODO kwd tree")
+						 ((eq type 'occur-tree) "Occur tree")
+						 ((functionp type) (if (symbolp type)
+											   (symbol-name type)
+											 "Lambda expression"))
+						 (t "???"))))
+				 (cond
+				  ((not (org-string-nw-p match)) nil)
+				  (org-agenda-menu-show-matcher
 				   (setq line
-						 (format
-						  "%-4s%-14s"
-						  (org-add-props (copy-sequence key)
-							  '(face bold))
-						  (cond
-						   ((string-match "\\S-" desc) desc)
-						   ((eq type 'agenda) "Agenda for current week or day")
-						   ((eq type 'agenda*) "Appointments for current week or day")
-						   ((eq type 'alltodo) "List of all TODO entries")
-						   ((eq type 'search) "Word search")
-						   ((eq type 'stuck) "List of stuck projects")
-						   ((eq type 'todo) "TODO keyword")
-						   ((eq type 'tags) "Tags query")
-						   ((eq type 'tags-todo) "Tags (TODO)")
-						   ((eq type 'tags-tree) "Tags tree")
-						   ((eq type 'todo-tree) "TODO kwd tree")
-						   ((eq type 'occur-tree) "Occur tree")
-						   ((functionp type) (if (symbolp type)
-												 (symbol-name type)
-											   "Lambda expression"))
-						   (t "???"))))
-				   (cond
-					((not (org-string-nw-p match)) nil)
-					(org-agenda-menu-show-matcher
-					 (setq line
-						   (concat line ": "
-								   (cond
-									((stringp match)
-									 (propertize match 'face 'org-warning))
-									((listp type)
-									 (format "set of %d commands" (length type)))))))
-					(t
-					 (org-add-props line nil 'help-echo (concat "Matcher: " match))))
-				   (push line lines)))
-			   (setq lines (nreverse lines))
-			   (when prefixes
-				 (mapc (lambda (x)
-						 (push
-						  (format "%s   %s"
-								  (org-add-props (char-to-string x)
-									  nil 'face 'bold)
-								  (or (cdr (assoc (concat selstring
-														  (char-to-string x))
-												  prefix-descriptions))
-									  "Prefix key"))
-						  lines))
-					   prefixes))
+						 (concat line ": "
+								 (cond
+								  ((stringp match)
+								   (propertize match 'face 'org-warning))
+								  ((listp type)
+								   (format "set of %d commands" (length type)))))))
+				  (t
+				   (org-add-props line nil 'help-echo (concat "Matcher: " match))))
+				 (push line lines)))
+			 (setq lines (nreverse lines))
+			 (when prefixes
+			   (mapc (lambda (x)
+					   (push
+						(format "%s   %s"
+								(org-add-props (char-to-string x)
+									nil 'face 'bold)
+								(or (cdr (assoc (concat selstring
+														(char-to-string x))
+												prefix-descriptions))
+									"Prefix key"))
+						lines))
+					 prefixes))
 
-			   ;; Check if we should display in two columns
-			   (if org-agenda-menu-two-columns
-				   (progn
-					 (setq n (length lines)
-						   n1 (+ (/ n 2) (mod n 2))
-						   right (nthcdr n1 lines)
-						   left (copy-sequence lines))
-					 (setcdr (nthcdr (1- n1) left) nil))
-				 (setq left lines right nil))
-			   (while left
-				 (insert "\n" (pop left))
-				 (when right
-				   (if (< (current-column) 40)
-					   (move-to-column 40 t)
-					 (insert "   "))
-				   (insert (pop right))))
+			 ;; Check if we should display in two columns
+			 (if org-agenda-menu-two-columns
+				 (progn
+				   (setq n (length lines)
+						 n1 (+ (/ n 2) (mod n 2))
+						 right (nthcdr n1 lines)
+						 left (copy-sequence lines))
+				   (setcdr (nthcdr (1- n1) left) nil))
+			   (setq left lines right nil))
+			 (while left
+			   (insert "\n" (pop left))
+			   (when right
+				 (if (< (current-column) 40)
+					 (move-to-column 40 t)
+				   (insert "   "))
+				 (insert (pop right))))
 
-			   ;; Make the window the right size
-			   (goto-char (point-min))
-			   (if second-time
+			 ;; Make the window the right size
+			 (goto-char (point-min))
+			 (if second-time
+				 (when (not (pos-visible-in-window-p (point-max)))
+				   (org-fit-window-to-buffer))
+			   (setq second-time t)
+			   (org-fit-window-to-buffer))
+
+			 ;; Hint to navigation if window too small for all information
+			 (setq header-line-format
 				   (when (not (pos-visible-in-window-p (point-max)))
-					 (org-fit-window-to-buffer))
-				 (setq second-time t)
-				 (org-fit-window-to-buffer))
+					 "Use C-v, M-v, C-n or C-p to navigate."))
 
-			   ;; Hint to navigation if window too small for all information
-			   (setq header-line-format
-					 (when (not (pos-visible-in-window-p (point-max)))
-					   "Use C-v, M-v, C-n or C-p to navigate."))
+			 ;; Ask for selection
+			 (cl-loop
+			  do (progn
+				   (message "Press key for agenda command%s:"
+							(if (or restrict-ok org-agenda-overriding-restriction)
+								(if org-agenda-overriding-restriction
+									" (restriction lock active)"
+								  (if restriction
+									  (format " (restricted to %s)" restriction)
+									" (unrestricted)"))
+							  ""))
+				   (setq c (read-char-exclusive)))
+			  until (not (memq c '(14 16 22 134217846)))
+			  do (org-scroll c))
 
-			   ;; Ask for selection
-			   (cl-loop
-				do (progn
-					 (message "Press key for agenda command%s:"
-							  (if (or restrict-ok org-agenda-overriding-restriction)
-								  (if org-agenda-overriding-restriction
-									  " (restriction lock active)"
-									(if restriction
-										(format " (restricted to %s)" restriction)
-									  " (unrestricted)"))
-								""))
-					 (setq c (read-char-exclusive)))
-				until (not (memq c '(14 16 22 134217846)))
-				do (org-scroll c))
+			 (message "")
+			 (cond
+			  ((assoc (char-to-string c) custom)
+			   (setq selstring (concat selstring (char-to-string c)))
+			   (throw 'exit (cons selstring restriction)))
+			  ((memq c prefixes)
+			   (setq selstring (concat selstring (char-to-string c))
+					 prefixes nil
+					 rmheader (or rmheader t)
+					 custom (delq nil (mapcar
+									   (lambda (x)
+										 (if (or (= (length (car x)) 1)
+												 (/= (string-to-char (car x)) c))
+											 nil
+										   (cons (substring (car x) 1) (cdr x))))
+									   custom))))
+			  ((eq c ?*)
+			   (call-interactively 'org-toggle-sticky-agenda)
+			   (sit-for 2))
+			  ((and (not restrict-ok) (memq c '(?1 ?0 ?<)))
+			   (message "Restriction is only possible in Org buffers")
+			   (ding) (sit-for 1))
+			  ((eq c ?1)
+			   (org-agenda-remove-restriction-lock 'noupdate)
+			   (setq restriction 'buffer))
+			  ((eq c ?0)
+			   (org-agenda-remove-restriction-lock 'noupdate)
+			   (setq restriction (if region-p 'region 'subtree)))
+			  ((eq c ?<)
+			   (org-agenda-remove-restriction-lock 'noupdate)
+			   (setq restriction
+					 (cond
+					  ((eq restriction 'buffer)
+					   (if region-p 'region 'subtree))
+					  ((memq restriction '(subtree region))
+					   nil)
+					  (t 'buffer))))
+			  ((eq c ?>)
+			   (org-agenda-remove-restriction-lock 'noupdate)
+			   (setq restriction nil))
+			  ((and (equal selstring "") (memq c '(?s ?S ?a ?t ?m ?L ?C ?e ?T ?M ?# ?! ?/ ??)))
+			   (throw 'exit (cons (setq selstring (char-to-string c)) restriction)))
+			  ((and (> (length selstring) 0) (eq c ?\d))
+			   (delete-window)
+			   (org-agenda-get-restriction-and-command prefix-descriptions))
 
-			   (message "")
-			   (cond
-				((assoc (char-to-string c) custom)
-				 (setq selstring (concat selstring (char-to-string c)))
-				 (throw 'exit (cons selstring restriction)))
-				((memq c prefixes)
-				 (setq selstring (concat selstring (char-to-string c))
-					   prefixes nil
-					   rmheader (or rmheader t)
-					   custom (delq nil (mapcar
-										 (lambda (x)
-										   (if (or (= (length (car x)) 1)
-												   (/= (string-to-char (car x)) c))
-											   nil
-											 (cons (substring (car x) 1) (cdr x))))
-										 custom))))
-				((eq c ?*)
-				 (call-interactively 'org-toggle-sticky-agenda)
-				 (sit-for 2))
-				((and (not restrict-ok) (memq c '(?1 ?0 ?<)))
-				 (message "Restriction is only possible in Org buffers")
-				 (ding) (sit-for 1))
-				((eq c ?1)
-				 (org-agenda-remove-restriction-lock 'noupdate)
-				 (setq restriction 'buffer))
-				((eq c ?0)
-				 (org-agenda-remove-restriction-lock 'noupdate)
-				 (setq restriction (if region-p 'region 'subtree)))
-				((eq c ?<)
-				 (org-agenda-remove-restriction-lock 'noupdate)
-				 (setq restriction
-					   (cond
-						((eq restriction 'buffer)
-						 (if region-p 'region 'subtree))
-						((memq restriction '(subtree region))
-						 nil)
-						(t 'buffer))))
-				((eq c ?>)
-				 (org-agenda-remove-restriction-lock 'noupdate)
-				 (setq restriction nil))
-				((and (equal selstring "") (memq c '(?s ?S ?a ?t ?m ?L ?C ?e ?T ?M ?# ?! ?/ ??)))
-				 (throw 'exit (cons (setq selstring (char-to-string c)) restriction)))
-				((and (> (length selstring) 0) (eq c ?\d))
-				 (delete-window)
-				 (org-agenda-get-restriction-and-command prefix-descriptions))
+			  ((equal c ?q) (user-error "Abort"))
+			  (t (user-error "Invalid key %c" c)))))))))
 
-				((equal c ?q) (user-error "Abort"))
-				(t (user-error "Invalid key %c" c)))))))))
-
-  (eval-after-load 'ox
-	'(defun org-export--dispatch-ui (options first-key expertp)
-	   "Handle interface for `org-export-dispatch'.
-
-  OPTIONS is a list containing current interactive options set for
-  export.  It can contain any of the following symbols:
-  `body'    toggles a body-only export
-  `subtree' restricts export to current subtree
-  `visible' restricts export to visible part of buffer.
-  `force'   force publishing files.
-  `async'   use asynchronous export process
-
-  FIRST-KEY is the key pressed to select the first level menu.  It
-  is nil when this menu hasn't been selected yet.
-
-  EXPERTP, when non-nil, triggers expert UI.  In that case, no help
-  buffer is provided, but indications about currently active
-  options are given in the prompt.  Moreover, [?] allows switching
-  back to standard interface."
-	   (let* ((fontify-key
-			   (lambda (key &optional access-key)
-				 ;; Fontify KEY string.  Optional argument ACCESS-KEY, when
-				 ;; non-nil is the required first-level key to activate
-				 ;; KEY.  When its value is t, activate KEY independently
-				 ;; on the first key, if any.  A nil value means KEY will
-				 ;; only be activated at first level.
-				 (if (or (eq access-key t) (eq access-key first-key))
-					 (propertize key 'face 'org-warning)
-				   key)))
-			  (fontify-value
-			   (lambda (value)
-				 ;; Fontify VALUE string.
-				 (propertize value 'face 'font-lock-variable-name-face)))
-			  ;; Prepare menu entries by extracting them from registered
-			  ;; back-ends and sorting them by access key and by ordinal,
-			  ;; if any.
-			  (entries
-			   (sort (sort (delq nil
-								 (mapcar #'org-export-backend-menu
-										 org-export-registered-backends))
-						   (lambda (a b)
-							 (let ((key-a (nth 1 a))
-								   (key-b (nth 1 b)))
-							   (cond ((and (numberp key-a) (numberp key-b))
-									  (< key-a key-b))
-									 ((numberp key-b) t)))))
-					 'car-less-than-car))
-			  ;; Compute a list of allowed keys based on the first key
-			  ;; pressed, if any.  Some keys
-			  ;; (?^B, ?^V, ?^S, ?^F, ?^A, ?&, ?# and ?q) are always
-			  ;; available.
-			  (allowed-keys
-			   (nconc (list 2 22 19 6 1)
-					  (if (not first-key) (org-uniquify (mapcar 'car entries))
-						(let (sub-menu)
-						  (dolist (entry entries (sort (mapcar 'car sub-menu) '<))
-							(when (eq (car entry) first-key)
-							  (setq sub-menu (append (nth 2 entry) sub-menu))))))
-					  (cond ((eq first-key ?P) (list ?f ?p ?x ?a))
-							((not first-key) (list ?P)))
-					  (list ?& ?#)
-					  (when expertp (list ??))
-					  (list ?q)))
-			  ;; Build the help menu for standard UI.
-			  (help
-			   (unless expertp
-				 (concat
-				  ;; Options are hard-coded.
-				  (format "[%s] Body only:    %s           [%s] Visible only:     %s
-  \[%s] Export scope: %s       [%s] Force publishing: %s
-  \[%s] Async export: %s\n\n"
-						  (funcall fontify-key "C-b" t)
-						  (funcall fontify-value
-								   (if (memq 'body options) "On " "Off"))
-						  (funcall fontify-key "C-v" t)
-						  (funcall fontify-value
-								   (if (memq 'visible options) "On " "Off"))
-						  (funcall fontify-key "C-s" t)
-						  (funcall fontify-value
-								   (if (memq 'subtree options) "Subtree" "Buffer "))
-						  (funcall fontify-key "C-f" t)
-						  (funcall fontify-value
-								   (if (memq 'force options) "On " "Off"))
-						  (funcall fontify-key "C-a" t)
-						  (funcall fontify-value
-								   (if (memq 'async options) "On " "Off")))
-				  ;; Display registered back-end entries.  When a key
-				  ;; appears for the second time, do not create another
-				  ;; entry, but append its sub-menu to existing menu.
-				  (let (last-key)
-					(mapconcat
-					 (lambda (entry)
-					   (let ((top-key (car entry)))
-						 (concat
-						  (unless (eq top-key last-key)
-							(setq last-key top-key)
-							(format "\n[%s] %s\n"
-									(funcall fontify-key (char-to-string top-key))
-									(nth 1 entry)))
-						  (let ((sub-menu (nth 2 entry)))
-							(unless (functionp sub-menu)
-							  ;; Split sub-menu into two columns.
-							  (let ((index -1))
-								(concat
-								 (mapconcat
-								  (lambda (sub-entry)
-									(cl-incf index)
-									(format
-									 (if (zerop (mod index 2)) "    [%s] %-26s"
-									   "[%s] %s\n")
-									 (funcall fontify-key
-											  (char-to-string (car sub-entry))
-											  top-key)
-									 (nth 1 sub-entry)))
-								  sub-menu "")
-								 (when (zerop (mod index 2)) "\n"))))))))
-					 entries ""))
-				  ;; Publishing menu is hard-coded.
-				  (format "\n[%s] Publish
-	  [%s] Current file              [%s] Current project
-	  [%s] Choose project            [%s] All projects\n\n\n"
-						  (funcall fontify-key "P")
-						  (funcall fontify-key "f" ?P)
-						  (funcall fontify-key "p" ?P)
-						  (funcall fontify-key "x" ?P)
-						  (funcall fontify-key "a" ?P))
-				  (format "[%s] Export stack                  [%s] Insert template\n"
-						  (funcall fontify-key "&" t)
-						  (funcall fontify-key "#" t))
-				  (format "[%s] %s"
-						  (funcall fontify-key "q" t)
-						  (if first-key "Main menu" "Exit")))))
-			  ;; Build prompts for both standard and expert UI.
-			  (standard-prompt (unless expertp "Export command: "))
-			  (expert-prompt
-			   (when expertp
-				 (format
-				  "Export command (C-%s%s%s%s%s) [%s]: "
-				  (if (memq 'body options) (funcall fontify-key "b" t) "b")
-				  (if (memq 'visible options) (funcall fontify-key "v" t) "v")
-				  (if (memq 'subtree options) (funcall fontify-key "s" t) "s")
-				  (if (memq 'force options) (funcall fontify-key "f" t) "f")
-				  (if (memq 'async options) (funcall fontify-key "a" t) "a")
-				  (mapconcat (lambda (k)
-							   ;; Strip control characters.
-							   (unless (< k 27) (char-to-string k)))
-							 allowed-keys "")))))
-		 ;; With expert UI, just read key with a fancy prompt.  In standard
-		 ;; UI, display an intrusive help buffer.
-		 (if expertp
-			 (org-export--dispatch-action
-			  expert-prompt allowed-keys entries options first-key expertp)
-		   ;; At first call, create frame layout in order to display menu.
-		   (unless (get-buffer "*Org Export Dispatcher*")
-			 ;; (delete-other-windows)
-			 (org-switch-to-buffer-other-window
-			  (get-buffer-create "*Org Export Dispatcher*"))
-			 (setq cursor-type nil
-				   header-line-format "Use SPC, DEL, C-n or C-p to navigate.")
-			 ;; Make sure that invisible cursor will not highlight square
-			 ;; brackets.
-			 (set-syntax-table (copy-syntax-table))
-			 (modify-syntax-entry ?\[ "w"))
-		   ;; At this point, the buffer containing the menu exists and is
-		   ;; visible in the current window.  So, refresh it.
-		   (with-current-buffer "*Org Export Dispatcher*"
-			 ;; Refresh help.  Maintain display continuity by re-visiting
-			 ;; previous window position.
-			 (let ((pt (point))
-				   (wstart (window-start)))
-			   (erase-buffer)
-			   (insert help)
-			   (goto-char pt)
-			   (set-window-start nil wstart)))
-		   (org-fit-window-to-buffer)
-		   (org-export--dispatch-action
-			standard-prompt allowed-keys entries options first-key expertp)))))
-
-  (provide 'mf-hacks)
-	;;; mf-hacks.el ends here
+ (provide 'mf-hacks)
+ ;;; mf-hacks.el ends here
 #+end_src
 ** mf-programming.el
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-config.el")
@@ -1365,38 +1136,11 @@ Configure programming experience
 		(add-hook 'haskell-mode-hook 'hindent-mode)
 		(setq hindent-reformat-buffer-on-save t))))
 #+end_src
-*** Lisp
-**** Slime repls
-	 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-programming.el")
-	   (mf/install slime)
-	   (setq inferior-lisp-program "sbcl")
-	   (eval-after-load 'slime
-		 '(progn
-			(add-hook 'slime-repl-mode 'paredit-mode)
-			(message "Loaded slime")))
-	 #+end_src
-**** Paredit
-	 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-programming.el")
-	   (mf/install paredit)
-	   (add-hook 'lisp-mode-hook #'paredit-mode)
-	   (eval-after-load 'paredit
-		 '(progn
-			(message "Loaded paredit")
-			(eval-after-load 'slime
-			  '(add-hook 'slime-repl-mode #'paredit-mode))))
-	 #+end_src
 *** C
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-programming.el")
    (add-hook 'c-mode-hook #'(lambda()
 							  (c-set-style "k&r")))
 #+end_src
-*** Flymake
-	#+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-programming.el")
-	  (eval-after-load 'flymake
-		'(progn
-		   (message "Loaded flymake")
-		   (add-hook 'flymake-mode-hook #'flymake-show-diagnostics-buffer)))
-	#+end_src
 *** Yasnippet
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-programming.el")
 ;; Yasnippet
@@ -1498,7 +1242,7 @@ capabilities similar to those of ibuffer
   (provide 'mf-pass)
   ;;; mf-pass.el ends here
  #+end_src
-** mf-ibuffer.el
+** Ibuffer
    #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-config.el")
 	 (require 'mf-ibuffer)
    #+end_src
@@ -1509,17 +1253,15 @@ capabilities similar to those of ibuffer
 		'(progn
 		   (setq ibuffer-saved-filter-groups
 				 '(("default"
-					("EXWM" (mode . exwm-mode))
+					("Exwm" (mode . exwm-mode))
 					("Programming" (derived-mode . prog-mode))
 					("Mail" (derived-mode . mu4e-compose-mode))
 					("Org" (name . "^.*org$"))
 					("Org-roam" (name . "[0-9]+-.*.org"))
 					("Shell" (or (mode . eshell-mode) (name . "^st-256color")))
-					("PDF" (name . "^.*pdf$"))
 					("IRC" (mode . erc-mode))
-					("Man" (name . "\\*Man "))
 					("Magit" (derived-mode . magit-mode))
-					("Dired" (mode . dired-mode))a
+					("Dired" (mode . dired-mode))
 					("Web" (or (mode . eww-mode) (name . "^Firefox")))
 					("Emacs" (or (name . "\\*scratch\\*")
 								 (name . "\\*Messages\\*")
@@ -1534,19 +1276,16 @@ capabilities similar to those of ibuffer
 		   (eval-after-load 'org-agenda
 			 '(setq ibuffer-saved-filter-groups
 					'(("default"
-					   ("EXWM" (mode . exwm-mode))
+					   ("Exwm" (mode . exwm-mode))
 					   ("Programming" (derived-mode . prog-mode))
 					   ("Mail" (derived-mode . mu4e-compose-mode))
 					   ("Agenda" (or (name . "diary")
 									 (name . "agenda.org")
-									 (name . "\\*Org Agenda\\*")
 									 (predicate -contains-p org-agenda-files (buffer-file-name))))
 					   ("Org" (name . "^.*org$"))
 					   ("Org-roam" (name . "[0-9]+-.*.org"))
 					   ("Shell" (or (mode . eshell-mode) (name . "^st-256color")))
-					   ("PDF" (name . "^.*pdf$"))
 					   ("IRC" (mode . erc-mode))
-					   ("Man" (name . "\\*Man "))
 					   ("Magit" (derived-mode . magit-mode))
 					   ("Dired" (mode . dired-mode))
 					   ("Web" (or (mode . eww-mode) (name . "^Firefox")))
@@ -1631,24 +1370,6 @@ Configure global keybindings
   (provide 'mf-keybindings)
   ;;; mf-keybindings.el ends here
  #+end_src
-** mf-telega.el
-   #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-config.el")
-	 (require 'mf-telega)
-   #+end_src
-   #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-telega.el")
-	 ;;; mf-telega.el --- Configuration for telega -*- lexical-binding: t -*-
-	 ;;; Code:
-	 (mf/install telega)
-	 (mf/autoload-func
-	  :func telega
-	  :file "telega")
-	 (setq telega-chat-show-avatars nil
-		   telega-root-show-avatars nil
-		   telega-user-show-avatars nil)
-
-	 (provide 'mf-telega)
-	 ;;; mf-telega.el ends here
-   #+end_src
 ** mf-functions.el
 Custom functions
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-functions.el")
@@ -1753,7 +1474,7 @@ Custom functions
    (if (called-interactively-p)
 	   (let ((url (mf/yank-to-string)))
 		 (start-process-shell-command "mpv" nil (concat "mpv " url)))
-	 (start-process-shell-command "mpv" nil (concat "mpv --ytdl-format='bestvideo[height<=1080]+bestaudio/best' " url))))
+	 (start-process-shell-command "mpv" nil (concat "mpv " url))))
 
  ;;;###autoload
  (defun mf/youtube(title)
@@ -1986,11 +1707,6 @@ Custom functions
 						  '(completions-common-part ((t (:foreground "black" :weight bold))))
 						  '(completions-first-difference ((t (:underline "black" :weight semi-bold))))
 
-						  ;; Mini-modeline
-						  ;; Mini- modeline
-						  '(mini-modeline-mode-line ((t (:height 0.14 :background "black"))))
-						  '(mini-modeline-mode-line-inactive ((t (:height 0.14 :background "white"))))
-
 						  ;; Mode line faces
 						  '(mode-line ((t (:background "#e0e0e0" :foreground "#303030"
 													   :box (:line-width 4 :color "#e0e0e0" :style flat-button)))))
@@ -2212,7 +1928,7 @@ Custom functions
 						  '(helm-separator ((t (:foreground "#bababa" :background "black"))))
 						  '(helm-time-zone-current ((t (:foreground "#bababa" :background "black"))))
 						  '(helm-time-zone-home ((t (:foreground "#bababa" :background "black"))))
-						  '(helm-bookmark-addressbook ((t (:foreground "#bababa" :Background "black"))))
+						  '(helm-bookmark-addressbook ((t (:foreground "#bababa" :background "black"))))
 						  '(helm-bookmark-directory ((t (:foreground nil :background nil :inherit helm-ff-directory))))
 						  '(helm-bookmark-file ((t (:foreground nil :background nil :inherit helm-ff-file))))
 						  '(helm-bookmark-gnus ((t (:foreground "#bababa" :background "black"))))
@@ -2272,10 +1988,6 @@ Custom functions
 													   :box (:line-width 4 :color "#1e1e1e" :style flat-button)))))
 						  '(mode-line-inactive ((t (:background "black" :foreground "#808080"
 																:box (:line-width 4 :color "black")))))
-
-						  ;; Mini- modeline
-						  '(mini-modeline-mode-line ((t (:height 0.14 :background "white"))))
-						  '(mini-modeline-mode-line-inactive ((t (:height 0.14 :background "black"))))
 
 						  ;; MuMaMo
 						  '(mumamo-background-chunk-major ((t (:background "black"))))
