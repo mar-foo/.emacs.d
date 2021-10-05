@@ -1,5 +1,20 @@
 ;;; mf-dashboard.el --- Custom welcome screen for Emacs -*- lexical-binding: t -*-
-;;; Code:
+	 ;;; Code:
+(defgroup mf-dashboard nil
+  "My startup screen"
+  :group 'applications)
+
+(defvar dashboard-mode-map
+  (let ((map (make-sparse-keymap)))
+	(define-key map (kbd "b") 'switch-to-buffer)
+	(define-key map (kbd "f") 'find-file)
+	(define-key map (kbd "g") 'mf-dashboard-init)
+	(define-key map (kbd "j") 'bookmark-jump)
+	(define-key map (kbd "n") 'next-line)
+	(define-key map (kbd "p") 'previous-line)
+	map)
+  "Keymap for dashboard mode.")
+
 (define-derived-mode dashboard-mode fundamental-mode "Dashboard"
   "Startup screen major mode"
   :group 'mf-dashboard
