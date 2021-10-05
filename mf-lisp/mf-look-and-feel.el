@@ -111,6 +111,15 @@
 
 (setq ring-bell-function #'mf/visual-bell)
 
+(mf/install mini-modeline)
+(setq mini-modeline-face-attr `(:background ,(face-attribute 'mode-line-inactive :background)))
+(mini-modeline-mode)
+
+(advice-add #'load-theme :after #'(lambda (&rest r)
+									(mini-modeline-mode -1)
+									(setq mini-modeline-face-attr `(:background ,(face-attribute 'mode-line-inactive :background)))
+									(mini-modeline-mode)))
+
 (add-to-list 'custom-theme-load-path (concat user-emacs-directory "mf-lisp/themes/"))
 (if
 	(or (>= (string-to-number (format-time-string "%H")) 19)

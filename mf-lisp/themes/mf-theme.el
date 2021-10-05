@@ -187,6 +187,11 @@
 						'(completions-common-part ((t (:foreground "black" :weight bold))))
 						'(completions-first-difference ((t (:underline "black" :weight semi-bold))))
 
+						;; Mini-modeline
+						;; Mini- modeline
+						'(mini-modeline-mode-line ((t (:height 0.14 :background "black"))))
+						'(mini-modeline-mode-line-inactive ((t (:height 0.14 :background "white"))))
+
 						;; Mode line faces
 						'(mode-line ((t (:background "#e0e0e0" :foreground "#303030"
 													 :box (:line-width 4 :color "#e0e0e0" :style flat-button)))))

@@ -12,7 +12,8 @@
 (defun mf/manage--window-by-class()
   (pcase exwm-class-name
 	("Firefox" (exwm-workspace-move-window 1))
-	("mpv" (exwm-layout-toggle-mode-line))))
+	("mpv" (unless mini-modeline-mode
+			 exwm-layout-toggle-mode-line))))
 
 (defun mf/volume (action)
   (interactive)
@@ -71,6 +72,7 @@
 		  (,(kbd "C-v") . [next])
 		  (,(kbd "C-d") . [delete])
 		  (,(kbd "C-k") . [S-end delete]))
+		exwm-layout-show-all-buffers t
 		exwm-workspace-show-all-buffers t)
   (define-key exwm-mode-map (kbd "C-q") #'exwm-input-send-next-key)
   (add-hook 'exwm-update-class-hook 'mf/exwm--update-class)
@@ -89,8 +91,6 @@
 			   "xrandr" nil "xrandr --output VGA1 --left-of LVDS1 --auto")))
   (exwm-randr-enable)
   (exwm-enable))
-
-
 
 (provide 'mf-exwm)
 	;;; mf-exwm.el ends here

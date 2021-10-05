@@ -133,7 +133,7 @@
 						'(helm-separator ((t (:foreground "#bababa" :background "black"))))
 						'(helm-time-zone-current ((t (:foreground "#bababa" :background "black"))))
 						'(helm-time-zone-home ((t (:foreground "#bababa" :background "black"))))
-						'(helm-bookmark-addressbook ((t (:foreground "#bababa" :background "black"))))
+						'(helm-bookmark-addressbook ((t (:foreground "#bababa" :Background "black"))))
 						'(helm-bookmark-directory ((t (:foreground nil :background nil :inherit helm-ff-directory))))
 						'(helm-bookmark-file ((t (:foreground nil :background nil :inherit helm-ff-file))))
 						'(helm-bookmark-gnus ((t (:foreground "#bababa" :background "black"))))
@@ -193,6 +193,10 @@
 													 :box (:line-width 4 :color "#1e1e1e" :style flat-button)))))
 						'(mode-line-inactive ((t (:background "black" :foreground "#808080"
 															  :box (:line-width 4 :color "black")))))
+
+						;; Mini- modeline
+						'(mini-modeline-mode-line ((t (:height 0.14 :background "white"))))
+						'(mini-modeline-mode-line-inactive ((t (:height 0.14 :background "black"))))
 
 						;; MuMaMo
 						'(mumamo-background-chunk-major ((t (:background "black"))))
