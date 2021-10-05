@@ -28,9 +28,10 @@
 		truncate-lines t
 		inhibit-startup-screen t))
 
-(defgroup mf-dashboard nil
-  "My startup screen"
-  :group 'applications)
+(defcustom mf-dashboard-title "Emacs is a decent operating system only lacking a good text editor"
+  "Title to be displayed in the dashboard"
+  :type '(string)
+  :group 'mf-dashboard)
 
 (defconst mf-dashboard-buffer-name "*dashboard*"
   "Startup screen buffer name")
@@ -55,7 +56,7 @@
   (with-current-buffer (get-buffer-create mf-dashboard-buffer-name)
 	(let ((buffer-read-only nil))
 	  (erase-buffer)
-	  (mf-dashboard-insert-image)
+	  (mf-dashboard-insert-title)
 	  (mf-dashboard-insert-init-info))
 	(dashboard-mode)))
 
@@ -66,37 +67,21 @@
 										2)))
 					   ?\ )))
 
-(defun mf-dashboard-insert-image ()
+(defun mf-dashboard-insert-title ()
   "Insert banner at the top of the dashboard"
-  (goto-char (point-max))
-  (let ((banner (concat user-emacs-directory "logo.png") )
-		(buffer-read-only nil))
-	(when banner
-	  (if (image-type-available-p (intern (file-name-extension banner)))
-		  (when (file-exists-p banner)
-			(let* ((title "Emacs is a decent operating system just lacking a good text editor.")
-				   (spec
-					(cond ((image-type-available-p 'imagemagick)
-						   (apply 'create-image banner 'imagemagick nil))
-						  (t
-						   (apply 'create-image banner nil nil))))
-				   (size (when (fboundp 'image-size) (image-size spec)))
-				   (width (car size))
-				   (left-margin (max 0 (floor (- (window-width )width) 2))))
-			  (goto-char (point-min))
-			  (insert "\n")
-			  (insert (make-string left-margin ?\ ))
-			  (insert-image spec)
-			  (insert "\n\n")
-			  (when title
-				(mf-dashboard-center-line title)
-				(insert (format "%s\n\n" (propertize title 'face 'mf-dashboard-logo-title))))))))))
+  (goto-char (point-min))
+  (while (< (count-lines 1 (point)) (- (/ (window-height nil 'floor) 2) 3))
+	  (insert "\n")
+	  (forward-line))
+  (when mf-dashboard-title
+	(mf-dashboard-center-line mf-dashboard-title)
+	(insert (format "%s\n\n" (propertize mf-dashboard-title 'face 'mf-dashboard-logo-title)))))
 
 (defun mf-dashboard-insert-init-info ()
   "Insert init info"
   (interactive)
-  (let* ((init-time (format "%.2f seconds" (float-time (time-subtract after-init-time before-init-time))))
-		 (info (format "Emacs ready in %s with %d garbage collections" (propertize init-time 'face 'font-lock-keyword) gcs-done))
+  (let* ((init-time (emacs-init-time "%.2f seconds"))
+		 (info (format "Emacs ready in %s with %d garbage collections" (propertize init-time 'face 'font-lock-keyword-face) gcs-done))
 		 (buffer-read-only nil))
 	(mf-dashboard-center-line info)
 	(insert info)))
@@ -120,11 +105,11 @@
 	  (with-selected-window space-win
 		(mf-dashboard-init)))))
 
-;;;autoload
+	 ;;;autoload
 (defun mf-dashboard-setup-startup-hook ()
   "Setup post initialization hooks.
-If a command line argument is provided, assume a filename and
-skip displaying the dashboard."
+	 If a command line argument is provided, assume a filename and
+	 skip displaying the dashboard."
   (add-hook 'after-init-hook (lambda ()
 							   (mf-dashboard-init)))
   (add-hook 'emacs-startup-hook (lambda()
@@ -134,4 +119,4 @@ skip displaying the dashboard."
 								  (run-hooks 'mf-dashboard-after-initialize-hook))))
 
 (provide 'mf-dashboard)
-;;; mf-dashboard.el ends here
+	 ;;; mf-dashboard.el ends here
