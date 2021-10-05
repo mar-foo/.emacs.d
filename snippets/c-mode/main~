@@ -1,0 +1,5 @@
+# name: main
+# type: snippet
+int main(${1:int argc}$(when yas-text ",")${2: char **argv}) {
+	$0
+}

@@ -1,0 +1,4 @@
+#name: frac
+#type: snippet
+#--
+\frac{$1}{$2}$0

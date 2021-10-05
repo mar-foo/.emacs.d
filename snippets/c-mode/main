@@ -1,0 +1,6 @@
+# name: main
+# type: snippet
+# --
+int main(${1:int argc}, ${2: char **argv}) {
+	$0
+}
