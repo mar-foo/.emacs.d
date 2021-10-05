@@ -37,8 +37,28 @@
 	   (add-hook 'haskell-mode-hook 'hindent-mode)
 	   (setq hindent-reformat-buffer-on-save t))))
 
+(mf/install slime)
+(setq inferior-lisp-program "sbcl")
+(eval-after-load 'slime
+  '(progn
+	 (add-hook 'slime-repl-mode 'paredit-mode)
+	 (message "Loaded slime")))
+
+(mf/install paredit)
+(add-hook 'lisp-mode-hook #'paredit-mode)
+(eval-after-load 'paredit
+  '(progn
+	 (message "Loaded paredit")
+	 (eval-after-load 'slime
+	   '(add-hook 'slime-repl-mode #'paredit-mode))))
+
 (add-hook 'c-mode-hook #'(lambda()
 						   (c-set-style "k&r")))
+
+(eval-after-load 'flymake
+  '(progn
+	 (message "Loaded flymake")
+	 (add-hook 'flymake-mode-hook #'flymake-show-diagnostics-buffer)))
 
 ;; Yasnippet
    (mf/install yasnippet)
