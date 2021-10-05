@@ -48,6 +48,7 @@
 			   ("WAITING" . (:inherit org-todo :foreground "#b0b0b0"))
 			   ("DONE" . org-done)
 			   ("NO" . error))
+			 org-use-fast-todo-selection 'expert
 			 org-agenda-custom-commands
 			 '(("a" "Agenda for current week or day"
 				((agenda "")
