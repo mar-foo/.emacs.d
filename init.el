@@ -10,6 +10,7 @@
  visible-bell 1                         ; No bell
  auto-save-default nil                  ; Stop all the #filename# madness
  create-lockfiles nil
+ backup-directory-alist '(("." . "~/.cache/emacs-saves/"))
  custom-file (concat user-emacs-directory "custom.el")
  cursor-in-non-selected-windows nil)	; Hide cursor in non selected windows
 (fset #'yes-or-no-p #'y-or-n-p)         ; y or n instead of yes or no
