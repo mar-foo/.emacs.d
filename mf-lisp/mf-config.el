@@ -1,3 +1,6 @@
+;;; mf-config.el --- Load configuration modules -*- lexical-binding: t
+;;; Code
+
 (require 'mf-exwm)
 
 (require 'mf-autoloads)
@@ -25,6 +28,8 @@
 (require 'mf-ibuffer)
 
 (require 'mf-keybindings)
+
+(require 'mf-telega)
 
 ;; Startup time and garbage collection
   (add-hook 'emacs-startup-hook
