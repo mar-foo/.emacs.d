@@ -2,9 +2,9 @@
 #+AUTHOR: Mario Forzanini
 #+HTML_HEAD:<link rel="stylesheet" type="text/css" href="/pub/style.css">
 #+startup: overview
-* early-init.el
-#+begin_src emacs-lisp :tangle (concat user-emacs-directory "early-init.el")
-  ;;; early-init.el --- Early configuration for Emacs
+* init.el
+#+begin_src emacs-lisp :tangle (concat user-emacs-directory "init.el")
+  ;; init.el --- Emacs initalization file -*- lexical-binding: t -*-
   ;;; Code:
   (add-to-list 'load-path (concat user-emacs-directory "mf-lisp/"))
   (require 'mf-packages)
@@ -12,29 +12,28 @@
 ** Package manager configuration
 Configure =package.el= in mf-packages.el
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-packages.el")
- ;;; mf-packages.el --- Configuration for package manager -*- lexical-binding: t -*-
- ;;; Code:
- (require 'package)
+  ;;; mf-packages.el --- Configuration for package manager -*- lexical-binding: t -*-
+  ;;; Code:
+  (require 'package)
 
- (setq package-archives '(("melpa" . "https://melpa.org/packages/")
-						  ("org" . "https://orgmode.org/elpa/")
-						  ("elpa" . "https://elpa.gnu.org/packages/")))
+  (setq package-archives '(("org" . "https://orgmode.org/elpa/")
+						   ("elpa" . "https://elpa.gnu.org/packages/")))
 
- (package-initialize)
- (unless package-archive-contents
-   (package-refresh-contents))
+  (package-initialize)
+  (unless package-archive-contents
+	(package-refresh-contents))
 
- ;; Populate the load-path
- (dolist
-	 (package-dir (directory-files (concat user-emacs-directory "elpa/") t directory-files-no-dot-files-regexp))
-   (add-to-list 'load-path package-dir))
+  ;; Populate the load-path
+  (dolist
+	  (package-dir (directory-files (concat user-emacs-directory "elpa/") t directory-files-no-dot-files-regexp))
+	(add-to-list 'load-path package-dir))
 
- (provide 'mf-packages)
- ;;; mf-packages.el ends here
+  (provide 'mf-packages)
+  ;;; mf-packages.el ends here
 #+end_src
 ** Package install macro
 Define a macro to install packages
-#+begin_src emacs-lisp :tangle (concat user-emacs-directory "early-init.el")
+#+begin_src emacs-lisp :tangle (concat user-emacs-directory "init.el")
   (defmacro mf/install (package)
 	(unless
 		(package-installed-p package)
@@ -42,7 +41,7 @@ Define a macro to install packages
 #+end_src
 ** Look and feel
 Load look and feel configuration from mf-look-and-feel.el as early as possible
-#+begin_src emacs-lisp :tangle (concat user-emacs-directory "early-init.el")
+#+begin_src emacs-lisp :tangle (concat user-emacs-directory "init.el")
   (require 'mf-look-and-feel)
 #+end_src
 *** Better defaults
@@ -169,20 +168,6 @@ Load look and feel configuration from mf-look-and-feel.el as early as possible
 
 	(setq ring-bell-function #'mf/visual-bell)
  #+end_src
-*** Mini-modeline mode
- #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-look-and-feel.el")
-   (mf/install mini-modeline)
-   (setq mini-modeline-face-attr `(:background ,(face-attribute 'mode-line-inactive :background)))
-   (mini-modeline-mode)
-#+end_src
-Fix the redisplaying of the modeline when changing theme
-   #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-look-and-feel.el")
-   (advice-add #'load-theme :after #'(lambda (&rest r)
-									   (mini-modeline-mode -1)
-									   (setq mini-modeline-face-attr `(:background ,(face-attribute 'mode-line-inactive :background)))
-									   (mini-modeline-mode)))
-#+end_src
-
 *** Handle themes
  Load light theme from 08:00 to 19:00, dark theme otherwise
  #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-look-and-feel.el")
@@ -197,11 +182,9 @@ Fix the redisplaying of the modeline when changing theme
 	 (provide 'mf-look-and-feel)
 	 ;;; mf-look-and-feel.el ends here
  #+end_src
-* init.el
 ** Garbage collection
 Raise garbage collection threshold to speed up init time
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "init.el")
-  ;; init.el --- Emacs initalization file -*- lexical-binding: t -*-
   (setq gc-cons-threshold most-positive-fixnum)
 #+end_src
 ** Better defaults
@@ -479,9 +462,8 @@ Load the actual config
   #+end_src
 *** Sxrc
 	Shell script that runs at Xorg activation (using =sx=).
-	#+begin_src shell :tangle (if (eq exwm-state 1) (file-truename "~/.config/sx/sxrc") no) :tangle-mode (if (eq exwm-state 1) (identity #o755) (identity #o664))
+	#+begin_src shell :tangle (if (eq exwm-state 1) (file-truename "~/.xinitrc") no) :tangle-mode (if (eq exwm-state 1) (identity #o755) (identity #o664))
 	  #!/bin/sh
-	  pgrep mpd || mpd &
 	  setxkbmap dvorak
 	  xmodmap ~/.Xmodmap
 	  export _JAVA_AWT_WM_NONREPARENTING=1
@@ -711,9 +693,7 @@ Configure the completion framework
 			#'complete-path-at-point+
 			'append)
 
-  (mf/install orderless)
-  ;; (setq completion-styles '(substring partial-completion initials flex)
-  (setq completion-styles '(orderless)
+  (setq completion-styles '(substring partial-completion initials flex)
 		completion-category-overrides
 		'((file (styles partial-completion initials basic))))
 #+end_src
@@ -731,17 +711,14 @@ Configure the completion framework
   (mf/autoload-func
    :func company-mode
    :file "company")
-  (eval-after-load 'lsp-mode
-	'(progn
-	   (add-hook 'lsp-mode-hook 'company-mode)
-	   (eval-after-load 'company
-		 '(progn
-			(message "Company loaded")
-			(define-key company-active-map (kbd "<tab>") #'company-complete-selection)
-			(define-key lsp-mode-map (kbd "<tab>") #'company-indent-or-complete-common)
-			(setq company-minimum-prefix-length 3
-				  company-idle-delay nil)
-			(eval-after-load 'yasnippet
+  (progn
+	(eval-after-load 'company
+	  '(progn
+		 (message "Company loaded")
+		 (define-key company-active-map (kbd "<tab>") #'company-complete-selection)
+		 (setq company-minimum-prefix-length 3
+			   company-idle-delay nil)
+		 (eval-after-load 'yasnippet
 			  '(define-key company-mode-map (kbd "<backtab>") 'company-yasnippet))))))
 
   (provide 'mf-completion)
@@ -840,91 +817,6 @@ Configure the completion framework
 
   (setq diary-file (file-truename "~/Documents/Personal/diary"))
 #+end_src
-*** Org tree slide
- #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-org.el")
-   ;; Org tree slide
-   (mf/install org-tree-slide)
-   (mf/autoload-func
-	:func org-tree-slide-mode
-	:file "org-tree-slide")
-   (eval-after-load 'org
-	 '(progn
-		(define-key org-mode-map (kbd "C-c p") #'org-tree-slide-mode)
-		(eval-after-load 'org-tree-slide
-		  '(progn
-			 (setq org-tree-slide-header nil)
-			 (define-key org-tree-slide-mode-map (kbd "n") #'org-tree-slide-move-next-tree)
-			 (define-key org-tree-slide-mode-map (kbd "p") #'org-tree-slide-move-previous-tree)
-			 (define-key org-tree-slide-mode-map (kbd "RET") #'org-tree-slide-move-next-tree)
-			 (define-key org-tree-slide-mode-map (kbd "+") #'mf/big-font)
-			 (define-key org-tree-slide-mode-map (kbd "-") #'(lambda() (interactive) (mf/big-font t)))))))
- #+end_src
-*** Org roam
- #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-org.el")
-   (eval-after-load 'org
-	 '(progn
-		(mf/install org-roam)
-		(mf/autoload-func
-		 :func org-roam-find-node
-		 :file "org-roam")
-		(mf/autoload-func
-		 :func org-roam-insert-node
-		 :file "org-roam")
-		(mf/autoload-func
-		 :func org-roam-capture
-		 :file "org-roam")
-		(mf/autoload-func
-		 :func org-roam-node-list
-		 :file "org-roam")
-		(mf/autoload-func
-		 :func org-roam-db-autosync-mode
-		 :file "org-roam")
-		(advice-add 'org-agenda :after #'(lambda (&rest r) (require 'org-roam)))  ; I use some org-roam nodes as agenda buffers so org-agenda needs org-roam to be loaded
-		(eval-after-load 'org-roam
-		  '(progn
-			 (message "Loaded org-roam")
-			 (setq org-roam-directory (file-truename "~/Documents/Personal/Notes/")
-				   org-roam-v2-ack t)
-			 (add-hook 'org-roam-mode-hook 'org-roam-db-autosync-mode)
-			 (defun mf/org-roam-filter-by-tag (tag-name)
-			   (lambda (node)
-				 (member tag-name (org-roam-node-tags node))))
-
-			 (defun mf/org-roam-list-notes-by-tag (tag-name)
-			   (mapcar #'org-roam-node-file
-					   (seq-filter
-						(mf/org-roam-filter-by-tag tag-name)
-						(org-roam-node-list))))
-
-			 (defun mf/org-roam-refresh-agenda-files()
-			   (interactive)
-			   (setq org-agenda-files (mf/org-roam-list-notes-by-tag "Teaching"))
-			   (add-to-list 'org-agenda-files "~/Documents/Personal/agenda.org"))
-			 (mf/org-roam-refresh-agenda-files)
-
-			 (defun mf/org-roam-teaching-finalize-hook()
-			   "Adds the captured project file to `org-agenda-files' if the
-	 capture was not aborted"
-			   (remove-hook 'org-capture-after-finalize-hook 'mf/org-roam-teaching-finalize-hook)
-			   (unless org-note-abort
-				 (with-current-buffer (org-capture-get :buffer)
-				   (add-to-list 'org-agenda-files (buffer-file-name)))))
-
-			 (defun mf/org-roam-find-teaching()
-			   (interactive)
-			   (add-hook 'org-capture-after 'mf/org-roam-teaching-finalize-hook)
-			   (org-roam-node-find
-				nil
-				nil
-				(mf/org-roam-filter-by-tag "Teaching")
-				:templates
-				'(("t" "Teaching" plain "* Agenda\n** TODO %^{Action}\n%?"
-				   :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Teaching")
-				   :unnarrowed t))))))))
-
-   (provide 'mf-org)
-   ;;; mf-org.el ends here
-  #+end_src
 ** mf-hacks.el
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-config.el")
   (require 'mf-hacks)
@@ -1325,46 +1217,6 @@ Configure programming experience
 ;;; mf-programming.el --- My configuration for programming languages that I use
 ;;; Code:
 #+end_src
-*** Golang
- #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-programming.el")
- (mf/install go-mode)
- (progn
-   (mf/autoload-func
-	:func go-mode
-	:file "go-mode")
-   (mf/autoload-func
-	:func gofmt-before-save
-	:file "go-mode")
-   (eval-after-load 'go-mode
-	 '(progn
-		(message "Loaded go-mode")
-		(add-hook 'go-mode-hook #'gofmt-before-save))))
-#+end_src
-*** Haskell
-#+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-programming.el")
- (mf/install haskell-mode)
- (mf/install hindent)
- (progn
-   (mf/autoload-func
-	:func haskell-mode
-	:file "haskell-mode")
-   (mf/autoload-func
-	:func interactive-haskell-mode
-	:file "haskell-mode")
-   (mf/autoload-func
-	:func haskell-indent-mode
-	:file "haskell-mode")
-   (mf/autoload-func
-	:func hindent-mode
-	:file "hindent")
-   (eval-after-load 'haskell-mode
-	 '(progn
-		(message "Loaded haskell-mode")
-		(add-hook 'haskell-mode-hook 'interactive-haskell-mode)
-		(add-hook 'haskell-mode-hook 'haskell-indent-mode)
-		(add-hook 'haskell-mode-hook 'hindent-mode)
-		(setq hindent-reformat-buffer-on-save t))))
-#+end_src
 *** Lisp
 **** Slime repls
 	 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-programming.el")
@@ -1392,6 +1244,7 @@ Configure programming experience
 #+end_src
 *** Flymake
 	#+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-programming.el")
+	  (mf/install flymake)
 	  (eval-after-load 'flymake
 		'(progn
 		   (message "Loaded flymake")
@@ -1408,27 +1261,6 @@ Configure programming experience
 	 '(progn
 		(setq yas-snippet-dirs '("~/.emacs.d/snippets"))))
 #+end_src
-*** Lsp
-#+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-programming.el")
-   ;;; LSP
-   (mf/install lsp-mode)
-   (mf/autoload-func
-	:func lsp
-	:file "lsp-mode")
-   (eval-after-load 'lsp-mode
-	 '(progn
-		(message "Lsp-mode loaded")
-		(setq read-process-output-max (* 1024 1024)
-			  lsp-idle-delay 0.5
-			  lsp-headerline-breadcrumb-enable nil
-			  lsp-lens-enable nil
-			  lsp-modeline-diagnostics-enable nil
-			  lsp-clangd-binary-path (executable-find "clangd")
-			  lsp-enable-snippet nil)))
-
-   (provide 'mf-programming)
-   ;;; mf-programming.el ends here
- #+end_src
 ** mf-dired.el
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-config.el")
   (require 'mf-dired)
@@ -1438,13 +1270,11 @@ capabilities similar to those of ibuffer
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-dired.el")
   ;;; mf-dired.el --- My dired configuration -*- lexical-binding: t -*-
   ;;;Code:
-  (mf/install dired-filter)
   (eval-after-load 'dired
 	'(progn
 	   (message "Loaded dired-mode")
 	   (setq dired-kill-when-opening-new-dired-buffer t)
 	   (add-hook 'dired-mode-hook 'dired-hide-details-mode)
-	   (add-hook 'dired-mode-hook 'dired-filter-mode)
 	   (define-key dired-mode-map (kbd "q") #'(lambda() (interactive (quit-window t))))))
 
   (provide 'mf-dired)
@@ -1452,7 +1282,7 @@ capabilities similar to those of ibuffer
 #+end_src
 ** mf-git.el
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-dired.el")
-  (require 'mf-git)
+;;  (require 'mf-git)
 #+end_src
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-git.el")
   ;;; mf-git.el --- Git workflow configuration -*- lexical-binding: t -*-
@@ -1473,7 +1303,7 @@ capabilities similar to those of ibuffer
 #+end_src
 ** mf-pass.el
    #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-config.el")
-	 (require 'mf-pass)
+;;	 (require 'mf-pass)
    #+end_src
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-pass.el")
   ;;; mf-pass.el --- Configuration for the emacs frontend to GNU pass -*- lexical-binding: t -*-
@@ -1633,7 +1463,7 @@ Configure global keybindings
  #+end_src
 ** mf-telega.el
    #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-config.el")
-	 (require 'mf-telega)
+;;	 (require 'mf-telega)
    #+end_src
    #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-telega.el")
 	 ;;; mf-telega.el --- Configuration for telega -*- lexical-binding: t -*-
