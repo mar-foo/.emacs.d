@@ -14,7 +14,7 @@
 			  ("IRC" (mode . erc-mode))
 			  ("Man" (name . "\\*Man "))
 			  ("Magit" (derived-mode . magit-mode))
-			  ("Dired" (mode . dired-mode))a
+			  ("Dired" (mode . dired-mode))
 			  ("Web" (or (mode . eww-mode) (name . "^Firefox")))
 			  ("Emacs" (or (name . "\\*scratch\\*")
 						   (name . "\\*Messages\\*")
