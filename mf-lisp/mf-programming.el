@@ -52,8 +52,9 @@
 	 (eval-after-load 'slime
 	   '(add-hook 'slime-repl-mode #'paredit-mode))))
 
-(add-hook 'c-mode-hook #'(lambda()
-						   (c-set-style "k&r")))
+(setq c-default-style '((java-mode . "java")
+						(awk-mode . "awk")
+						(other . "bsd")))
 
 (eval-after-load 'flymake
   '(progn
