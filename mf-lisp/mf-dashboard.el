@@ -12,6 +12,7 @@
 	(define-key map (kbd "j") 'bookmark-jump)
 	(define-key map (kbd "n") 'next-line)
 	(define-key map (kbd "p") 'previous-line)
+	(define-key map (kbd "q") 'quit-window)
 	map)
   "Keymap for dashboard mode.")
 
