@@ -138,7 +138,7 @@
 
 		  (defun mf/org-roam-refresh-agenda-files()
 			(interactive)
-			(setq org-agenda-files (mf/org-roam-list-notes-by-tag "Teaching"))
+			(setq org-agenda-files (mf/org-roam-list-notes-by-tag "Agenda"))
 			(add-to-list 'org-agenda-files "~/Documents/Personal/agenda.org"))
 		  (mf/org-roam-refresh-agenda-files)
 
