@@ -1,4 +1,6 @@
 ;; init.el --- Emacs initalization file -*- lexical-binding: t -*-
+(setq mf/os (shell-command-to-string "uname"))
+
 (setq gc-cons-threshold most-positive-fixnum)
 
 (setq-default
