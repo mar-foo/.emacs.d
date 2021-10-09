@@ -9,6 +9,12 @@
 	(text-scale-increase 4)))
 
 ;;;###autoload
+(defun mf/bookmarks ()
+  (with-temp-buffer
+	(insert-file-contents (file-truename "~/.local/share/bookmarks.txt"))
+	(buffer-string)))
+
+;;;###autoload
 (defun mf/delete-sexp()
   (interactive)
   (mark-sexp)
@@ -25,15 +31,6 @@
   (unless
 	  (package-installed-p pack)
 	(package-install pack)))
-
-;;;###autoload
-(defun mf/eww ()
-  (interactive)
-  (with-temp-buffer
-	(insert-file-contents "~/.local/share/bookmarks.txt")
-	(let* ((links (buffer-string))
-		   (bookmarks (split-string links)))
-	  (eww (completing-read "URL: " bookmarks)))))
 
 ;;;###autoload
 (defun mf/find-recentf()

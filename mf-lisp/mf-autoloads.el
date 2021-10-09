@@ -6,10 +6,10 @@
 	(autoload #',func "mf-functions" nil t)))
 
 (mf/my-func-autoload mf/big-font)
+(mf/my-func-autoload mf/bookmarks)
 (mf/my-func-autoload mf/delete-sexp)
 (mf/my-func-autoload mf/edit-configuration)
 (mf/my-func-autoload mf/ensure-package)
-(mf/my-func-autoload mf/eww)
 (mf/my-func-autoload mf/infos)
 (mf/my-func-autoload mf/find-recentf)
 (mf/my-func-autoload mf/quit-and-kill)
@@ -20,4 +20,4 @@
 (mf/my-func-autoload mf/youtube)
 
 (provide 'mf-autoloads)
-;;; mf-autoloads.el ends here
+ ;;; mf-autoloads.el ends here
