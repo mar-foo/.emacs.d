@@ -12,7 +12,7 @@
 (defun mf/bookmarks ()
   (with-temp-buffer
 	(insert-file-contents (file-truename "~/.local/share/bookmarks.txt"))
-	(buffer-string)))
+	(split-string (buffer-string))))
 
 ;;;###autoload
 (defun mf/delete-sexp()
