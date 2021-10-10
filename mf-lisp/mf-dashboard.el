@@ -12,7 +12,6 @@
 	(define-key map (kbd "j") 'bookmark-jump)
 	(define-key map (kbd "n") 'next-line)
 	(define-key map (kbd "p") 'previous-line)
-	(define-key map (kbd "q") 'quit-window)
 	map)
   "Keymap for dashboard mode.")
 
@@ -81,7 +80,9 @@
 (defun mf-dashboard-insert-init-info ()
   "Insert init info"
   (interactive)
-  (let* ((init-time (emacs-init-time "%.2f seconds"))
+  (let* ((init-time
+		  (format "%.2f" (float-time
+							  (time-subtract after-init-time before-init-time))))
 		 (info (format "Emacs ready in %s with %d garbage collections" (propertize init-time 'face 'font-lock-keyword-face) gcs-done))
 		 (buffer-read-only nil))
 	(mf-dashboard-center-line info)
