@@ -1772,27 +1772,6 @@ Configure programming experience
 	 '(progn
 		(setq yas-snippet-dirs '("~/.emacs.d/snippets"))))
 #+end_src
-*** Lsp
-#+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-programming.el")
-   ;;; LSP
-   (mf/install lsp-mode)
-   (mf/autoload-func
-	:func lsp
-	:file "lsp-mode")
-   (eval-after-load 'lsp-mode
-	 '(progn
-		(message "Lsp-mode loaded")
-		(setq read-process-output-max (* 1024 1024)
-			  lsp-idle-delay 0.5
-			  lsp-headerline-breadcrumb-enable nil
-			  lsp-lens-enable nil
-			  lsp-modeline-diagnostics-enable nil
-			  lsp-clangd-binary-path (executable-find "clangd")
-			  lsp-enable-snippet nil)))
-
-   (provide 'mf-programming)
-   ;;; mf-programming.el ends here
- #+end_src
 ** mf-telega.el
    #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-config.el")
 	 (require 'mf-telega)
