@@ -4,8 +4,9 @@
 (require 'mf-packages)
 
 (defmacro mf/install (package)
-  (unless
-	  (package-installed-p package)
-	(package-install package)))
+  `(if (not (string= mf/os "Guix"))
+	   (unless
+		   (package-installed-p ',package)
+		 (package-install ',package))))
 
 (require 'mf-look-and-feel)

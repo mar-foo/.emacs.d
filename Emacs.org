@@ -36,9 +36,10 @@ Configure =package.el= in mf-packages.el
 Define a macro to install packages
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "early-init.el")
   (defmacro mf/install (package)
-	(unless
-		(package-installed-p package)
-	  (package-install package)))
+	`(if (not (string= mf/os "Guix"))
+		 (unless
+			 (package-installed-p ',package)
+		   (package-install ',package))))
 #+end_src
 ** Look and feel
 Load look and feel configuration from mf-look-and-feel.el as early as possible
