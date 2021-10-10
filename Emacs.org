@@ -201,7 +201,16 @@ Fix the redisplaying of the modeline when changing theme
 ** Recognize OS
    #+begin_src emacs-lisp :tangle (concat user-emacs-directory "init.el")
 	 ;; init.el --- Emacs initalization file -*- lexical-binding: t -*-
-	 (setq mf/os (shell-command-to-string "uname"))
+	 (setq mf/os
+		   (cond
+			((string= (shell-command-to-string "uname") "Linux\n")
+			 (if (not (null (executable-find "guix")))
+				 "Guix"
+			   "Linux"))
+			(t
+			 (shell-command-to-string "uname"))))
+	 (if (string= mf/os "Guix")
+		 (add-to-list 'load-path "/home/mario/.guix-profile/share/emacs/site-lisp/"))
    #+end_src
 ** Garbage collection
 Raise garbage collection threshold to speed up init time
@@ -519,9 +528,13 @@ Configure erc, the built-in IRC client
    #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-config.el")
 (require 'mf-eww)
    #+end_src
-   #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-exww.el")
+   #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-eww.el")
+	 ;;; mf-eww.el --- Configuration for eww -*- lexical-binding: t -*-
+	 ;;; Code
 	 (eval-after-load 'eww
 	   '(add-to-list 'eww-suggest-uris #'mf/bookmarks))
+	 (provide 'mf-eww)
+	 ;;; mf-exwm.el ends here
    #+end_src
 *** Bookmarks
 	#+begin_src sh :tangle (file-truename "~/.local/share/bookmarks.txt")
@@ -641,7 +654,7 @@ Configure erc, the built-in IRC client
   #+end_src
 *** Sxrc
 	Shell script that runs at Xorg activation (using =sx=).
-	#+begin_src shell :tangle (cond ((string= mf/os "Linux\n") (file-truename "~/.config/sx/sxrc")) ((string= mf/os "OpenBSD\n") (file-truename "~/.xsession"))) :tangle-mode (if (eq exwm-state 1) (identity #o755) (identity #o664))
+	#+begin_src shell :tangle (cond ((or (string= mf/os "Linux") (string= mf/os "Guix")) (file-truename "~/.config/sx/sxrc")) ((string= mf/os "OpenBSD\n") (file-truename "~/.xsession"))) :tangle-mode (if (eq exwm-state 1) (identity #o755) (identity #o664))
 	  #!/bin/sh
 	  pgrep mpd || mpd &
 	  setxkbmap dvorak
@@ -1410,7 +1423,7 @@ Configure the mu4e mail-reader
   (cond
    ((string= mf/os "OpenBSD\n")
 	(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e/"))
-   ((string= mf/os "Linux\n")
+   (t
 	(add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e/")))
   (mf/autoload-func
    :func mu4e
