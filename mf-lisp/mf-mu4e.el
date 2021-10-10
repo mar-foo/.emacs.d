@@ -3,7 +3,7 @@
 (cond
  ((string= mf/os "OpenBSD\n")
   (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e/"))
- ((string= mf/os "Linux\n")
+ (t
   (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e/")))
 (mf/autoload-func
  :func mu4e

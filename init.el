@@ -1,5 +1,14 @@
 ;; init.el --- Emacs initalization file -*- lexical-binding: t -*-
-(setq mf/os (shell-command-to-string "uname"))
+(setq mf/os
+	  (cond
+	   ((string= (shell-command-to-string "uname") "Linux\n")
+		(if (not (null (executable-find "guix")))
+			"Guix"
+		  "Linux"))
+	   (t
+		(shell-command-to-string "uname"))))
+(if (string= mf/os "Guix")
+	(add-to-list 'load-path "/home/mario/.guix-profile/share/emacs/site-lisp/"))
 
 (setq gc-cons-threshold most-positive-fixnum)
 
