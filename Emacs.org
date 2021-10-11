@@ -35,8 +35,8 @@ Configure =package.el= in mf-packages.el
 ** Package install macro
 Define a macro to install packages
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "early-init.el")
-  (defmacro mf/install (package)
-	`(if (not (string= mf/os "Guix"))
+  (defmacro mf/install (package ensure)
+	`(if (or ,ensure (not (string= mf/os "Guix")))
 		 (unless
 			 (package-installed-p ',package)
 		   (package-install ',package))))
@@ -80,6 +80,9 @@ Load look and feel configuration from mf-look-and-feel.el as early as possible
 				(unless
 					(or (eq major-mode 'minibuffer-mode) (eq major-mode 'exwm-mode))
 				(set-window-margins (car (get-buffer-window-list (current-buffer) nil t)) 5 5))))
+ #+end_src
+ #+begin_src scheme :noweb-ref guix-packages
+ "font-go"
  #+end_src
 *** display-buffer-alist
  #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-look-and-feel.el")
@@ -172,16 +175,16 @@ Load look and feel configuration from mf-look-and-feel.el as early as possible
  #+end_src
 *** Mini-modeline mode
  #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-look-and-feel.el")
-   (mf/install mini-modeline)
+   (mf/install mini-modeline t)
    (setq mini-modeline-face-attr `(:background ,(face-attribute 'mode-line-inactive :background)))
    (mini-modeline-mode)
 #+end_src
-Fix the redisplaying of the modeline when changing theme
-   #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-look-and-feel.el")
-   (advice-add #'load-theme :after #'(lambda (&rest r)
-									   (mini-modeline-mode -1)
-									   (setq mini-modeline-face-attr `(:background ,(face-attribute 'mode-line-inactive :background)))
-									   (mini-modeline-mode)))
+  Fix the redisplaying of the modeline when changing theme
+#+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-look-and-feel.el")
+	 (advice-add #'load-theme :after #'(lambda (&rest r)
+										 (mini-modeline-mode -1)
+										 (setq mini-modeline-face-attr `(:background ,(face-attribute 'mode-line-inactive :background)))
+										 (mini-modeline-mode)))
 #+end_src
 
 *** Handle themes
@@ -211,7 +214,7 @@ Fix the redisplaying of the modeline when changing theme
 			(t
 			 (shell-command-to-string "uname"))))
 	 (if (string= mf/os "Guix")
-		 (add-to-list 'load-path "/home/mario/.guix-profile/share/emacs/site-lisp/"))
+		 (add-to-list 'load-path "/home/mario/.guix-profile/share/emacs/28.0.50/site-lisp/"))
    #+end_src
 ** Garbage collection
 Raise garbage collection threshold to speed up init time
@@ -440,23 +443,32 @@ Configure the completion framework
 			#'complete-path-at-point+
 			'append)
 
-  (mf/install orderless)
+  (mf/install orderless nil)
   ;; (setq completion-styles '(substring partial-completion initials flex)
   (setq completion-styles '(orderless)
 		completion-category-overrides
 		'((file (styles partial-completion initials basic))))
 #+end_src
+#+begin_src scheme :noweb-ref guix-packages
+"emacs-orderless"
+#+end_src
 *** Vertico
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-completion.el")
-  (mf/install vertico)
+  (mf/install vertico nil)
+  (mf/autoload-func
+   :func vertico-mode
+   :file "vertico")
   (eval-after-load 'minibuffer
 	'(progn
 	   (message "Loaded vertico")
 	   (vertico-mode 1)))
 #+end_src
+#+begin_src scheme :noweb-ref guix-packages
+"emacs-vertico"
+#+end_src
 *** Company
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-completion.el")
-  (mf/install company)
+  (mf/install company nil)
   (mf/autoload-func
    :func company-mode
    :file "company")
@@ -476,6 +488,9 @@ Configure the completion framework
   (provide 'mf-completion)
   ;;; mf-completion.el ends here
   #+end_src
+#+begin_src scheme :noweb-ref guix-packages
+"emacs-company"
+#+end_src
 ** mf-dired.el
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-config.el")
   (require 'mf-dired)
@@ -485,7 +500,7 @@ capabilities similar to those of ibuffer
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-dired.el")
   ;;; mf-dired.el --- My dired configuration -*- lexical-binding: t -*-
   ;;;Code:
-  (mf/install dired-filter)
+  (mf/install dired-filter t)
   (eval-after-load 'dired
 	'(progn
 	   (message "Loaded dired-mode")
@@ -535,7 +550,7 @@ Configure erc, the built-in IRC client
 	 (eval-after-load 'eww
 	   '(add-to-list 'eww-suggest-uris #'mf/bookmarks))
 	 (provide 'mf-eww)
-	 ;;; mf-exwm.el ends here
+	 ;;; mf-eww.el ends here
    #+end_src
 *** Bookmarks
 	#+begin_src sh :tangle (file-truename "~/.local/share/bookmarks.txt")
@@ -578,7 +593,7 @@ Configure erc, the built-in IRC client
 *** Configuration
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-exwm.el")
   (progn
-	(mf/install exwm)
+	(mf/install exwm nil)
 	(require 'exwm-config)
 	(setq exwm-workspace-number 2
 		  exwm-workspace-warp-cursor t
@@ -652,20 +667,32 @@ Configure erc, the built-in IRC client
 
   (provide 'mf-exwm)
 	  ;;; mf-exwm.el ends here
-  #+end_src
+#+end_src
+#+begin_src scheme :noweb-ref guix-packages
+  "emacs-exwm"
+#+end_src
 *** Sxrc
 	Shell script that runs at Xorg activation (using =sx=).
-	#+begin_src shell :tangle (cond ((or (string= mf/os "Linux") (string= mf/os "Guix")) (file-truename "~/.config/sx/sxrc")) ((string= mf/os "OpenBSD\n") (file-truename "~/.xsession"))) :tangle-mode (if (eq exwm-state 1) (identity #o755) (identity #o664))
-	  #!/bin/sh
-	  pgrep mpd || mpd &
-	  setxkbmap dvorak
-	  xmodmap ~/.Xmodmap
-	  export _JAVA_AWT_WM_NONREPARENTING=1
-	  exec emacs -mm --debug-init
-    #+end_src
+#+begin_src shell :tangle (cond ((or (string= mf/os "Linux") (string= mf/os "Guix")) (file-truename "~/.config/sx/sxrc")) ((string= mf/os "OpenBSD\n") (file-truename "~/.xsession"))) :tangle-mode (if (eq exwm-state 1) (identity #o755) (identity #o664))
+  #!/bin/sh
+  xhost +SI:localuser:$USER
+  pgrep mpd || mpd &
+  setxkbmap dvorak
+  xmodmap ~/.Xmodmap
+  export _JAVA_AWT_WM_NONREPARENTING=1
+  exec emacs -mm --debug-init
+#+end_src
+#+begin_src scheme :noweb-ref guix-packages
+  "xorg-server"
+  "xf86-input-evdev"
+  "sx"
+  "xhost"
+  "xauth"
+  "setxkbmap"
+#+end_src
 *** Xmodmap
-	Switch Caps_Lock and Left_Control keys to prevent the =Emacs' pinky=.
-	#+begin_src fundamental :tangle (if (eq exwm-state 1) (file-truename "~/.Xmodmap") no)
+Switch Caps_Lock and Left_Control keys to prevent the =Emacs' pinky=.
+#+begin_src fundamental :tangle (if (eq exwm-state 1) (file-truename "~/.Xmodmap") no)
 	  !
 	  ! Swap Caps_Lock and Control_L
 	  !
@@ -677,7 +704,10 @@ Configure erc, the built-in IRC client
 	  keysym Caps_Lock = Control_L
 	  add Lock = Caps_Lock
 	  add Control = Control_L
-	#+end_src
+#+end_src
+#+begin_src scheme :noweb-ref guix-packages
+"xmodmap"
+#+end_src
 ** mf-functions.el
 Custom functions
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-functions.el")
@@ -798,8 +828,11 @@ Custom functions
 
   (provide 'mf-functions)
   ;;; mf-functions.el ends here
- #+end_src
-
+#+end_src
+#+begin_src scheme :noweb-ref guix-packages
+"mpv"
+"youtube-dl"
+#+end_src
 ** mf-git.el
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-dired.el")
   (require 'mf-git)
@@ -807,7 +840,7 @@ Custom functions
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-git.el")
   ;;; mf-git.el --- Git workflow configuration -*- lexical-binding: t -*-
   ;;; Code:
-  (mf/install magit)
+  (mf/install magit nil)
   (progn
 	(mf/autoload-func
 	 :func magit
@@ -820,6 +853,10 @@ Custom functions
 
   (provide 'mf-git)
   ;;; mf-git.el ends here
+#+end_src
+#+begin_src scheme :noweb-ref guix-packages
+"git"
+"emacs-magit"
 #+end_src
 ** mf-gnus.el
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-config.el")
@@ -1413,6 +1450,11 @@ Rewrite mpc function to respect display-buffer-alist
  (provide 'mf-mpc)
  ;;; mf-mpc.el ends here
 #+end_src
+#+begin_src scheme :noweb-ref guix-packages
+  "mpd"
+  "alsa-lib"
+  "alsa-utils"
+#+end_src
 ** mf-mu4e.el
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-config.el")
   (require 'mf-mu4e)
@@ -1473,7 +1515,11 @@ Configure the mu4e mail-reader
 
   (provide 'mf-mu4e)
 	;;; mf-mu4e.el ends here
- #+end_src
+#+end_src
+#+begin_src scheme :noweb-ref guix-packages
+"mu"
+"isync"
+#+end_src
 ** mf-org.el
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-config.el")
   (require 'mf-org)
@@ -1550,7 +1596,7 @@ Configure the mu4e mail-reader
 		 (add-to-list 'org-structure-template-alist '("sc" . "src c"))
 		 (add-to-list 'org-structure-template-alist '("scp" . "src c++"))
 		 (add-to-list 'org-structure-template-alist '("hs" . "src haskell"))
-		 (mf/install ob-go)
+		 (mf/install ob-go t)
 		 (org-babel-do-load-languages
 		  'org-babel-load-languages
 		  '((emacs-lisp . t)
@@ -1567,10 +1613,13 @@ Configure the mu4e mail-reader
 
   (setq diary-file (file-truename "~/Documents/Personal/diary"))
 #+end_src
+#+begin_src scheme :noweb-ref guix-packages
+"emacs-org"
+#+end_src
 *** Org tree slide
- #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-org.el")
+#+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-org.el")
    ;; Org tree slide
-   (mf/install org-tree-slide)
+   (mf/install org-tree-slide nil)
    (mf/autoload-func
 	:func org-tree-slide-mode
 	:file "org-tree-slide")
@@ -1585,12 +1634,15 @@ Configure the mu4e mail-reader
 			 (define-key org-tree-slide-mode-map (kbd "RET") #'org-tree-slide-move-next-tree)
 			 (define-key org-tree-slide-mode-map (kbd "+") #'mf/big-font)
 			 (define-key org-tree-slide-mode-map (kbd "-") #'(lambda() (interactive) (mf/big-font t)))))))
- #+end_src
+#+end_src
+#+begin_src scheme :noweb-ref guix-packages
+"emacs-org-tree-slide"
+#+end_src
 *** Org roam
- #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-org.el")
+#+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-org.el")
    (eval-after-load 'org
 	 '(progn
-		(mf/install org-roam)
+		(mf/install org-roam nil)
 		(mf/autoload-func
 		 :func org-roam-find-node
 		 :file "org-roam")
@@ -1651,15 +1703,18 @@ Configure the mu4e mail-reader
 
    (provide 'mf-org)
    ;;; mf-org.el ends here
-  #+end_src
+#+end_src
+#+begin_src scheme :noweb-ref guix-packages
+"emacs-org-roam"
+#+end_src
 ** mf-pass.el
-   #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-config.el")
+#+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-config.el")
 	 (require 'mf-pass)
-   #+end_src
+#+end_src
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-pass.el")
   ;;; mf-pass.el --- Configuration for the emacs frontend to GNU pass -*- lexical-binding: t -*-
   ;;; Code:
-	 (mf/install password-store)
+	 (mf/install password-store nil)
 	 (progn
 	   (mf/autoload-func
 		:func password-store-copy
@@ -1678,7 +1733,12 @@ Configure the mu4e mail-reader
 
   (provide 'mf-pass)
   ;;; mf-pass.el ends here
- #+end_src
+#+end_src
+#+begin_src scheme :noweb-ref guix-packages
+  "emacs-password-store"
+  "emacs-pinentry"
+  "pinentry-emacs"
+#+end_src
 ** mf-programming.el
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-config.el")
   (require 'mf-programming)
@@ -1690,7 +1750,7 @@ Configure programming experience
 #+end_src
 *** Golang
  #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-programming.el")
- (mf/install go-mode)
+ (mf/install go-mode nil)
  (progn
    (mf/autoload-func
 	:func go-mode
@@ -1703,10 +1763,14 @@ Configure programming experience
 		(message "Loaded go-mode")
 		(add-hook 'go-mode-hook #'gofmt-before-save))))
 #+end_src
+#+begin_src scheme :noweb-ref guix-packages
+"go"
+"emacs-go-mode"
+#+end_src
 *** Haskell
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-programming.el")
- (mf/install haskell-mode)
- (mf/install hindent)
+ (mf/install haskell-mode nil)
+ (mf/install hindent t)
  (progn
    (mf/autoload-func
 	:func haskell-mode
@@ -1728,58 +1792,81 @@ Configure programming experience
 		(add-hook 'haskell-mode-hook 'hindent-mode)
 		(setq hindent-reformat-buffer-on-save t))))
 #+end_src
+#+begin_src scheme :noweb-ref guix-packages
+"emacs-haskell-mode"
+"ghc-hindent"
+#+end_src
 *** Lisp
 **** Slime repls
-	 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-programming.el")
-	   (mf/install slime)
-	   (setq inferior-lisp-program "sbcl")
-	   (eval-after-load 'slime
-		 '(progn
-			(add-hook 'slime-repl-mode 'paredit-mode)
-			(message "Loaded slime")))
-	 #+end_src
+#+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-programming.el")
+  (mf/install slime nil)
+  (mf/autoload-func
+   :func slime
+   :file "slime")
+  (setq inferior-lisp-program "sbcl")
+  (eval-after-load 'slime
+	'(progn
+	   (add-hook 'slime-repl-mode 'paredit-mode)
+	   (message "Loaded slime")))
+#+end_src
+#+begin_src scheme :noweb-ref guix-packages
+"emacs-slime"
+"sbcl"
+#+end_src
 **** Paredit
-	 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-programming.el")
-	   (mf/install paredit)
-	   (add-hook 'lisp-mode-hook #'paredit-mode)
-	   (eval-after-load 'paredit
-		 '(progn
-			(message "Loaded paredit")
-			(eval-after-load 'slime
-			  '(add-hook 'slime-repl-mode #'paredit-mode))))
-	 #+end_src
+#+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-programming.el")
+  (mf/install paredit nil)
+  (mf/autoload-func
+   :func paredit-mode
+   :file "paredit")
+  (add-hook 'lisp-mode-hook #'paredit-mode)
+  (eval-after-load 'paredit
+	'(progn
+	   (message "Loaded paredit")
+	   (eval-after-load 'slime
+		 '(add-hook 'slime-repl-mode #'paredit-mode))))
+#+end_src
+#+begin_src scheme :noweb-ref guix-packages
+"emacs-paredit"
+#+end_src
 *** C
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-programming.el")
   (setq c-default-style '((java-mode . "java")
-						  (awk-mode . "awk")
-						  (other . "bsd")))
+			  (awk-mode . "awk")
+			  (other . "bsd")))
 #+end_src
 *** Flymake
-	#+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-programming.el")
+#+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-programming.el")
 	  (eval-after-load 'flymake
 		'(progn
 		   (message "Loaded flymake")
 		   (add-hook 'flymake-mode-hook #'flymake-show-diagnostics-buffer)))
-	#+end_src
+#+end_src
 *** Yasnippet
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-programming.el")
-;; Yasnippet
-   (mf/install yasnippet)
-   (mf/autoload-func
-	:func yas-minor-mode
-	:file "yasnippet")
-   (eval-after-load 'yasnippet
-	 '(progn
-		(setq yas-snippet-dirs '("~/.emacs.d/snippets"))))
+  ;; Yasnippet
+  (mf/install yasnippet nil)
+  (mf/autoload-func
+   :func yas-minor-mode
+   :file "yasnippet")
+  (eval-after-load 'yasnippet
+	'(progn
+	   (setq yas-snippet-dirs '("~/.emacs.d/snippets"))))
+
+  (provide 'mf-programming)
+  ;;; mf-programming.el ends here
+#+end_src
+#+begin_src scheme :noweb-ref guix-packages
+"emacs-yasnippet"
 #+end_src
 ** mf-telega.el
-   #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-config.el")
+#+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-config.el")
 	 (require 'mf-telega)
-   #+end_src
-   #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-telega.el")
+#+end_src
+#+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-telega.el")
 	 ;;; mf-telega.el --- Configuration for telega -*- lexical-binding: t -*-
 	 ;;; Code:
-	 (mf/install telega)
+	 (mf/install telega nil)
 	 (mf/autoload-func
 	  :func telega
 	  :file "telega")
@@ -1789,26 +1876,40 @@ Configure programming experience
 
 	 (provide 'mf-telega)
 	 ;;; mf-telega.el ends here
-   #+end_src
+#+end_src
+#+begin_src scheme :noweb-ref guix-packages
+"emacs-telega"
+#+end_src
 ** Startup time
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-config.el")
-	  ;; Startup time and garbage collection
-	  (add-hook 'emacs-startup-hook
-				(lambda ()
-				  (message "Emacs ready in %s with %d garbage collections"
-						   (format "%.2f seconds"
-								   (float-time
-									(time-subtract after-init-time before-init-time)))
-						   gcs-done)))
+  ;; Startup time and garbage collection
+  (add-hook 'emacs-startup-hook
+	    (lambda ()
+	      (message "Emacs ready in %s with %d garbage collections"
+		       (format "%.2f seconds"
+			       (float-time
+				(time-subtract after-init-time before-init-time)))
+		       gcs-done)))
 
-	  (provide 'mf-config)
-	;;; mf-config.el ends here
+  (provide 'mf-config)
+  ;;; mf-config.el ends here
 #+end_src
 ** Manage garbage collection
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "init.el")
-  (mf/install gcmh)
+  (mf/install gcmh nil)
+  (require 'gcmh)
   (gcmh-mode 1)
   ;;; init.el ends here
+#+end_src
+#+begin_src scheme :noweb-ref guix-packages
+"emacs-gcmh"
+#+end_src
+* Guix packages
+#+begin_src scheme :noweb yes :mkdirp yes :tangle (if (string= mf/os "Guix") (file-truename "~/.config/guix/manifests/emacs.scm"))
+  (specifications->manifest
+   '("emacs-next"
+	<<guix-packages>>
+	))
 #+end_src
 * Themes
 ** mf-theme.el
@@ -1834,254 +1935,254 @@ Configure programming experience
   ;; Works with Emacs 28.
 
   (deftheme mf
-	"Black on white theme4 for your focused hacking sessions during the day.")
+    "Black on white theme4 for your focused hacking sessions during the day.")
 
   (custom-theme-set-faces 'mf
-						  '(default ((t (:foreground "black" :background "white"))))
-						  '(cursor ((t (:background "black"))))
+			  '(default ((t (:foreground "black" :background "white"))))
+			  '(cursor ((t (:background "black"))))
 
-						  ;; Highlighting faces
-						  '(fringe ((t (:foreground "black" :background "white"))))
-						  '(highlight ((t (:foreground "black" :background "#e0e0e0"))))
-						  '(hl-line ((t (:background "#e0e0e0"))))
-						  '(isearch ((t (:foreground "#f0f0f0" :background "#006800"))))
-						  '(lazy-highlight ((t (:foreground "white" :background "#303030"))))
-						  '(linum ((t (:foreground "#303030" :slant italic))))
-						  '(match ((t (:background "green"))))
-						  '(region ((t (:extend t :foreground "black" :background "#bcbcbc"))))
-						  '(secondary-selection ((t (:foreground: "black" :background "#e0e0e0"))))
-						  '(trailing-whitespace ((t (:background "red"))))
+			  ;; Highlighting faces
+			  '(fringe ((t (:foreground "black" :background "white"))))
+			  '(highlight ((t (:foreground "black" :background "#e0e0e0"))))
+			  '(hl-line ((t (:background "#e0e0e0"))))
+			  '(isearch ((t (:foreground "#f0f0f0" :background "#006800"))))
+			  '(lazy-highlight ((t (:foreground "white" :background "#303030"))))
+			  '(linum ((t (:foreground "#303030" :slant italic))))
+			  '(match ((t (:background "green"))))
+			  '(region ((t (:extend t :foreground "black" :background "#bcbcbc"))))
+			  '(secondary-selection ((t (:foreground: "black" :background "#e0e0e0"))))
+			  '(trailing-whitespace ((t (:background "red"))))
 
-						  ;; Button and link faces
-						  '(link ((t (:underline t :foreground "#303030"))))
-						  '(link-visited ((t (:underline t :foreground "#303030"))))
+			  ;; Button and link faces
+			  '(link ((t (:underline t :foreground "#303030"))))
+			  '(link-visited ((t (:underline t :foreground "#303030"))))
 
-						  ;; Company
-						  '(company-scrollbar-bg ((t (:background "white"))))
-						  '(company-scrollbar-fg ((t (:foreground "black"))))
-						  '(company-tooltip-annotation ((t (:foreground "#b0b0b0"))))
-						  '(company-tooltip-common ((t (:foreground "black" :weight semi-bold))))
-						  '(company-tooltip-selection ((t (:foreground "black" :background "#808080"))))
+			  ;; Company
+			  '(company-scrollbar-bg ((t (:background "white"))))
+			  '(company-scrollbar-fg ((t (:foreground "black"))))
+			  '(company-tooltip-annotation ((t (:foreground "#b0b0b0"))))
+			  '(company-tooltip-common ((t (:foreground "black" :weight semi-bold))))
+			  '(company-tooltip-selection ((t (:foreground "black" :background "#808080"))))
 
-						  ;; Corfu
-						  '(corfu-current ((t (:foreground "black" :background "#b3b3b3"))))
-						  '(corfu-bar ((t (:background "black"))))
-						  '(corfu-background ((t (:background "white"))))
-						  '(corfu-border ((t (:background "#b3b3b3"))))
+			  ;; Corfu
+			  '(corfu-current ((t (:foreground "black" :background "#b3b3b3"))))
+			  '(corfu-bar ((t (:background "black"))))
+			  '(corfu-background ((t (:background "white"))))
+			  '(corfu-border ((t (:background "#b3b3b3"))))
 
-						  ;; Erc
-						  '(erc-current-nick-face ((t (:foreground "black" :weight bold))))
-						  '(erc-error-face ((t (:inherit error))))
-						  '(erc-keyword-face ((t (:foreground "black" :underline t :weight bold))))
-						  '(erc-my-nick-face ((t (:inherit erc-current-nick-face))))
-						  '(erc-notice-face ((t (:foreground "#b0b0b0" :weight bold))))
-						  '(erc-prompt-face ((t (:foreground "Black" :underline t :weight bold))))
-						  '(erc-timestamp-face ((t (:foreground "#b0b0b0" :weight bold))))
+			  ;; Erc
+			  '(erc-current-nick-face ((t (:foreground "black" :weight bold))))
+			  '(erc-error-face ((t (:inherit error))))
+			  '(erc-keyword-face ((t (:foreground "black" :underline t :weight bold))))
+			  '(erc-my-nick-face ((t (:inherit erc-current-nick-face))))
+			  '(erc-notice-face ((t (:foreground "#b0b0b0" :weight bold))))
+			  '(erc-prompt-face ((t (:foreground "Black" :underline t :weight bold))))
+			  '(erc-timestamp-face ((t (:foreground "#b0b0b0" :weight bold))))
 
-						  ;; Escape and prompt faces
-						  '(minibuffer-prompt ((t (:weight bold :foreground "#303030"))))
-						  '(escape-glyph ((t (:foreground "#303030"))))
-						  '(error ((t (:weight bold :slant italic :foreground "#900000"))))
-						  '(warning ((t (:background "#b0b0b0" :foreground "black"))))
-						  '(success ((t (:background "#303030" :foreground "green"))))
+			  ;; Escape and prompt faces
+			  '(minibuffer-prompt ((t (:weight bold :foreground "#303030"))))
+			  '(escape-glyph ((t (:foreground "#303030"))))
+			  '(error ((t (:weight bold :slant italic :foreground "#900000"))))
+			  '(warning ((t (:background "#b0b0b0" :foreground "black"))))
+			  '(success ((t (:background "#303030" :foreground "green"))))
 
-						  ;; EShell
-						  '(eshell-prompt ((t (:foreground "black" :bold t))))
-						  '(eshell-ls-archive ((t (:inherit eshell-ls-unreadable))))
-						  '(eshell-ls-backup ((t (:inherit eshell-ls-unreadable))))
-						  '(eshell-ls-clutter ((t (:inherit eshell-ls-unreadable))))
-						  '(eshell-ls-directory ((t (:foreground "#303030" :bold t))))
-						  '(eshell-ls-executable ((t (:inherit eshell-ls-unreadable))))
-						  '(eshell-ls-missing ((t (:inherit eshell-ls-unreadable))))
-						  '(eshell-ls-product ((t (:inherit eshell-ls-unreadable))))
-						  '(eshell-ls-readonly ((t (:inherit eshell-ls-unreadable))))
-						  '(eshell-ls-special ((t (:inherit eshell-ls-unreadable))))
-						  '(eshell-ls-symlink ((t (:inherit eshell-ls-unreadable))))
+			  ;; EShell
+			  '(eshell-prompt ((t (:foreground "black" :bold t))))
+			  '(eshell-ls-archive ((t (:inherit eshell-ls-unreadable))))
+			  '(eshell-ls-backup ((t (:inherit eshell-ls-unreadable))))
+			  '(eshell-ls-clutter ((t (:inherit eshell-ls-unreadable))))
+			  '(eshell-ls-directory ((t (:foreground "#303030" :bold t))))
+			  '(eshell-ls-executable ((t (:inherit eshell-ls-unreadable))))
+			  '(eshell-ls-missing ((t (:inherit eshell-ls-unreadable))))
+			  '(eshell-ls-product ((t (:inherit eshell-ls-unreadable))))
+			  '(eshell-ls-readonly ((t (:inherit eshell-ls-unreadable))))
+			  '(eshell-ls-special ((t (:inherit eshell-ls-unreadable))))
+			  '(eshell-ls-symlink ((t (:inherit eshell-ls-unreadable))))
 
-						  ;; Font lock faces
-						  '(font-lock-builtin-face ((t (:foreground "#303030"))))
-						  '(font-lock-comment-face ((t (:slant italic :foreground "#b3b3b3"))))
-						  '(font-lock-constant-face ((t (:weight bold :foreground "#303030"))))
-						  '(font-lock-function-name-face ((t (:foreground "black" :weight semi-bold))))
-						  '(font-lock-keyword-face ((t (:weight bold :foreground "black"))))
-						  '(font-lock-string-face ((t (:foreground "#808080"))))
-						  '(font-lock-type-face ((t (:weight bold :foreground "#303030"))))
-						  '(font-lock-variable-name-face ((t (:weight bold :foreground "#808080" :slant oblique))))
-						  '(font-lock-warning-face ((t (:foreground "#b0b0b0" :underline (:color foreground-color :style wave)))))
+			  ;; Font lock faces
+			  '(font-lock-builtin-face ((t (:foreground "#303030"))))
+			  '(font-lock-comment-face ((t (:slant italic :foreground "#b3b3b3"))))
+			  '(font-lock-constant-face ((t (:weight bold :foreground "#303030"))))
+			  '(font-lock-function-name-face ((t (:foreground "black" :weight semi-bold))))
+			  '(font-lock-keyword-face ((t (:weight bold :foreground "black"))))
+			  '(font-lock-string-face ((t (:foreground "#808080"))))
+			  '(font-lock-type-face ((t (:weight bold :foreground "#303030"))))
+			  '(font-lock-variable-name-face ((t (:weight bold :foreground "#808080" :slant oblique))))
+			  '(font-lock-warning-face ((t (:foreground "#b0b0b0" :underline (:color foreground-color :style wave)))))
 
-						  ;; Gnus faces
-						  '(gnus-group-news-1 ((t (:weight bold :foreground "#303030"))))
-						  '(gnus-group-news-1-low ((t (:foreground "#303030"))))
-						  '(gnus-group-news-2 ((t (:weight bold :foreground "#303030"))))
-						  '(gnus-group-news-2-low ((t (:foreground "#303030"))))
-						  '(gnus-group-news-3 ((t (:weight bold :foreground "#303030"))))
-						  '(gnus-group-news-3-low ((t (:foreground "#303030"))))
-						  '(gnus-group-news-4 ((t (:weight bold :foreground "#303030"))))
-						  '(gnus-group-news-4-low ((t (:foreground "#303030"))))
-						  '(gnus-group-news-5 ((t (:weight bold :foreground "#b3b3b3"))))
-						  '(gnus-group-news-5-low ((t (:foreground "#b3b3b3"))))
-						  '(gnus-group-news-low ((t (:foreground "#303030"))))
-						  '(gnus-group-mail-1 ((t (:weight bold :foreground "#303030"))))
-						  '(gnus-group-mail-1-low ((t (:foreground "#303030"))))
-						  '(gnus-group-mail-2 ((t (:weight bold :foreground "#303030"))))
-						  '(gnus-group-mail-2-low ((t (:foreground "#303030"))))
-						  '(gnus-group-mail-3 ((t (:weight bold :foreground "#303030"))))
-						  '(gnus-group-mail-3-low ((t (:foreground "#303030"))))
-						  '(gnus-group-mail-low ((t (:foreground "#303030"))))
-						  '(gnus-header-content ((t (:foreground "#303030"))))
-						  '(gnus-header-from ((t (:weight bold :foreground "#303030"))))
-						  '(gnus-header-subject ((t (:foreground "#303030"))))
-						  '(gnus-header-name ((t (:foreground "#303030"))))
-						  '(gnus-header-newsgroups ((t (:foreground "#303030"))))
+			  ;; Gnus faces
+			  '(gnus-group-news-1 ((t (:weight bold :foreground "#303030"))))
+			  '(gnus-group-news-1-low ((t (:foreground "#303030"))))
+			  '(gnus-group-news-2 ((t (:weight bold :foreground "#303030"))))
+			  '(gnus-group-news-2-low ((t (:foreground "#303030"))))
+			  '(gnus-group-news-3 ((t (:weight bold :foreground "#303030"))))
+			  '(gnus-group-news-3-low ((t (:foreground "#303030"))))
+			  '(gnus-group-news-4 ((t (:weight bold :foreground "#303030"))))
+			  '(gnus-group-news-4-low ((t (:foreground "#303030"))))
+			  '(gnus-group-news-5 ((t (:weight bold :foreground "#b3b3b3"))))
+			  '(gnus-group-news-5-low ((t (:foreground "#b3b3b3"))))
+			  '(gnus-group-news-low ((t (:foreground "#303030"))))
+			  '(gnus-group-mail-1 ((t (:weight bold :foreground "#303030"))))
+			  '(gnus-group-mail-1-low ((t (:foreground "#303030"))))
+			  '(gnus-group-mail-2 ((t (:weight bold :foreground "#303030"))))
+			  '(gnus-group-mail-2-low ((t (:foreground "#303030"))))
+			  '(gnus-group-mail-3 ((t (:weight bold :foreground "#303030"))))
+			  '(gnus-group-mail-3-low ((t (:foreground "#303030"))))
+			  '(gnus-group-mail-low ((t (:foreground "#303030"))))
+			  '(gnus-header-content ((t (:foreground "#303030"))))
+			  '(gnus-header-from ((t (:weight bold :foreground "#303030"))))
+			  '(gnus-header-subject ((t (:foreground "#303030"))))
+			  '(gnus-header-name ((t (:foreground "#303030"))))
+			  '(gnus-header-newsgroups ((t (:foreground "#303030"))))
 
-						  ;; helm
-						  '(helm-header ((t (:foreground "#303030" :background "white" :underline nil :box nil))))
-						  '(helm-source-header
-							((t (:foreground "#303030"
-											 :underline nil
-											 :weight bold
-											 :box (:line-width 1 :style released-button)))))
-						  '(helm-selection ((t (:underline t :foreground "#303030"))))
-						  '(helm-visible-mark ((t (:foreground "#303030" :background "white"))))
-						  '(helm-candidate-number ((t (:foreground "#303030" :background "white"))))
-						  '(helm-separator ((t (:foreground "#303030" :background "white"))))
-						  '(helm-time-zone-current ((t (:foreground "#303030" :background "white"))))
-						  '(helm-time-zone-home ((t (:foreground "#303030" :background "white"))))
-						  '(helm-bookmark-addressbook ((t (:foreground "#303030" :background "white"))))
-						  '(helm-bookmark-directory ((t (:foreground nil :background nil :inherit helm-ff-directory))))
-						  '(helm-bookmark-file ((t (:foreground nil :background nil :inherit helm-ff-file))))
-						  '(helm-bookmark-gnus ((t (:foreground "#303030" :background "white"))))
-						  '(helm-bookmark-info ((t (:foreground "#303030" :background "white"))))
-						  '(helm-bookmark-man ((t (:foreground "#303030" :background "white"))))
-						  '(helm-bookmark-w3m ((t (:foreground "#303030" :background "white"))))
-						  '(helm-buffer-not-saved ((t (:foreground "#303030" :background "white"))))
-						  '(helm-buffer-process ((t (:foreground "#303030" :background "white"))))
-						  '(helm-buffer-saved-out ((t (:foreground "#303030" :background "white"))))
-						  '(helm-buffer-size ((t (:foreground "#303030" :background "white"))))
-						  '(helm-ff-directory ((t (:foreground "#303030" :background "white" :weight bold))))
-						  '(helm-ff-file ((t (:foreground "#303030" :background "white" :weight normal))))
-						  '(helm-ff-executable ((t (:foreground "#303030" :background "white" :weight normal))))
-						  '(helm-ff-invalid-symlink ((t (:foreground "white" :background "white" :weight bold))))
-						  '(helm-ff-symlink ((t (:foreground "#303030" :background "white" :weight bold))))
-						  '(helm-ff-prefix ((t (:foreground "#303030" :background "white" :weight normal))))
-						  '(helm-grep-cmd-line ((t (:foreground "#303030" :background "white"))))
-						  '(helm-grep-file ((t (:foreground "#303030" :background "white"))))
-						  '(helm-grep-finish ((t (:foreground "#303030" :background "white"))))
-						  '(helm-grep-lineno ((t (:foreground "#303030" :background "white"))))
-						  '(helm-grep-match ((t (:foreground nil :background nil :inherit helm-match))))
-						  '(helm-grep-running ((t (:foreground "#303030" :background "white"))))
-						  '(helm-moccur-buffer ((t (:foreground "#303030" :background "white"))))
-						  '(helm-mu-contacts-address-face ((t (:foreground "#303030" :background "white"))))
-						  '(helm-mu-contacts-name-face ((t (:foreground "#303030" :background "white"))))
+			  ;; helm
+			  '(helm-header ((t (:foreground "#303030" :background "white" :underline nil :box nil))))
+			  '(helm-source-header
+			    ((t (:foreground "#303030"
+					     :underline nil
+					     :weight bold
+					     :box (:line-width 1 :style released-button)))))
+			  '(helm-selection ((t (:underline t :foreground "#303030"))))
+			  '(helm-visible-mark ((t (:foreground "#303030" :background "white"))))
+			  '(helm-candidate-number ((t (:foreground "#303030" :background "white"))))
+			  '(helm-separator ((t (:foreground "#303030" :background "white"))))
+			  '(helm-time-zone-current ((t (:foreground "#303030" :background "white"))))
+			  '(helm-time-zone-home ((t (:foreground "#303030" :background "white"))))
+			  '(helm-bookmark-addressbook ((t (:foreground "#303030" :background "white"))))
+			  '(helm-bookmark-directory ((t (:foreground nil :background nil :inherit helm-ff-directory))))
+			  '(helm-bookmark-file ((t (:foreground nil :background nil :inherit helm-ff-file))))
+			  '(helm-bookmark-gnus ((t (:foreground "#303030" :background "white"))))
+			  '(helm-bookmark-info ((t (:foreground "#303030" :background "white"))))
+			  '(helm-bookmark-man ((t (:foreground "#303030" :background "white"))))
+			  '(helm-bookmark-w3m ((t (:foreground "#303030" :background "white"))))
+			  '(helm-buffer-not-saved ((t (:foreground "#303030" :background "white"))))
+			  '(helm-buffer-process ((t (:foreground "#303030" :background "white"))))
+			  '(helm-buffer-saved-out ((t (:foreground "#303030" :background "white"))))
+			  '(helm-buffer-size ((t (:foreground "#303030" :background "white"))))
+			  '(helm-ff-directory ((t (:foreground "#303030" :background "white" :weight bold))))
+			  '(helm-ff-file ((t (:foreground "#303030" :background "white" :weight normal))))
+			  '(helm-ff-executable ((t (:foreground "#303030" :background "white" :weight normal))))
+			  '(helm-ff-invalid-symlink ((t (:foreground "white" :background "white" :weight bold))))
+			  '(helm-ff-symlink ((t (:foreground "#303030" :background "white" :weight bold))))
+			  '(helm-ff-prefix ((t (:foreground "#303030" :background "white" :weight normal))))
+			  '(helm-grep-cmd-line ((t (:foreground "#303030" :background "white"))))
+			  '(helm-grep-file ((t (:foreground "#303030" :background "white"))))
+			  '(helm-grep-finish ((t (:foreground "#303030" :background "white"))))
+			  '(helm-grep-lineno ((t (:foreground "#303030" :background "white"))))
+			  '(helm-grep-match ((t (:foreground nil :background nil :inherit helm-match))))
+			  '(helm-grep-running ((t (:foreground "#303030" :background "white"))))
+			  '(helm-moccur-buffer ((t (:foreground "#303030" :background "white"))))
+			  '(helm-mu-contacts-address-face ((t (:foreground "#303030" :background "white"))))
+			  '(helm-mu-contacts-name-face ((t (:foreground "#303030" :background "white"))))
 
-						  ;; ido
-						  '(ido-first-match ((t (:foreground "#303030"))))
-						  '(ido-only-match ((t (:underline "#303030" :foreground "#303030"))))
-						  '(ido-subdir ((t (:weight bold :foreground "black"))))
+			  ;; ido
+			  '(ido-first-match ((t (:foreground "#303030"))))
+			  '(ido-only-match ((t (:underline "#303030" :foreground "#303030"))))
+			  '(ido-subdir ((t (:weight bold :foreground "black"))))
 
-						  ;; Magit
-						  '(magit-branch-remote ((t (:foreground "black" :underline t :slant oblique))))
-						  '(magit-section-heading ((t (:extend t :foreground "black" :weight bold))))
+			  ;; Magit
+			  '(magit-branch-remote ((t (:foreground "black" :underline t :slant oblique))))
+			  '(magit-section-heading ((t (:extend t :foreground "black" :weight bold))))
 
-						  ;; Message faces
-						  '(message-header-name ((t (:foreground "#303030"))))
-						  '(message-header-cc ((t (:foreground "#303030"))))
-						  '(message-header-other ((t (:foreground "#303030"))))
-						  '(message-header-subject ((t (:foreground "#303030"))))
-						  '(message-header-to ((t (:weight bold :foreground "#303030"))))
-						  '(message-header-xheader ((t (:slant oblique :foreground "#303030"))))
-						  '(message-cited-text ((t (:inherit shadow))))
-						  '(message-cited-text-1 ((t (:inherit message-cited-text))))
-						  '(message-cited-text-2 ((t (:inherit message-cited-text))))
-						  '(message-cited-text-3 ((t (:inherit message-cited-text))))
-						  '(message-cited-text-4 ((t (:inherit message-cited-text))))
-						  '(message-separator ((t (:weight bold :foreground "#303030"))))
+			  ;; Message faces
+			  '(message-header-name ((t (:foreground "#303030"))))
+			  '(message-header-cc ((t (:foreground "#303030"))))
+			  '(message-header-other ((t (:foreground "#303030"))))
+			  '(message-header-subject ((t (:foreground "#303030"))))
+			  '(message-header-to ((t (:weight bold :foreground "#303030"))))
+			  '(message-header-xheader ((t (:slant oblique :foreground "#303030"))))
+			  '(message-cited-text ((t (:inherit shadow))))
+			  '(message-cited-text-1 ((t (:inherit message-cited-text))))
+			  '(message-cited-text-2 ((t (:inherit message-cited-text))))
+			  '(message-cited-text-3 ((t (:inherit message-cited-text))))
+			  '(message-cited-text-4 ((t (:inherit message-cited-text))))
+			  '(message-separator ((t (:weight bold :foreground "#303030"))))
 
-						  ;; Minibuffer
-						  '(minibuffer-prompt ((t (:foreground "black" :weight bold))))
-						  '(completions-common-part ((t (:foreground "black" :weight bold))))
-						  '(completions-first-difference ((t (:underline "black" :weight semi-bold))))
+			  ;; Minibuffer
+			  '(minibuffer-prompt ((t (:foreground "black" :weight bold))))
+			  '(completions-common-part ((t (:foreground "black" :weight bold))))
+			  '(completions-first-difference ((t (:underline "black" :weight semi-bold))))
 
-						  ;; Mini-modeline
-						  ;; Mini- modeline
-						  '(mini-modeline-mode-line ((t (:height 0.14 :background "black"))))
-						  '(mini-modeline-mode-line-inactive ((t (:height 0.14 :background "white"))))
+			  ;; Mini-modeline
+			  ;; Mini- modeline
+			  '(mini-modeline-mode-line ((t (:height 0.14 :background "black"))))
+			  '(mini-modeline-mode-line-inactive ((t (:height 0.14 :background "white"))))
 
-						  ;; Mode line faces
-						  '(mode-line ((t (:background "#e0e0e0" :foreground "#303030"
-													   :box (:line-width 4 :color "#e0e0e0" :style flat-button)))))
-						  '(mode-line-inactive ((t (:background "white" :foreground "#808080"
-																:box (:line-width 4 :color "white" :style flat-button)))))
+			  ;; Mode line faces
+			  '(mode-line ((t (:background "#e0e0e0" :foreground "#303030"
+						       :box (:line-width 4 :color "#e0e0e0" :style flat-button)))))
+			  '(mode-line-inactive ((t (:background "white" :foreground "#808080"
+								:box (:line-width 4 :color "white" :style flat-button)))))
 
-						  ;; MuMaMo
-						  '(mumamo-background-chunk-major ((t (:background "white"))))
-						  '(mumamo-background-chunk-submode1 ((t (:background "white"))))
-						  '(mumamo-background-chunk-submode2 ((t (:background "white"))))
-						  '(mumamo-background-chunk-submode3 ((t (:background "white"))))
-						  '(mumamo-background-chunk-submode4 ((t (:background "white"))))
-						  '(mumamo-border-face-in ((t (:slant unspecified :underline unspecified
-															  :weight bold :foreground "black"))))
-						  '(mumamo-border-face-out ((t (:slant unspecified :underline unspecified
-															   :weight bold :foreground "black"))))
+			  ;; MuMaMo
+			  '(mumamo-background-chunk-major ((t (:background "white"))))
+			  '(mumamo-background-chunk-submode1 ((t (:background "white"))))
+			  '(mumamo-background-chunk-submode2 ((t (:background "white"))))
+			  '(mumamo-background-chunk-submode3 ((t (:background "white"))))
+			  '(mumamo-background-chunk-submode4 ((t (:background "white"))))
+			  '(mumamo-border-face-in ((t (:slant unspecified :underline unspecified
+							      :weight bold :foreground "black"))))
+			  '(mumamo-border-face-out ((t (:slant unspecified :underline unspecified
+							       :weight bold :foreground "black"))))
 
-						  ;; Notmuch
-						  '(notmuch-search-date ((t (:foreground "black" :slant oblique :weight normal))))
-						  '(notmuch-search-matching-authors ((t (:foreground "black" :weight semi-bold))))
-						  '(notmuch-search-subject ((t (:foreground "black" :weight light))))
-						  '(notmuch-search-unread-face ((t (:inherit bold :underline t))))
-						  '(notmuch-tag-added ((t (:underline "black"))))
-						  '(notmuch-tag-face ((t (:inherit shadow :foreground "#505050" :weight normal))))
-						  '(notmuch-tag-unread ((t (:foreground "black" :weight bold))))
-						  '(notmuch-tree-match-author-face ((t (:foreground "black" :weight semi-bold))))
-						  '(notmuch-tree-match-tag-face ((t (:foreground "black" :weight bold))))
+			  ;; Notmuch
+			  '(notmuch-search-date ((t (:foreground "black" :slant oblique :weight normal))))
+			  '(notmuch-search-matching-authors ((t (:foreground "black" :weight semi-bold))))
+			  '(notmuch-search-subject ((t (:foreground "black" :weight light))))
+			  '(notmuch-search-unread-face ((t (:inherit bold :underline t))))
+			  '(notmuch-tag-added ((t (:underline "black"))))
+			  '(notmuch-tag-face ((t (:inherit shadow :foreground "#505050" :weight normal))))
+			  '(notmuch-tag-unread ((t (:foreground "black" :weight bold))))
+			  '(notmuch-tree-match-author-face ((t (:foreground "black" :weight semi-bold))))
+			  '(notmuch-tree-match-tag-face ((t (:foreground "black" :weight bold))))
 
-						  ;; Orderless
-						  '(orderless-match-face-0 ((t (:foreground "black" :weight bold))))
-						  '(orderless-match-face-1 ((t (:inherit orderless-match-face-0))))
-						  '(orderless-match-face-2 ((t (:inherit orderless-match-face-0))))
-						  '(orderless-match-face-3 ((t (:inherit orderless-match-face-0))))
-						  '(orderless-match-face-4 ((t (:inherit orderless-match-face-0))))
+			  ;; Orderless
+			  '(orderless-match-face-0 ((t (:foreground "black" :weight bold))))
+			  '(orderless-match-face-1 ((t (:inherit orderless-match-face-0))))
+			  '(orderless-match-face-2 ((t (:inherit orderless-match-face-0))))
+			  '(orderless-match-face-3 ((t (:inherit orderless-match-face-0))))
+			  '(orderless-match-face-4 ((t (:inherit orderless-match-face-0))))
 
-						  ;; Org-mode
-						  '(org-agenda-done ((t (:foreground "ForestGreen" :underline t :slant oblique :weight bold))))
-						  '(org-agenda-structure ((t (:foreground "black"))))
-						  '(org-block ((t (:inherit shadow :extend t :background "#eeeeee"))))
-						  '(org-document-info ((t (:foreground "black"))))
-						  '(org-document-title ((t (:foreground "black" :weight bold))))
-						  '(org-done ((t (:foreground "green" :underline t :slant oblique :weight bold))))
-						  '(org-headline-done ((t (:extend t))))
-						  '(org-level-1 ((t (:bold t :foreground "#303030" :height 1.5))))
-						  '(org-level-2 ((t (:extend nil :foreground "black" :weight normal :height 1.2))))
-						  '(org-level-3 ((t (:extend nil :foreground "black" :weight bold :height 1.0))))
-						  '(org-level-4 ((t (:extend nil :foreground "black" :weight normal :height 1.0))))
-						  '(org-link ((t (:foreground "#606060" :underline t :slant oblique))))
-						  '(org-scheduled ((t (:foreground "black" :slant oblique))))
-						  '(org-table ((t (:foreground "black"))))
-						  '(org-table-header ((t (:inherit org-table :foreground "Black" :weight semi-bold))))
-						  '(org-time-grid ((t (:foreground "#a0a0a0"))))
-						  '(org-todo ((t (:foreground "black" :underline t :slant oblique :weight bold))))
-						  '(org-upcoming-deadline ((t (:foreground "black" :weight semi-bold))))
+			  ;; Org-mode
+			  '(org-agenda-done ((t (:foreground "ForestGreen" :underline t :slant oblique :weight bold))))
+			  '(org-agenda-structure ((t (:foreground "black"))))
+			  '(org-block ((t (:inherit shadow :extend t :background "#eeeeee"))))
+			  '(org-document-info ((t (:foreground "black"))))
+			  '(org-document-title ((t (:foreground "black" :weight bold))))
+			  '(org-done ((t (:foreground "green" :underline t :slant oblique :weight bold))))
+			  '(org-headline-done ((t (:extend t))))
+			  '(org-level-1 ((t (:bold t :foreground "#303030" :height 1.5))))
+			  '(org-level-2 ((t (:extend nil :foreground "black" :weight normal :height 1.2))))
+			  '(org-level-3 ((t (:extend nil :foreground "black" :weight bold :height 1.0))))
+			  '(org-level-4 ((t (:extend nil :foreground "black" :weight normal :height 1.0))))
+			  '(org-link ((t (:foreground "#606060" :underline t :slant oblique))))
+			  '(org-scheduled ((t (:foreground "black" :slant oblique))))
+			  '(org-table ((t (:foreground "black"))))
+			  '(org-table-header ((t (:inherit org-table :foreground "Black" :weight semi-bold))))
+			  '(org-time-grid ((t (:foreground "#a0a0a0"))))
+			  '(org-todo ((t (:foreground "black" :underline t :slant oblique :weight bold))))
+			  '(org-upcoming-deadline ((t (:foreground "black" :weight semi-bold))))
 
-						  ;; Org-roam
-						  '(org-roam-preview-heading ((t (:inherit org-block))))
-						  '(org-roam-preview-heading-highlight ((t (:inherit org-roam-preview-heading))))
+			  ;; Org-roam
+			  '(org-roam-preview-heading ((t (:inherit org-block))))
+			  '(org-roam-preview-heading-highlight ((t (:inherit org-roam-preview-heading))))
 
-						  ;; Show-paren
-						  '(show-paren-match ((t (:background "#303030"))))
-						  '(show-paren-mismatch ((t (:background "red"))))
+			  ;; Show-paren
+			  '(show-paren-match ((t (:background "#303030"))))
+			  '(show-paren-mismatch ((t (:background "red"))))
 
-						  ;; Speedbar
-						  '(speedbar-button-face ((t (:foreground "#b3b3b3"))))
-						  '(speedbar-file-face ((t (:foreground "#303030"))))
-						  '(speedbar-directory-face ((t (:weight bold :foreground "black"))))
-						  '(speedbar-tag-face ((t (:foreground "#b3b3b3"))))
-						  '(speedbar-selected-face ((t (:underline "#b3b3b3" :foreground "#303030"))))
-						  '(speedbar-highlight-face ((t (:weight bold :background "white" :foreground "black"))))
+			  ;; Speedbar
+			  '(speedbar-button-face ((t (:foreground "#b3b3b3"))))
+			  '(speedbar-file-face ((t (:foreground "#303030"))))
+			  '(speedbar-directory-face ((t (:weight bold :foreground "black"))))
+			  '(speedbar-tag-face ((t (:foreground "#b3b3b3"))))
+			  '(speedbar-selected-face ((t (:underline "#b3b3b3" :foreground "#303030"))))
+			  '(speedbar-highlight-face ((t (:weight bold :background "white" :foreground "black"))))
 
-						  ;; Whitespace-mode
-						  '(whitespace-empty ((t (:background unspecified :foreground "red"))))
-						  '(whitespace-line ((t (:background "#b3b3b3" :foreground "black"))))
-						  '(whitespace-trailing ((t (:background "red1")))))
+			  ;; Whitespace-mode
+			  '(whitespace-empty ((t (:background unspecified :foreground "red"))))
+			  '(whitespace-line ((t (:background "#b3b3b3" :foreground "black"))))
+			  '(whitespace-trailing ((t (:background "red1")))))
 
   (provide-theme 'mf)
 
@@ -2114,255 +2215,255 @@ Configure programming experience
   ;; Works with Emacs 28.
 
   (deftheme mf-dark
-	"White on black theme4 for your focused hacking sessions during the night.")
+    "Black on black theme 4 for your focused hacking sessions during the night.")
 
   (custom-theme-set-faces 'mf-dark
-						  '(default ((t (:foreground "white" :background "black"))))
-						  '(cursor ((t (:background "white"))))
+			  '(default ((t (:foreground "white" :background "black"))))
+			  '(cursor ((t (:background "white"))))
 
-						  ;; Highlighting faces
-						  '(bookmark-face ((t (:foreground "black" :background "#cccccc"))))
-						  '(fringe ((t (:foreground "white" :background "black"))))
-						  '(highlight ((t (:foreground "white" :background "#1e1e1e"))))
-						  '(hl-line ((t (:background "#303030"))))
-						  '(isearch ((t (:foreground "#f0f0f0" :background "#006800"))))
-						  '(lazy-highlight ((t (:foreground "black" :background "#303030"))))
-						  '(linum ((t (:foreground "#f0f0f0" :slant italic))))
-						  '(match ((t (:background "green"))))
-						  '(region ((t (:extend t :foreground "white" :background "#505050"))))
-						  '(secondary-selection ((t (:foreground: "white" :background "#303030"))))
-						  '(trailing-whitespace ((t (:background "red"))))
+			  ;; Highlighting faces
+			  '(bookmark-face ((t (:foreground "black" :background "#cccccc"))))
+			  '(fringe ((t (:foreground "white" :background "black"))))
+			  '(highlight ((t (:foreground "white" :background "#1e1e1e"))))
+			  '(hl-line ((t (:background "#303030"))))
+			  '(isearch ((t (:foreground "#f0f0f0" :background "#006800"))))
+			  '(lazy-highlight ((t (:foreground "black" :background "#303030"))))
+			  '(linum ((t (:foreground "#f0f0f0" :slant italic))))
+			  '(match ((t (:background "green"))))
+			  '(region ((t (:extend t :foreground "white" :background "#505050"))))
+			  '(secondary-selection ((t (:foreground: "white" :background "#303030"))))
+			  '(trailing-whitespace ((t (:background "red"))))
 
-						  ;; Button and link faces
-						  '(link ((t (:underline t :foreground "#bababa"))))
-						  '(link-visited ((t (:underline t :foreground "#bababa"))))
+			  ;; Button and link faces
+			  '(link ((t (:underline t :foreground "#bababa"))))
+			  '(link-visited ((t (:underline t :foreground "#bababa"))))
 
-						  ;; Company
-						  '(company-scrollbar-bg ((t (:background "black"))))
-						  '(company-scrollbar-fg ((t (:foreground "white"))))
-						  '(company-tooltip-annotation ((t (:foreground "#b0b0b0"))))
-						  '(company-tooltip-common ((t (:foreground "white" :weight semi-bold))))
-						  '(company-tooltip-selection ((t (:foreground "white" :background "#808080"))))
+			  ;; Company
+			  '(company-scrollbar-bg ((t (:background "black"))))
+			  '(company-scrollbar-fg ((t (:foreground "white"))))
+			  '(company-tooltip-annotation ((t (:foreground "#b0b0b0"))))
+			  '(company-tooltip-common ((t (:foreground "white" :weight semi-bold))))
+			  '(company-tooltip-selection ((t (:foreground "white" :background "#808080"))))
 
-						  ;; Corfu
-						  '(corfu-current ((t (:foreground "white" :background "#b3b3b3"))))
-						  '(corfu-bar ((t (:background "white"))))
-						  '(corfu-background ((t (:background "black"))))
-						  '(corfu-border ((t (:background "#b3b3b3"))))
+			  ;; Corfu
+			  '(corfu-current ((t (:foreground "white" :background "#b3b3b3"))))
+			  '(corfu-bar ((t (:background "white"))))
+			  '(corfu-background ((t (:background "black"))))
+			  '(corfu-border ((t (:background "#b3b3b3"))))
 
-						  ;; Erc
-						  '(erc-current-nick-face ((t (:foreground "white" :weight bold))))
-						  '(erc-error-face ((t (:inherit error))))
-						  '(erc-keyword-face ((t (:foreground "white" :underline t :weight bold))))
-						  '(erc-my-nick-face ((t (:inherit erc-current-nick-face))))
-						  '(erc-notice-face ((t (:foreground "#b0b0b0" :weight bold))))
-						  '(erc-prompt-face ((t (:foreground "white" :underline t :weight bold))))
-						  '(erc-timestamp-face ((t (:foreground "#b0b0b0" :weight bold))))
+			  ;; Erc
+			  '(erc-current-nick-face ((t (:foreground "white" :weight bold))))
+			  '(erc-error-face ((t (:inherit error))))
+			  '(erc-keyword-face ((t (:foreground "white" :underline t :weight bold))))
+			  '(erc-my-nick-face ((t (:inherit erc-current-nick-face))))
+			  '(erc-notice-face ((t (:foreground "#b0b0b0" :weight bold))))
+			  '(erc-prompt-face ((t (:foreground "white" :underline t :weight bold))))
+			  '(erc-timestamp-face ((t (:foreground "#b0b0b0" :weight bold))))
 
-						  ;; Escape and prompt faces
-						  '(minibuffer-prompt ((t (:weight bold :foreground "#bababa"))))
-						  '(escape-glyph ((t (:foreground "#bababa"))))
-						  '(error ((t (:weight bold :slant italic :foreground "#900000"))))
-						  '(warning ((t (:foreground "white" :background "black" :inherit font-lock-warning-face))))
-						  '(success ((t (:foreground "green"))))
+			  ;; Escape and prompt faces
+			  '(minibuffer-prompt ((t (:weight bold :foreground "#bababa"))))
+			  '(escape-glyph ((t (:foreground "#bababa"))))
+			  '(error ((t (:weight bold :slant italic :foreground "#900000"))))
+			  '(warning ((t (:foreground "white" :background "black" :inherit font-lock-warning-face))))
+			  '(success ((t (:foreground "green"))))
 
-						  ;; EShell
-						  '(eshell-prompt ((t (:foreground "white" :bold t))))
-						  '(eshell-ls-archive ((t (:inherit eshell-ls-unreadable))))
-						  '(eshell-ls-backup ((t (:inherit eshell-ls-unreadable))))
-						  '(eshell-ls-clutter ((t (:inherit eshell-ls-unreadable))))
-						  '(eshell-ls-directory ((t (:foreground "#bababa" :bold t))))
-						  '(eshell-ls-executable ((t (:inherit eshell-ls-unreadable))))
-						  '(eshell-ls-missing ((t (:inherit eshell-ls-unreadable))))
-						  '(eshell-ls-product ((t (:inherit eshell-ls-unreadable))))
-						  '(eshell-ls-readonly ((t (:inherit eshell-ls-unreadable))))
-						  '(eshell-ls-special ((t (:inherit eshell-ls-unreadable))))
-						  '(eshell-ls-symlink ((t (:inherit eshell-ls-unreadable))))
+			  ;; EShell
+			  '(eshell-prompt ((t (:foreground "white" :bold t))))
+			  '(eshell-ls-archive ((t (:inherit eshell-ls-unreadable))))
+			  '(eshell-ls-backup ((t (:inherit eshell-ls-unreadable))))
+			  '(eshell-ls-clutter ((t (:inherit eshell-ls-unreadable))))
+			  '(eshell-ls-directory ((t (:foreground "#bababa" :bold t))))
+			  '(eshell-ls-executable ((t (:inherit eshell-ls-unreadable))))
+			  '(eshell-ls-missing ((t (:inherit eshell-ls-unreadable))))
+			  '(eshell-ls-product ((t (:inherit eshell-ls-unreadable))))
+			  '(eshell-ls-readonly ((t (:inherit eshell-ls-unreadable))))
+			  '(eshell-ls-special ((t (:inherit eshell-ls-unreadable))))
+			  '(eshell-ls-symlink ((t (:inherit eshell-ls-unreadable))))
 
-						  ;; Font lock faces
-						  '(font-lock-builtin-face ((t (:foreground "#bababa"))))
-						  '(font-lock-comment-face ((t (:slant italic :foreground "#b3b3b3"))))
-						  '(font-lock-constant-face ((t (:weight bold :foreground "#bababa"))))
-						  '(font-lock-function-name-face ((t (:foreground "white" :weight semi-bold))))
-						  '(font-lock-keyword-face ((t (:weight bold :foreground "white"))))
-						  '(font-lock-string-face ((t (:foreground "#808080"))))
-						  '(font-lock-type-face ((t (:weight bold :foreground "#bababa"))))
-						  '(font-lock-variable-name-face ((t (:weight bold :foreground "#808080" :slant oblique))))
-						  '(font-lock-warning-face ((t (:foreground "#b0b0b0" :underline (:color foreground-color :style wave)))))
+			  ;; Font lock faces
+			  '(font-lock-builtin-face ((t (:foreground "#bababa"))))
+			  '(font-lock-comment-face ((t (:slant italic :foreground "#b3b3b3"))))
+			  '(font-lock-constant-face ((t (:weight bold :foreground "#bababa"))))
+			  '(font-lock-function-name-face ((t (:foreground "white" :weight semi-bold))))
+			  '(font-lock-keyword-face ((t (:weight bold :foreground "white"))))
+			  '(font-lock-string-face ((t (:foreground "#808080"))))
+			  '(font-lock-type-face ((t (:weight bold :foreground "#bababa"))))
+			  '(font-lock-variable-name-face ((t (:weight bold :foreground "#808080" :slant oblique))))
+			  '(font-lock-warning-face ((t (:foreground "#b0b0b0" :underline (:color foreground-color :style wave)))))
 
-						  ;; Gnus faces
-						  '(gnus-group-news-1 ((t (:weight bold :foreground "#bababa"))))
-						  '(gnus-group-news-1-low ((t (:foreground "#bababa"))))
-						  '(gnus-group-news-2 ((t (:weight bold :foreground "#bababa"))))
-						  '(gnus-group-news-2-low ((t (:foreground "#bababa"))))
-						  '(gnus-group-news-3 ((t (:weight bold :foreground "#bababa"))))
-						  '(gnus-group-news-3-low ((t (:foreground "#bababa"))))
-						  '(gnus-group-news-4 ((t (:weight bold :foreground "#bababa"))))
-						  '(gnus-group-news-4-low ((t (:foreground "#bababa"))))
-						  '(gnus-group-news-5 ((t (:weight bold :foreground "#b3b3b3"))))
-						  '(gnus-group-news-5-low ((t (:foreground "#b3b3b3"))))
-						  '(gnus-group-news-low ((t (:foreground "#bababa"))))
-						  '(gnus-group-mail-1 ((t (:weight bold :foreground "#bababa"))))
-						  '(gnus-group-mail-1-low ((t (:foreground "#bababa"))))
-						  '(gnus-group-mail-2 ((t (:weight bold :foreground "#bababa"))))
-						  '(gnus-group-mail-2-low ((t (:foreground "#bababa"))))
-						  '(gnus-group-mail-3 ((t (:weight bold :foreground "#bababa"))))
-						  '(gnus-group-mail-3-low ((t (:foreground "#bababa"))))
-						  '(gnus-group-mail-low ((t (:foreground "#bababa"))))
-						  '(gnus-header-content ((t (:foreground "#bababa"))))
-						  '(gnus-header-from ((t (:weight bold :foreground "#bababa"))))
-						  '(gnus-header-subject ((t (:foreground "#bababa"))))
-						  '(gnus-header-name ((t (:foreground "#bababa"))))
-						  '(gnus-header-newsgroups ((t (:foreground "#bababa"))))
+			  ;; Gnus faces
+			  '(gnus-group-news-1 ((t (:weight bold :foreground "#bababa"))))
+			  '(gnus-group-news-1-low ((t (:foreground "#bababa"))))
+			  '(gnus-group-news-2 ((t (:weight bold :foreground "#bababa"))))
+			  '(gnus-group-news-2-low ((t (:foreground "#bababa"))))
+			  '(gnus-group-news-3 ((t (:weight bold :foreground "#bababa"))))
+			  '(gnus-group-news-3-low ((t (:foreground "#bababa"))))
+			  '(gnus-group-news-4 ((t (:weight bold :foreground "#bababa"))))
+			  '(gnus-group-news-4-low ((t (:foreground "#bababa"))))
+			  '(gnus-group-news-5 ((t (:weight bold :foreground "#b3b3b3"))))
+			  '(gnus-group-news-5-low ((t (:foreground "#b3b3b3"))))
+			  '(gnus-group-news-low ((t (:foreground "#bababa"))))
+			  '(gnus-group-mail-1 ((t (:weight bold :foreground "#bababa"))))
+			  '(gnus-group-mail-1-low ((t (:foreground "#bababa"))))
+			  '(gnus-group-mail-2 ((t (:weight bold :foreground "#bababa"))))
+			  '(gnus-group-mail-2-low ((t (:foreground "#bababa"))))
+			  '(gnus-group-mail-3 ((t (:weight bold :foreground "#bababa"))))
+			  '(gnus-group-mail-3-low ((t (:foreground "#bababa"))))
+			  '(gnus-group-mail-low ((t (:foreground "#bababa"))))
+			  '(gnus-header-content ((t (:foreground "#bababa"))))
+			  '(gnus-header-from ((t (:weight bold :foreground "#bababa"))))
+			  '(gnus-header-subject ((t (:foreground "#bababa"))))
+			  '(gnus-header-name ((t (:foreground "#bababa"))))
+			  '(gnus-header-newsgroups ((t (:foreground "#bababa"))))
 
-						  ;; helm
-						  '(helm-header ((t (:foreground "#bababa" :background "black" :underline nil :box nil))))
-						  '(helm-source-header
-							((t (:foreground "#bababa"
-											 :underline nil
-											 :weight bold
-											 :box (:line-width 1 :style released-button)))))
-						  '(helm-selection ((t (:underline t :foreground "#bababa"))))
-						  '(helm-visible-mark ((t (:foreground "#bababa" :background "black"))))
-						  '(helm-candidate-number ((t (:foreground "#bababa" :background "black"))))
-						  '(helm-separator ((t (:foreground "#bababa" :background "black"))))
-						  '(helm-time-zone-current ((t (:foreground "#bababa" :background "black"))))
-						  '(helm-time-zone-home ((t (:foreground "#bababa" :background "black"))))
-						  '(helm-bookmark-addressbook ((t (:foreground "#bababa" :Background "black"))))
-						  '(helm-bookmark-directory ((t (:foreground nil :background nil :inherit helm-ff-directory))))
-						  '(helm-bookmark-file ((t (:foreground nil :background nil :inherit helm-ff-file))))
-						  '(helm-bookmark-gnus ((t (:foreground "#bababa" :background "black"))))
-						  '(helm-bookmark-info ((t (:foreground "#bababa" :background "black"))))
-						  '(helm-bookmark-man ((t (:foreground "#bababa" :background "black"))))
-						  '(helm-bookmark-w3m ((t (:foreground "#bababa" :background "black"))))
-						  '(helm-buffer-not-saved ((t (:foreground "#bababa" :background "black"))))
-						  '(helm-buffer-process ((t (:foreground "#bababa" :background "black"))))
-						  '(helm-buffer-saved-out ((t (:foreground "#bababa" :background "black"))))
-						  '(helm-buffer-size ((t (:foreground "#bababa" :background "black"))))
-						  '(helm-ff-directory ((t (:foreground "#bababa" :background "black" :weight bold))))
-						  '(helm-ff-file ((t (:foreground "#bababa" :background "black" :weight normal))))
-						  '(helm-ff-executable ((t (:foreground "#bababa" :background "black" :weight normal))))
-						  '(helm-ff-invalid-symlink ((t (:foreground "black" :background "black" :weight bold))))
-						  '(helm-ff-symlink ((t (:foreground "#bababa" :background "black" :weight bold))))
-						  '(helm-ff-prefix ((t (:foreground "#bababa" :background "black" :weight normal))))
-						  '(helm-grep-cmd-line ((t (:foreground "#bababa" :background "black"))))
-						  '(helm-grep-file ((t (:foreground "#bababa" :background "black"))))
-						  '(helm-grep-finish ((t (:foreground "#bababa" :background "black"))))
-						  '(helm-grep-lineno ((t (:foreground "#bababa" :background "black"))))
-						  '(helm-grep-match ((t (:foreground nil :background nil :inherit helm-match))))
-						  '(helm-grep-running ((t (:foreground "#bababa" :background "black"))))
-						  '(helm-moccur-buffer ((t (:foreground "#bababa" :background "black"))))
-						  '(helm-mu-contacts-address-face ((t (:foreground "#bababa" :background "black"))))
-						  '(helm-mu-contacts-name-face ((t (:foreground "#bababa" :background "black"))))
+			  ;; helm
+			  '(helm-header ((t (:foreground "#bababa" :background "black" :underline nil :box nil))))
+			  '(helm-source-header
+			    ((t (:foreground "#bababa"
+					     :underline nil
+					     :weight bold
+					     :box (:line-width 1 :style released-button)))))
+			  '(helm-selection ((t (:underline t :foreground "#bababa"))))
+			  '(helm-visible-mark ((t (:foreground "#bababa" :background "black"))))
+			  '(helm-candidate-number ((t (:foreground "#bababa" :background "black"))))
+			  '(helm-separator ((t (:foreground "#bababa" :background "black"))))
+			  '(helm-time-zone-current ((t (:foreground "#bababa" :background "black"))))
+			  '(helm-time-zone-home ((t (:foreground "#bababa" :background "black"))))
+			  '(helm-bookmark-addressbook ((t (:foreground "#bababa" :Background "black"))))
+			  '(helm-bookmark-directory ((t (:foreground nil :background nil :inherit helm-ff-directory))))
+			  '(helm-bookmark-file ((t (:foreground nil :background nil :inherit helm-ff-file))))
+			  '(helm-bookmark-gnus ((t (:foreground "#bababa" :background "black"))))
+			  '(helm-bookmark-info ((t (:foreground "#bababa" :background "black"))))
+			  '(helm-bookmark-man ((t (:foreground "#bababa" :background "black"))))
+			  '(helm-bookmark-w3m ((t (:foreground "#bababa" :background "black"))))
+			  '(helm-buffer-not-saved ((t (:foreground "#bababa" :background "black"))))
+			  '(helm-buffer-process ((t (:foreground "#bababa" :background "black"))))
+			  '(helm-buffer-saved-out ((t (:foreground "#bababa" :background "black"))))
+			  '(helm-buffer-size ((t (:foreground "#bababa" :background "black"))))
+			  '(helm-ff-directory ((t (:foreground "#bababa" :background "black" :weight bold))))
+			  '(helm-ff-file ((t (:foreground "#bababa" :background "black" :weight normal))))
+			  '(helm-ff-executable ((t (:foreground "#bababa" :background "black" :weight normal))))
+			  '(helm-ff-invalid-symlink ((t (:foreground "black" :background "black" :weight bold))))
+			  '(helm-ff-symlink ((t (:foreground "#bababa" :background "black" :weight bold))))
+			  '(helm-ff-prefix ((t (:foreground "#bababa" :background "black" :weight normal))))
+			  '(helm-grep-cmd-line ((t (:foreground "#bababa" :background "black"))))
+			  '(helm-grep-file ((t (:foreground "#bababa" :background "black"))))
+			  '(helm-grep-finish ((t (:foreground "#bababa" :background "black"))))
+			  '(helm-grep-lineno ((t (:foreground "#bababa" :background "black"))))
+			  '(helm-grep-match ((t (:foreground nil :background nil :inherit helm-match))))
+			  '(helm-grep-running ((t (:foreground "#bababa" :background "black"))))
+			  '(helm-moccur-buffer ((t (:foreground "#bababa" :background "black"))))
+			  '(helm-mu-contacts-address-face ((t (:foreground "#bababa" :background "black"))))
+			  '(helm-mu-contacts-name-face ((t (:foreground "#bababa" :background "black"))))
 
-						  ;; ido
-						  '(ido-first-match ((t (:foreground "#bababa"))))
-						  '(ido-only-match ((t (:underline "#bababa" :foreground "#bababa"))))
-						  '(ido-subdir ((t (:weight bold :foreground "white"))))
+			  ;; ido
+			  '(ido-first-match ((t (:foreground "#bababa"))))
+			  '(ido-only-match ((t (:underline "#bababa" :foreground "#bababa"))))
+			  '(ido-subdir ((t (:weight bold :foreground "white"))))
 
-						  ;; Magit
-						  '(magit-branch-remote ((t (:foreground "white" :underline t :slant oblique))))
-						  '(magit-section-heading ((t (:extend t :foreground "white" :weight bold))))
+			  ;; Magit
+			  '(magit-branch-remote ((t (:foreground "white" :underline t :slant oblique))))
+			  '(magit-section-heading ((t (:extend t :foreground "white" :weight bold))))
 
-						  ;; Message faces
-						  '(message-header-name ((t (:foreground "#bababa"))))
-						  '(message-header-cc ((t (:foreground "#bababa"))))
-						  '(message-header-other ((t (:foreground "#bababa"))))
-						  '(message-header-subject ((t (:foreground "#bababa"))))
-						  '(message-header-to ((t (:weight bold :foreground "#bababa"))))
-						  '(message-header-xheader ((t (:slant oblique :foreground "#bababa"))))
-						  '(message-cited-text ((t (:inherit shadow))))
-						  '(message-cited-text-1 ((t (:inherit message-cited-text))))
-						  '(message-cited-text-2 ((t (:inherit message-cited-text))))
-						  '(message-cited-text-3 ((t (:inherit message-cited-text))))
-						  '(message-cited-text-4 ((t (:inherit message-cited-text))))
-						  '(message-separator ((t (:weight bold :foreground "#bababa"))))
+			  ;; Message faces
+			  '(message-header-name ((t (:foreground "#bababa"))))
+			  '(message-header-cc ((t (:foreground "#bababa"))))
+			  '(message-header-other ((t (:foreground "#bababa"))))
+			  '(message-header-subject ((t (:foreground "#bababa"))))
+			  '(message-header-to ((t (:weight bold :foreground "#bababa"))))
+			  '(message-header-xheader ((t (:slant oblique :foreground "#bababa"))))
+			  '(message-cited-text ((t (:inherit shadow))))
+			  '(message-cited-text-1 ((t (:inherit message-cited-text))))
+			  '(message-cited-text-2 ((t (:inherit message-cited-text))))
+			  '(message-cited-text-3 ((t (:inherit message-cited-text))))
+			  '(message-cited-text-4 ((t (:inherit message-cited-text))))
+			  '(message-separator ((t (:weight bold :foreground "#bababa"))))
 
-						  ;; Minibuffer
-						  '(minibuffer-prompt ((t (:foreground "white" :weight bold))))
-						  '(completions-common-part ((t (:foreground "white" :weight bold))))
-						  '(completions-first-difference ((t (:underline "white" :weight semi-bold))))
+			  ;; Minibuffer
+			  '(minibuffer-prompt ((t (:foreground "white" :weight bold))))
+			  '(completions-common-part ((t (:foreground "white" :weight bold))))
+			  '(completions-first-difference ((t (:underline "white" :weight semi-bold))))
 
-						  ;; Mode line faces
-						  '(mode-line ((t (:background "#1e1e1e" :foreground "white"
-													   :box (:line-width 4 :color "#1e1e1e" :style flat-button)))))
-						  '(mode-line-inactive ((t (:background "black" :foreground "#808080"
-																:box (:line-width 4 :color "black")))))
+			  ;; Mode line faces
+			  '(mode-line ((t (:background "#1e1e1e" :foreground "white"
+						       :box (:line-width 4 :color "#1e1e1e" :style flat-button)))))
+			  '(mode-line-inactive ((t (:background "black" :foreground "#808080"
+								:box (:line-width 4 :color "black")))))
 
-						  ;; Mini- modeline
-						  '(mini-modeline-mode-line ((t (:height 0.14 :background "white"))))
-						  '(mini-modeline-mode-line-inactive ((t (:height 0.14 :background "black"))))
+			  ;; Mini- modeline
+			  '(mini-modeline-mode-line ((t (:height 0.14 :background "white"))))
+			  '(mini-modeline-mode-line-inactive ((t (:height 0.14 :background "black"))))
 
-						  ;; MuMaMo
-						  '(mumamo-background-chunk-major ((t (:background "black"))))
-						  '(mumamo-background-chunk-submode1 ((t (:background "black"))))
-						  '(mumamo-background-chunk-submode2 ((t (:background "black"))))
-						  '(mumamo-background-chunk-submode3 ((t (:background "black"))))
-						  '(mumamo-background-chunk-submode4 ((t (:background "black"))))
-						  '(mumamo-border-face-in ((t (:slant unspecified :underline unspecified
-															  :weight bold :foreground "white"))))
-						  '(mumamo-border-face-out ((t (:slant unspecified :underline unspecified
-															   :weight bold :foreground "white"))))
+			  ;; MuMaMo
+			  '(mumamo-background-chunk-major ((t (:background "black"))))
+			  '(mumamo-background-chunk-submode1 ((t (:background "black"))))
+			  '(mumamo-background-chunk-submode2 ((t (:background "black"))))
+			  '(mumamo-background-chunk-submode3 ((t (:background "black"))))
+			  '(mumamo-background-chunk-submode4 ((t (:background "black"))))
+			  '(mumamo-border-face-in ((t (:slant unspecified :underline unspecified
+							      :weight bold :foreground "white"))))
+			  '(mumamo-border-face-out ((t (:slant unspecified :underline unspecified
+							       :weight bold :foreground "white"))))
 
-						  ;; Notmuch
-						  '(notmuch-search-date ((t (:foreground "white" :slant oblique :weight normal))))
-						  '(notmuch-search-matching-authors ((t (:foreground "white" :weight semi-bold))))
-						  '(notmuch-search-subject ((t (:foreground "white" :weight light))))
-						  '(notmuch-search-unread-face ((t (:inherit bold :underline t))))
-						  '(notmuch-tag-added ((t (:underline "white"))))
-						  '(notmuch-tag-face ((t (:inherit shadow :foreground "#505050" :weight normal))))
-						  '(notmuch-tag-unread ((t (:foreground "white" :weight bold))))
-						  '(notmuch-tree-match-author-face ((t (:foreground "white" :weight semi-bold))))
-						  '(notmuch-tree-match-tag-face ((t (:foreground "white" :weight bold))))
+			  ;; Notmuch
+			  '(notmuch-search-date ((t (:foreground "white" :slant oblique :weight normal))))
+			  '(notmuch-search-matching-authors ((t (:foreground "white" :weight semi-bold))))
+			  '(notmuch-search-subject ((t (:foreground "white" :weight light))))
+			  '(notmuch-search-unread-face ((t (:inherit bold :underline t))))
+			  '(notmuch-tag-added ((t (:underline "white"))))
+			  '(notmuch-tag-face ((t (:inherit shadow :foreground "#505050" :weight normal))))
+			  '(notmuch-tag-unread ((t (:foreground "white" :weight bold))))
+			  '(notmuch-tree-match-author-face ((t (:foreground "white" :weight semi-bold))))
+			  '(notmuch-tree-match-tag-face ((t (:foreground "white" :weight bold))))
 
-						  ;; Orderless
-						  '(orderless-match-face-0 ((t (:foreground "white" :underline t  :weight bold))))
-						  '(orderless-match-face-1 ((t (:inherit orderless-match-face-0))))
-						  '(orderless-match-face-2 ((t (:inherit orderless-match-face-0))))
-						  '(orderless-match-face-3 ((t (:inherit orderless-match-face-0))))
-						  '(orderless-match-face-4 ((t (:inherit orderless-match-face-0))))
+			  ;; Orderless
+			  '(orderless-match-face-0 ((t (:foreground "white" :underline t  :weight bold))))
+			  '(orderless-match-face-1 ((t (:inherit orderless-match-face-0))))
+			  '(orderless-match-face-2 ((t (:inherit orderless-match-face-0))))
+			  '(orderless-match-face-3 ((t (:inherit orderless-match-face-0))))
+			  '(orderless-match-face-4 ((t (:inherit orderless-match-face-0))))
 
-						  ;; Org-mode
-						  '(org-agenda-done ((t (:foreground "ForestGreen" :underline t :slant oblique :weight bold))))
-						  '(org-agenda-structure ((t (:foreground "white"))))
-						  '(org-block ((t (:inherit shadow :extend t :background "#1e1e1e"))))
-						  '(org-date ((t (:underline t :foreground "#b0b0b0"))))
-						  '(org-document-info ((t (:foreground "white"))))
-						  '(org-document-title ((t (:foreground "white" :weight bold))))
-						  '(org-done ((t (:foreground "green" :underline t :slant oblique :weight bold))))
-						  '(org-headline-done ((t (:extend t))))
-						  '(org-level-1 ((t (:bold t :foreground "#bababa" :height 1.5))))
-						  '(org-level-2 ((t (:extend nil :foreground "white" :weight normal :height 1.2))))
-						  '(org-level-3 ((t (:extend nil :foreground "white" :weight bold :height 1.0))))
-						  '(org-level-4 ((t (:extend nil :foreground "white" :weight normal :height 1.0))))
-						  '(org-link ((t (:foreground "#b0b0b0" :underline t :slant oblique))))
-						  '(org-scheduled ((t (:foreground "white" :slant oblique))))
-						  '(org-table ((t (:foreground "white"))))
-						  '(org-table-header ((t (:inherit org-table :foreground "white" :weight semi-bold))))
-						  '(org-time-grid ((t (:foreground "#a0a0a0"))))
-						  '(org-todo ((t (:foreground "white" :underline t :slant oblique :weight bold))))
-						  '(org-upcoming-deadline ((t (:foreground "white" :weight semi-bold))))
+			  ;; Org-mode
+			  '(org-agenda-done ((t (:foreground "ForestGreen" :underline t :slant oblique :weight bold))))
+			  '(org-agenda-structure ((t (:foreground "white"))))
+			  '(org-block ((t (:inherit shadow :extend t :background "#1e1e1e"))))
+			  '(org-date ((t (:underline t :foreground "#b0b0b0"))))
+			  '(org-document-info ((t (:foreground "white"))))
+			  '(org-document-title ((t (:foreground "white" :weight bold))))
+			  '(org-done ((t (:foreground "green" :underline t :slant oblique :weight bold))))
+			  '(org-headline-done ((t (:extend t))))
+			  '(org-level-1 ((t (:bold t :foreground "#bababa" :height 1.5))))
+			  '(org-level-2 ((t (:extend nil :foreground "white" :weight normal :height 1.2))))
+			  '(org-level-3 ((t (:extend nil :foreground "white" :weight bold :height 1.0))))
+			  '(org-level-4 ((t (:extend nil :foreground "white" :weight normal :height 1.0))))
+			  '(org-link ((t (:foreground "#b0b0b0" :underline t :slant oblique))))
+			  '(org-scheduled ((t (:foreground "white" :slant oblique))))
+			  '(org-table ((t (:foreground "white"))))
+			  '(org-table-header ((t (:inherit org-table :foreground "white" :weight semi-bold))))
+			  '(org-time-grid ((t (:foreground "#a0a0a0"))))
+			  '(org-todo ((t (:foreground "white" :underline t :slant oblique :weight bold))))
+			  '(org-upcoming-deadline ((t (:foreground "white" :weight semi-bold))))
 
-						  ;; Org-roam
-						  '(org-roam-preview-heading ((t (:inherit org-block))))
-						  '(org-roam-preview-heading-highlight ((t (:inherit org-roam-preview-heading))))
+			  ;; Org-roam
+			  '(org-roam-preview-heading ((t (:inherit org-block))))
+			  '(org-roam-preview-heading-highlight ((t (:inherit org-roam-preview-heading))))
 
-						  ;; Show-paren
-						  '(show-paren-match ((t (:background "#a0a0a0"))))
-						  '(show-paren-mismatch ((t (:background "red"))))
+			  ;; Show-paren
+			  '(show-paren-match ((t (:background "#a0a0a0"))))
+			  '(show-paren-mismatch ((t (:background "red"))))
 
-						  ;; Speedbar
-						  '(speedbar-button-face ((t (:foreground "#b3b3b3"))))
-						  '(speedbar-file-face ((t (:foreground "#bababa"))))
-						  '(speedbar-directory-face ((t (:weight bold :foreground "white"))))
-						  '(speedbar-tag-face ((t (:foreground "#b3b3b3"))))
-						  '(speedbar-selected-face ((t (:underline "#b3b3b3" :foreground "#bababa"))))
-						  '(speedbar-highlight-face ((t (:weight bold :background "black" :foreground "white"))))
+			  ;; Speedbar
+			  '(speedbar-button-face ((t (:foreground "#b3b3b3"))))
+			  '(speedbar-file-face ((t (:foreground "#bababa"))))
+			  '(speedbar-directory-face ((t (:weight bold :foreground "white"))))
+			  '(speedbar-tag-face ((t (:foreground "#b3b3b3"))))
+			  '(speedbar-selected-face ((t (:underline "#b3b3b3" :foreground "#bababa"))))
+			  '(speedbar-highlight-face ((t (:weight bold :background "black" :foreground "white"))))
 
-						  ;; Whitespace-mode
-						  '(whitespace-empty ((t (:background unspecified :foreground "red"))))
-						  '(whitespace-line ((t (:background "#b3b3b3" :foreground "white"))))
-						  '(whitespace-trailing ((t (:background "red1")))))
+			  ;; Whitespace-mode
+			  '(whitespace-empty ((t (:background unspecified :foreground "red"))))
+			  '(whitespace-line ((t (:background "#b3b3b3" :foreground "white"))))
+			  '(whitespace-trailing ((t (:background "red1")))))
 
   (provide-theme 'mf-dark)
 
