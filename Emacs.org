@@ -683,7 +683,6 @@ Configure erc, the built-in IRC client
   exec emacs -mm --debug-init
 #+end_src
 #+begin_src scheme :noweb-ref guix-packages
-  "xorg-server"
   "xf86-input-evdev"
   "sx"
   "xhost"
