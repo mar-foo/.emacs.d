@@ -31,6 +31,8 @@
 
 (require 'mf-programming)
 
+(require 'mf-shell)
+
 (require 'mf-telega)
 
 ;; Startup time and garbage collection
