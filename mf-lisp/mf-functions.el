@@ -96,7 +96,7 @@ If there is a prefix argument, switch to the eshell buffer."
   (if (called-interactively-p)
 	  (let ((url (mf/yank-to-string)))
 		(start-process-shell-command "mpv" nil (concat "mpv " url)))
-	(start-process-shell-command "mpv" nil (concat "mpv --ytdl-format='bestvideo[height<=1080]+bestaudio/best' " url))))
+	(start-process-shell-command "mpv" nil (concat "mpv --ao=alsa --ytdl-format='bestvideo[height<=1080]+bestaudio/best' " url))))
 
 ;;;###autoload
 (defun mf/youtube(title)

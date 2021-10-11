@@ -111,7 +111,7 @@
 
 (setq ring-bell-function #'mf/visual-bell)
 
-(mf/install mini-modeline)
+(mf/install mini-modeline t)
 (setq mini-modeline-face-attr `(:background ,(face-attribute 'mode-line-inactive :background)))
 (mini-modeline-mode)
 

@@ -68,7 +68,7 @@
 	   (add-to-list 'org-structure-template-alist '("sc" . "src c"))
 	   (add-to-list 'org-structure-template-alist '("scp" . "src c++"))
 	   (add-to-list 'org-structure-template-alist '("hs" . "src haskell"))
-	   (mf/install ob-go)
+	   (mf/install ob-go t)
 	   (org-babel-do-load-languages
 		'org-babel-load-languages
 		'((emacs-lisp . t)
@@ -86,7 +86,7 @@
 (setq diary-file (file-truename "~/Documents/Personal/diary"))
 
 ;; Org tree slide
-(mf/install org-tree-slide)
+(mf/install org-tree-slide nil)
 (mf/autoload-func
  :func org-tree-slide-mode
  :file "org-tree-slide")
@@ -104,7 +104,7 @@
 
 (eval-after-load 'org
   '(progn
-	 (mf/install org-roam)
+	 (mf/install org-roam nil)
 	 (mf/autoload-func
 	  :func org-roam-find-node
 	  :file "org-roam")

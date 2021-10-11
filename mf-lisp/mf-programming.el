@@ -1,7 +1,7 @@
 ;;; mf-programming.el --- My configuration for programming languages that I use
 ;;; Code:
 
-(mf/install go-mode)
+(mf/install go-mode nil)
 (progn
   (mf/autoload-func
    :func go-mode
@@ -14,8 +14,8 @@
 	   (message "Loaded go-mode")
 	   (add-hook 'go-mode-hook #'gofmt-before-save))))
 
-(mf/install haskell-mode)
-(mf/install hindent)
+(mf/install haskell-mode nil)
+(mf/install hindent t)
 (progn
   (mf/autoload-func
    :func haskell-mode
@@ -37,14 +37,20 @@
 	   (add-hook 'haskell-mode-hook 'hindent-mode)
 	   (setq hindent-reformat-buffer-on-save t))))
 
-(mf/install slime)
+(mf/install slime nil)
+(mf/autoload-func
+ :func slime
+ :file "slime")
 (setq inferior-lisp-program "sbcl")
 (eval-after-load 'slime
   '(progn
 	 (add-hook 'slime-repl-mode 'paredit-mode)
 	 (message "Loaded slime")))
 
-(mf/install paredit)
+(mf/install paredit nil)
+(mf/autoload-func
+ :func paredit-mode
+ :file "paredit")
 (add-hook 'lisp-mode-hook #'paredit-mode)
 (eval-after-load 'paredit
   '(progn
@@ -53,8 +59,8 @@
 	   '(add-hook 'slime-repl-mode #'paredit-mode))))
 
 (setq c-default-style '((java-mode . "java")
-						(awk-mode . "awk")
-						(other . "bsd")))
+			(awk-mode . "awk")
+			(other . "bsd")))
 
 (eval-after-load 'flymake
   '(progn
@@ -62,29 +68,13 @@
 	 (add-hook 'flymake-mode-hook #'flymake-show-diagnostics-buffer)))
 
 ;; Yasnippet
-   (mf/install yasnippet)
-   (mf/autoload-func
-	:func yas-minor-mode
-	:file "yasnippet")
-   (eval-after-load 'yasnippet
-	 '(progn
-		(setq yas-snippet-dirs '("~/.emacs.d/snippets"))))
-
-;;; LSP
-(mf/install lsp-mode)
+(mf/install yasnippet nil)
 (mf/autoload-func
- :func lsp
- :file "lsp-mode")
-(eval-after-load 'lsp-mode
+ :func yas-minor-mode
+ :file "yasnippet")
+(eval-after-load 'yasnippet
   '(progn
-	 (message "Lsp-mode loaded")
-	 (setq read-process-output-max (* 1024 1024)
-		   lsp-idle-delay 0.5
-		   lsp-headerline-breadcrumb-enable nil
-		   lsp-lens-enable nil
-		   lsp-modeline-diagnostics-enable nil
-		   lsp-clangd-binary-path (executable-find "clangd")
-		   lsp-enable-snippet nil)))
+	 (setq yas-snippet-dirs '("~/.emacs.d/snippets"))))
 
 (provide 'mf-programming)
 ;;; mf-programming.el ends here

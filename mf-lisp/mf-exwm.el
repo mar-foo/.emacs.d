@@ -21,7 +21,7 @@
   (start-process-shell-command "amixer" nil (concat "amixer sset Master 5%" action)))
 
 (progn
-  (mf/install exwm)
+  (mf/install exwm nil)
   (require 'exwm-config)
   (setq exwm-workspace-number 2
 		exwm-workspace-warp-cursor t

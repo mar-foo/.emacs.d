@@ -16,19 +16,22 @@
 		  #'complete-path-at-point+
 		  'append)
 
-(mf/install orderless)
+(mf/install orderless nil)
 ;; (setq completion-styles '(substring partial-completion initials flex)
 (setq completion-styles '(orderless)
 	  completion-category-overrides
 	  '((file (styles partial-completion initials basic))))
 
-(mf/install vertico)
+(mf/install vertico nil)
+(mf/autoload-func
+ :func vertico-mode
+ :file "vertico")
 (eval-after-load 'minibuffer
   '(progn
 	 (message "Loaded vertico")
 	 (vertico-mode 1)))
 
-(mf/install company)
+(mf/install company nil)
 (mf/autoload-func
  :func company-mode
  :file "company")

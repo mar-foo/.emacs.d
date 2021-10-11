@@ -1,6 +1,6 @@
 ;;; mf-git.el --- Git workflow configuration -*- lexical-binding: t -*-
 ;;; Code:
-(mf/install magit)
+(mf/install magit nil)
 (progn
   (mf/autoload-func
    :func magit

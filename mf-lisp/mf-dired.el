@@ -1,6 +1,6 @@
 ;;; mf-dired.el --- My dired configuration -*- lexical-binding: t -*-
 ;;;Code:
-(mf/install dired-filter)
+(mf/install dired-filter t)
 (eval-after-load 'dired
   '(progn
 	 (message "Loaded dired-mode")

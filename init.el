@@ -8,7 +8,7 @@
 	   (t
 		(shell-command-to-string "uname"))))
 (if (string= mf/os "Guix")
-	(add-to-list 'load-path "/home/mario/.guix-profile/share/emacs/site-lisp/"))
+	(add-to-list 'load-path "/home/mario/.guix-profile/share/emacs/28.0.50/site-lisp/"))
 
 (setq gc-cons-threshold most-positive-fixnum)
 
@@ -39,6 +39,7 @@
 
 (require 'mf-config)
 
-(mf/install gcmh)
+(mf/install gcmh nil)
+(require 'gcmh)
 (gcmh-mode 1)
 ;;; init.el ends here

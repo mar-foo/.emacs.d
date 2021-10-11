@@ -1,6 +1,6 @@
 ;;; mf-telega.el --- Configuration for telega -*- lexical-binding: t -*-
 ;;; Code:
-(mf/install telega)
+(mf/install telega nil)
 (mf/autoload-func
  :func telega
  :file "telega")
