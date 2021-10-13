@@ -1,6 +1,7 @@
 ;;; mf-exwm.el --- EXWM configuration -*- lexical-binding: t -*-
 ;;; Code:
-(display-battery-mode)
+(if (file-exists-p "/sys/class/power_supply/BAT0/")
+	display-battery-mode)
 
 (setq display-time-default-load-average nil
 	  display-time-format "%H:%M")

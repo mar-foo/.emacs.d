@@ -76,6 +76,7 @@
 		  (awk . t)
 		  (go . t)
 		  (C . t)))
+
 	   ;; I like my display-buffer-alist and would like it to be respected
 	   (defun mf/switch-to-buffer-other-window (orig-func &rest args)
 		 (apply #'switch-to-buffer-other-window args))
@@ -100,7 +101,7 @@
 		  (define-key org-tree-slide-mode-map (kbd "RET") #'org-tree-slide-move-next-tree)
 		  (define-key org-tree-slide-mode-map (kbd "+") #'mf/big-font)
 		  (define-key org-tree-slide-mode-map (kbd "-") #'(lambda() (interactive) (mf/big-font t)))))))
-;; Org roam
+
 (eval-after-load 'org
   '(progn
 	 (mf/install org-roam)
@@ -119,7 +120,7 @@
 	 (mf/autoload-func
 	  :func org-roam-db-autosync-mode
 	  :file "org-roam")
-	 (advice-add 'org-agenda :after #'(lambda(&rest r) (require 'org-roam)))  ; I use some org-roam nodes as agenda buffers so org-agenda needs org-roam to be loaded
+	 (advice-add 'org-agenda :after #'(lambda (&rest r) (require 'org-roam)))  ; I use some org-roam nodes as agenda buffers so org-agenda needs org-roam to be loaded
 	 (eval-after-load 'org-roam
 	   '(progn
 		  (message "Loaded org-roam")

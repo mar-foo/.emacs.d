@@ -1,33 +1,35 @@
 ;;; mf-config.el --- Load configuration modules -*- lexical-binding: t
 ;;; Code
 
-(require 'mf-exwm)
-
 (require 'mf-autoloads)
-
-(require 'mf-mpc)
-
-(require 'mf-erc)
-
-(require 'mf-gnus)
-
-(require 'mf-mu4e)
 
 (require 'mf-completion)
 
-(require 'mf-org)
-
-(require 'mf-hacks)
-
-(require 'mf-programming)
-
 (require 'mf-dired)
 
-(require 'mf-pass)
+(require 'mf-erc)
+
+(require 'mf-eww)
+
+(require 'mf-exwm)
+
+(require 'mf-gnus)
+
+(require 'mf-hacks)
 
 (require 'mf-ibuffer)
 
 (require 'mf-keybindings)
+
+(require 'mf-mpc)
+
+(require 'mf-mu4e)
+
+(require 'mf-org)
+
+(require 'mf-pass)
+
+(require 'mf-programming)
 
 (require 'mf-telega)
 

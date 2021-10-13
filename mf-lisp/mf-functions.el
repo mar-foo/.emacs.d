@@ -9,6 +9,12 @@
 	(text-scale-increase 4)))
 
 ;;;###autoload
+(defun mf/bookmarks ()
+  (with-temp-buffer
+	(insert-file-contents (file-truename "~/.local/share/bookmarks.txt"))
+	(split-string (buffer-string))))
+
+;;;###autoload
 (defun mf/delete-sexp()
   (interactive)
   (mark-sexp)
