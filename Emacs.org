@@ -538,7 +538,7 @@ Configure erc, the built-in IRC client
    ;;; mf-exwm.el --- EXWM configuration -*- lexical-binding: t -*-
    ;;; Code:
    (if (file-exists-p "/sys/class/power_supply/BAT0/")
-	   display-battery-mode)
+	   (display-battery-mode))
  #+end_src
 *** Display time
 	#+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-exwm.el")
