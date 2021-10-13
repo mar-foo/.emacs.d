@@ -21,12 +21,6 @@
   (find-file (concat user-emacs-directory "Emacs.el")))
 
 ;;;###autoload
-(defun mf/ensure-package(pack)
-  (unless
-	  (package-installed-p pack)
-	(package-install pack)))
-
-;;;###autoload
 (defun mf/eww ()
   (interactive)
   (with-temp-buffer
