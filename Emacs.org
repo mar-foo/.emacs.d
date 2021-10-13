@@ -169,20 +169,6 @@ Load look and feel configuration from mf-look-and-feel.el as early as possible
 
 	(setq ring-bell-function #'mf/visual-bell)
  #+end_src
-*** Mini-modeline mode
- #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-look-and-feel.el")
-   (mf/install mini-modeline)
-   (setq mini-modeline-face-attr `(:background ,(face-attribute 'mode-line-inactive :background)))
-   (mini-modeline-mode)
-#+end_src
-Fix the redisplaying of the modeline when changing theme
-   #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-look-and-feel.el")
-   (advice-add #'load-theme :after #'(lambda (&rest r)
-									   (mini-modeline-mode -1)
-									   (setq mini-modeline-face-attr `(:background ,(face-attribute 'mode-line-inactive :background)))
-									   (mini-modeline-mode)))
-#+end_src
-
 *** Handle themes
  Load light theme from 08:00 to 19:00, dark theme otherwise
  #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-look-and-feel.el")
@@ -243,6 +229,7 @@ Raise garbage collection threshold to speed up init time
 		 (define-key map (kbd "j") 'bookmark-jump)
 		 (define-key map (kbd "n") 'next-line)
 		 (define-key map (kbd "p") 'previous-line)
+		 (define-key map (kbd "q") 'quit-window)
 		 map)
 	   "Keymap for dashboard mode.")
 
@@ -386,18 +373,18 @@ Load the actual config
 	#+end_src
 *** Helper functions
  #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-exwm.el")
-	  (defun mf/exwm--update-class()
-		(exwm-workspace-rename-buffer exwm-class-name))
+   (defun mf/exwm--update-class()
+	 (exwm-workspace-rename-buffer exwm-class-name))
 
-	  (defun mf/manage--window-by-class()
-		(pcase exwm-class-name
-		  ("Firefox" (exwm-workspace-move-window 1))
-		  ("mpv" (unless mini-modeline-mode
-				   exwm-layout-toggle-mode-line))))
+   (defun mf/manage--window-by-class()
+	 (pcase exwm-class-name
+	   ("Firefox" (exwm-workspace-move-window 1))
+	   ("mpv" (unless mini-modeline-mode
+				exwm-layout-toggle-mode-line))))
 
-	  (defun mf/volume (action)
-		(interactive)
-		(start-process-shell-command "amixer" nil (concat "amixer sset Master 5%" action)))
+   (defun mf/volume (action)
+	 (interactive)
+	 (start-process-shell-command "amixer" nil (concat "amixer sset Master 5%" action)))
 #+end_src
 *** Configuration
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-exwm.el")
@@ -485,7 +472,7 @@ Load the actual config
 	  setxkbmap dvorak
 	  xmodmap ~/.Xmodmap
 	  export _JAVA_AWT_WM_NONREPARENTING=1
-	  exec emacs -mm --debug-init
+	  exec emacs -mm --debug-init 
     #+end_src
 *** Xmodmap
 	Switch Caps_Lock and Left_Control keys to prevent the =Emacs' pinky=.
@@ -520,7 +507,6 @@ Define some autoloads for functions defined in =mf-functions.el=
  (mf/my-func-autoload mf/big-font)
  (mf/my-func-autoload mf/delete-sexp)
  (mf/my-func-autoload mf/edit-configuration)
- (mf/my-func-autoload mf/ensure-package)
  (mf/my-func-autoload mf/eww)
  (mf/my-func-autoload mf/infos)
  (mf/my-func-autoload mf/find-recentf)
@@ -541,46 +527,47 @@ Define some autoloads for functions defined in =mf-functions.el=
 Configure the mpc music player (built-in).
 Rewrite mpc function to respect display-buffer-alist
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-mpc.el")
- ;;; mf-mpc.el --- Configuration for mpc.el -*- lexical-binding: t -*-
- ;;; Code:
- (mf/autoload-func
-  :func mpc
-  :file "mpc")
- (eval-after-load 'mpc
-   '(progn
-	  (message "Loaded mpc")
-	  (setq mpc-browser-tags '(Album|Playlist))
-	  (define-key mpc-tagbrowser-mode-map (kbd "a") #'mpc-playlist-add)
-	  (define-key mpc-mode-map (kbd "k") #'mpc-stop)
-	  (define-key mpc-mode-map (kbd "n") #'next-line)
-	  (define-key mpc-mode-map (kbd "p") #'previous-line)
-	  (define-key mpc-mode-map (kbd "SPC") #'mpc-toggle-play)
-	  (define-key mpc-mode-map (kbd "+") #'mpc-next)
-	  (define-key mpc-mode-map (kbd "-") #'mpc-prev)
-	  (defun mf/mpc (orig-func)
-		(interactive
-		 (progn
-		   (if current-prefix-arg
-			   (setq mpc-host (read-string
-							   (format-prompt "MPD host and port" mpc-host)
-							   nil nil mpc-host)))
-		   nil))
-		(with-current-buffer
-			(current-buffer)
-		  (setq-local mpc-previous-window-config
-					  (current-window-configuration)))
-		(let* ((tags mpc-browser-tags)
-			   (win (pop-to-buffer (mpc-songs-buf) nil)))
-		  (unless tags (error "Need at least one entry in `mpc-browser-tags'"))
-		  (while
-			  (progn
-				(pop-to-buffer (mpc-tagbrowser-buf (pop tags)) nil)
-				tags)))
-		(mpc-songs-refresh))
-	  (advice-add 'mpc :around #'mf/mpc)))
+  ;;; mf-mpc.el --- Configuration for mpc.el -*- lexical-binding: t -*-
+  ;;; Code:
+  (mf/autoload-func
+   :func mpc
+   :file "mpc")
+  (eval-after-load 'mpc
+	'(progn
+	   (message "Loaded mpc")
+	   (setq mpc-browser-tags '(Album|Playlist))
+	   (define-key mpc-tagbrowser-mode-map (kbd "a") #'mpc-playlist-add)
+	   (define-key mpc-mode-map (kbd "k") #'mpc-stop)
+	   (define-key mpc-mode-map (kbd "n") #'next-line)
+	   (define-key mpc-mode-map (kbd "p") #'previous-line)
+	   (define-key mpc-mode-map (kbd "SPC") #'mpc-toggle-play)
+	   (define-key mpc-mode-map (kbd "+") #'mpc-next)
+	   (define-key mpc-mode-map (kbd "-") #'mpc-prev)
+	   (add-hook 'mpc-mode-hook #'(lambda () (setq header-line-format nil)))
+	   (defun mf/mpc (orig-func)
+		 (interactive
+		  (progn
+			(if current-prefix-arg
+				(setq mpc-host (read-string
+								(format-prompt "MPD host and port" mpc-host)
+								nil nil mpc-host)))
+			nil))
+		 (with-current-buffer
+			 (current-buffer)
+		   (setq-local mpc-previous-window-config
+					   (current-window-configuration)))
+		 (let* ((tags mpc-browser-tags)
+				(win (pop-to-buffer (mpc-songs-buf) nil)))
+		   (unless tags (error "Need at least one entry in `mpc-browser-tags'"))
+		   (while
+			   (progn
+				 (pop-to-buffer (mpc-tagbrowser-buf (pop tags)) nil)
+				 tags)))
+		 (mpc-songs-refresh))
+	   (advice-add 'mpc :around #'mf/mpc)))
 
- (provide 'mf-mpc)
- ;;; mf-mpc.el ends here
+  (provide 'mf-mpc)
+  ;;; mf-mpc.el ends here
 #+end_src
 ** mf-erc.el
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-config.el")
@@ -898,7 +885,7 @@ Configure the completion framework
 
 			 (defun mf/org-roam-refresh-agenda-files()
 			   (interactive)
-			   (setq org-agenda-files (mf/org-roam-list-notes-by-tag "Teaching"))
+			   (setq org-agenda-files (mf/org-roam-list-notes-by-tag "Agenda"))
 			   (add-to-list 'org-agenda-files "~/Documents/Personal/agenda.org"))
 			 (mf/org-roam-refresh-agenda-files)
 
@@ -1387,8 +1374,9 @@ Configure programming experience
 	 #+end_src
 *** C
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-programming.el")
-   (add-hook 'c-mode-hook #'(lambda()
-							  (c-set-style "k&r")))
+  (setq c-default-style '((java-mode . "java")
+						  (awk-mode . "awk")
+						  (other . "bsd")))
 #+end_src
 *** Flymake
 	#+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-programming.el")
@@ -1652,128 +1640,127 @@ Configure global keybindings
 ** mf-functions.el
 Custom functions
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-functions.el")
- ;;; mf-functions.el --- My custom functions -*- lexical-binding: t -*-
- ;;; Code:
+  ;;; mf-functions.el --- My custom functions -*- lexical-binding: t -*-
+  ;;; Code:
 
- ;;;###autoload
- (defun mf/big-font(&optional use-generic-p)
-   (interactive "P")
-   (if use-generic-p
-	   (text-scale-decrease 4)
-	 (text-scale-increase 4)))
+  ;;;###autoload
+  (defun mf/big-font(&optional use-generic-p)
+	(interactive "P")
+	(if use-generic-p
+		(text-scale-decrease 4)
+	  (text-scale-increase 4)))
 
- ;;;###autoload
- (defun mf/delete-sexp()
-   (interactive)
-   (mark-sexp)
-   (delete-active-region))
+  ;;;###autoload
+  (defun mf/delete-sexp()
+	(interactive)
+	(mark-sexp)
+	(delete-active-region))
 
- ;;;###autoload
- (defun mf/edit-configuration()
-   "Edit emacs configuration"
-   (interactive)
-   (find-file (concat user-emacs-directory "Emacs.el")))
+  ;;;###autoload
+  (defun mf/edit-configuration()
+	"Edit emacs configuration"
+	(interactive)
+	(find-file (concat user-emacs-directory "Emacs.el")))
 
- ;;;###autoload
- (defun mf/ensure-package(pack)
-   (unless
-	   (package-installed-p pack)
-	 (package-install pack)))
+  ;;;###autoload
+  (defun mf/eww ()
+	(interactive)
+	(with-temp-buffer
+	  (insert-file-contents "~/.local/share/bookmarks.txt")
+	  (let* ((links (buffer-string))
+			 (bookmarks (split-string links)))
+		(eww (completing-read "URL: " bookmarks)))))
 
- ;;;###autoload
- (defun mf/eww ()
-   (interactive)
-   (with-temp-buffer
-	 (insert-file-contents "~/.local/share/bookmarks.txt")
-	 (let* ((links (buffer-string))
-			(bookmarks (split-string links)))
-	   (eww (completing-read "URL: " bookmarks)))))
+  ;;;###autoload
+  (defun mf/find-recentf()
+	"Open a recent file list"
+	(interactive)
+	(find-file (completing-read "Recent File: " recentf-list nil t)))
 
- ;;;###autoload
- (defun mf/find-recentf()
-   "Open a recent file list"
-   (interactive)
-   (find-file (completing-read "Recent File: " recentf-list nil t)))
+  ;;;###autoload
+  (defun mf/infos()
+	(interactive)
+	(shell-command (executable-find "infos")))
 
- ;;;###autoload
- (defun mf/infos()
-   (interactive)
-   (shell-command (executable-find "infos")))
+  ;;;###autoload
+  (defun mf/lcm ()
+	(interactive)
+	(password-store-copy "lcm")
+	(start-process-shell-command "st" nil "st -e ssh marioforzanini@lcm.mi.infn.it"))
 
- ;;;###autoload
- (defun mf/quit-and-kill()
-   (interactive)
-   (quit-window t))
+  ;;;###autoload
+  (defun mf/quit-and-kill()
+	(interactive)
+	(quit-window t))
 
- ;;;###autoload
- (defun mf/reload-configuration()
-   "Reloads configuration"
-   (interactive)
-   (load-file (concat user-emacs-directory "init.el")))
+  ;;;###autoload
+  (defun mf/reload-configuration()
+	"Reloads configuration"
+	(interactive)
+	(load-file (concat user-emacs-directory "init.el")))
 
- ;;;###autoload
- (defun mf/select-completion-and-exit()
-   (interactive)
-   (icomplete-force-complete)
-   (icomplete-ret))
+  ;;;###autoload
+  (defun mf/select-completion-and-exit()
+	(interactive)
+	(icomplete-force-complete)
+	(icomplete-ret))
 
- ;;;###autoload
- (defun mf/switch-theme ()
-   (interactive)
-   (if (string= (car custom-enabled-themes) "mf")
-	   (progn
-		 (load-theme 'mf-dark t)
-		 (disable-theme 'mf))
-	 (progn
-	   (load-theme 'mf)
-	   (disable-theme 'mf-dark))))
+  ;;;###autoload
+  (defun mf/switch-theme ()
+	(interactive)
+	(if (string= (car custom-enabled-themes) "mf")
+		(progn
+		  (load-theme 'mf-dark t)
+		  (disable-theme 'mf))
+	  (progn
+		(load-theme 'mf)
+		(disable-theme 'mf-dark))))
 
- ;;;###autoload
- (defun mf/toggle-eshell (&optional use-generic-p)
-   "Toggle eshell window respecting buffer-alist configuration.
- If there is a prefix argument, switch to the eshell buffer."
-   (interactive "P")
-   (if (get-buffer-window "*eshell*")
-	   (delete-window (get-buffer-window "*eshell*"))
-	 (if use-generic-p
-		 (progn
-		   (eshell)
-		   (delete-window (get-buffer-window "*eshell*"))
-		 (switch-to-buffer "*eshell*"))
-	   (eshell))))
+  ;;;###autoload
+  (defun mf/toggle-eshell (&optional use-generic-p)
+	"Toggle eshell window respecting buffer-alist configuration.
+  If there is a prefix argument, switch to the eshell buffer."
+	(interactive "P")
+	(if (get-buffer-window "*eshell*")
+		(delete-window (get-buffer-window "*eshell*"))
+	  (if use-generic-p
+		  (progn
+			(eshell)
+			(delete-window (get-buffer-window "*eshell*"))
+		  (switch-to-buffer "*eshell*"))
+		(eshell))))
 
- (defun mf/yank-to-string()
-   (rotate-yank-pointer 0)
-   (car kill-ring-yank-pointer))
+  (defun mf/yank-to-string()
+	(rotate-yank-pointer 0)
+	(car kill-ring-yank-pointer))
 
- ;;;###autoload
- (defun mf/mpv(&optional url)
-   "Plays url in mpv"
-   (interactive)
-   (if (called-interactively-p)
-	   (let ((url (mf/yank-to-string)))
-		 (start-process-shell-command "mpv" nil (concat "mpv " url)))
-	 (start-process-shell-command "mpv" nil (concat "mpv --ytdl-format='bestvideo[height<=1080]+bestaudio/best' " url))))
+  ;;;###autoload
+  (defun mf/mpv(&optional url)
+	"Plays url in mpv"
+	(interactive)
+	(if (called-interactively-p)
+		(let ((url (mf/yank-to-string)))
+		  (start-process-shell-command "mpv" nil (concat "mpv " url)))
+	  (start-process-shell-command "mpv" nil (concat "mpv --ytdl-format='bestvideo[height<=1080]+bestaudio/best' " url))))
 
- ;;;###autoload
- (defun mf/youtube(title)
-   (interactive (list (read-string "Query: ")))
-   (let* ((json (shell-command-to-string (concat "echo " title " | eyt")))
-		  (resp-plist (json-parse-string json :object-type 'plist))
-		  (videos (plist-get resp-plist :videos))
-		  (ids (seq-map (lambda (vid)
-						  (format "%s -$- %s"
-								  (plist-get vid :title)
-								  (plist-get vid :id)))
-						videos))
-		  (chosen-id (cdr (split-string (completing-read "Title: " ids) " -$- " t)))
-		  (url (concat "https://www.youtube.com/watch?v=" (car chosen-id))))
-	 (mf/mpv url)))
+  ;;;###autoload
+  (defun mf/youtube(title)
+	(interactive (list (read-string "Query: ")))
+	(let* ((json (shell-command-to-string (concat "echo " title " | eyt")))
+		   (resp-plist (json-parse-string json :object-type 'plist))
+		   (videos (plist-get resp-plist :videos))
+		   (ids (seq-map (lambda (vid)
+						   (format "%s -$- %s"
+								   (plist-get vid :title)
+								   (plist-get vid :id)))
+						 videos))
+		   (chosen-id (cdr (split-string (completing-read "Title: " ids) " -$- " t)))
+		   (url (concat "https://www.youtube.com/watch?v=" (car chosen-id))))
+	  (mf/mpv url)))
 
- (provide 'mf-functions)
- ;;; mf-functions.el ends here
+  (provide 'mf-functions)
+  ;;; mf-functions.el ends here
  #+end_src
-
 ** Startup time
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-config.el")
 	  ;; Startup time and garbage collection
