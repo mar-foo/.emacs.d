@@ -83,7 +83,7 @@
   (let* ((init-time
 		  (format "%.2f" (float-time
 							  (time-subtract after-init-time before-init-time))))
-		 (info (format "Emacs ready in %s with %d garbage collections" (propertize init-time 'face 'font-lock-keyword-face) gcs-done))
+		 (info (format "Emacs ready in %s seconds." (propertize init-time 'face 'font-lock-keyword-face) gcs-done))
 		 (buffer-read-only nil))
 	(mf-dashboard-center-line info)
 	(insert info)))
