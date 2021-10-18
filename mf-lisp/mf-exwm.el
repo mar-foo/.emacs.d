@@ -1,7 +1,7 @@
 ;;; mf-exwm.el --- EXWM configuration -*- lexical-binding: t -*-
 ;;; Code:
 (if (file-exists-p "/sys/class/power_supply/BAT0/")
-	display-battery-mode)
+	(display-battery-mode))
 
 (setq display-time-default-load-average nil
 	  display-time-format "%H:%M")
@@ -13,8 +13,7 @@
 (defun mf/manage--window-by-class()
   (pcase exwm-class-name
 	("Firefox" (exwm-workspace-move-window 1))
-	("mpv" (unless mini-modeline-mode
-			 exwm-layout-toggle-mode-line))))
+	("mpv" (exwm-layout-toggle-mode-line))))
 
 (defun mf/volume (action)
   (interactive)
@@ -30,7 +29,6 @@
 		  ?\C-c
 		  ?\C-u
 		  ?\M-x
-		  ?\C-.
 		  ?\M-:
 		  ?\C-h)
 		exwm-input-global-keys
@@ -83,7 +81,8 @@
 			(lambda ()
 			  (exwm-randr-refresh)
 			  (exwm-workspace-switch 1)
-			  (switch-to-buffer "*scratch*")))
+			  (switch-to-buffer "*scratch*")
+			  (exwm-workspace-switch 0)))
   (require 'exwm-randr)
   (setq exwm-randr-workspace-output-plist '(1 "VGA1"))
   (add-hook 'exwm-randr-screen-change-hook
