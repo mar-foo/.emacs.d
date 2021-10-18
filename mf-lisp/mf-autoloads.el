@@ -9,7 +9,6 @@
 (mf/my-func-autoload mf/bookmarks)
 (mf/my-func-autoload mf/delete-sexp)
 (mf/my-func-autoload mf/edit-configuration)
-(mf/my-func-autoload mf/eww)
 (mf/my-func-autoload mf/infos)
 (mf/my-func-autoload mf/find-recentf)
 (mf/my-func-autoload mf/quit-and-kill)
@@ -17,6 +16,7 @@
 (mf/my-func-autoload mf/select-completion-and-exit)
 (mf/my-func-autoload mf/switch-theme)
 (mf/my-func-autoload mf/toggle-eshell)
+(mf/my-func-autoload mf/toggle-telega)
 (mf/my-func-autoload mf/youtube)
 
 (provide 'mf-autoloads)
