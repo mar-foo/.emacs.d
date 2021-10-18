@@ -646,8 +646,10 @@ Configure erc, the built-in IRC client
 	  pgrep mpd || mpd &
 	  setxkbmap dvorak
 	  xmodmap ~/.Xmodmap
+	  picom &
+	  hsetroot -cover $HOME/.config/wall.jpg
 	  export _JAVA_AWT_WM_NONREPARENTING=1
-	  exec emacs -mm --debug-init 
+	  exec emacs -mm --debug-init
     #+end_src
 *** Xmodmap
 	Switch Caps_Lock and Left_Control keys to prevent the =Emacs' pinky=.

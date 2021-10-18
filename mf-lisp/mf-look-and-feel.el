@@ -18,6 +18,7 @@
 					   '(menu-bar-lines . 0)
 					   '(right-fringe . 5)
 					   '(left-fringe . 5)
+					   '(alpha . (90 . 90))
 					   '(vertical-scroll-bars . nil)))
 			  fringes-outside-margins t
 			  window-resize-pixelwise t
