@@ -31,7 +31,8 @@
 			(set-window-margins (car (get-buffer-window-list (current-buffer) nil t)) 5 5))))
 
 (setq display-buffer-alist
-	  '(("\\*eshell\\*"  (display-buffer-in-side-window)
+	  '(("\\*Async Shell Command\\*" (display-buffer-no-window))
+		("\\*eshell\\*"  (display-buffer-in-side-window)
 		 (side . bottom)
 		 (window-height . 0.4)
 		 (slot . 0))
@@ -70,6 +71,10 @@
 		 (side . bottom)
 		 (window-height . 0.4)
 		 (slot . 1))
+		("\\*Telega Root\\*" (display-buffer-in-side-window)
+		 (side . bottom)
+		 (window-height . 0.4)
+		 (slot . 0))
 		("\\*Agenda Commands\\*" (display-buffer-in-side-window)
 		 (side . bottom)
 		 (window-height . 0.4)
