@@ -47,8 +47,8 @@
 						  :query "from:9front.org OR to:9front.org"))
 	 (define-key mu4e-main-mode-map (kbd "n") #'next-line)
 	 (define-key mu4e-main-mode-map (kbd "p") #'previous-line)
-	 (define-key mu4e-headers-mode-map (kbd "C-. .") 'mu4e-org-store-and-capture)
-	 (define-key mu4e-view-mode-map (kbd "C-. .") 'mu4e-org-store-and-capture)))
+	 (define-key mu4e-headers-mode-map (kbd "C-c c") 'mu4e-org-store-and-capture)
+	 (define-key mu4e-view-mode-map (kbd "C-c c") 'mu4e-org-store-and-capture)))
 
 (provide 'mf-mu4e)
   ;;; mf-mu4e.el ends here
