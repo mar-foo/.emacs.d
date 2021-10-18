@@ -11,11 +11,12 @@
   (mf/autoload-func
    :func org-agenda
    :file "org-mode")
+(setq org-directory (file-truename "~/Documents/Personal/org/"))
   (eval-after-load 'org
 	'(progn
 	   (message "Loaded org-mode")
 	   (require 'org-tempo)
-	   (setq org-archive-location "~/Documents/Personal/agenda.org::* Archive"
+	   (setq org-archive-location (concat org-directory "agenda.org::* Archive")
 			 org-agenda-window-setup 'other-window
 			 org-agenda-restore-windows-after-quit nil
 			 org-agenda-sticky nil
@@ -26,20 +27,20 @@
 			 org-log-into-drawer t
 			 org-capture-templates
 			 '(("a" "Agenda" entry
-				(file+headline "~/Documents/Personal/agenda.org" "Agenda")
+				(file+headline "~/Documents/Personal/org/agenda.org" "Agenda")
 				"** TODO %^{Action}\nSCHEDULED: %^t\n%?")
 			   ("t" "Teaching")
 			   ("tt" "Teaching General" entry
-				(file+headline "~/Documents/Personal/Notes/20210913174909-teaching.org" "Agenda")
+				(file+headline "~/Documents/Personal/org/Notes/20210913174909-teaching.org" "Agenda")
 				"** TODO %^{Action}\n%?\n%a")
 			   ("tb" "CBI" entry
-				(file+headline "~/Documents/Personal/Notes/20210921201618-cbi2021.org" "Agenda")
+				(file+headline "~/Documents/Personal/org/Notes/20210921201618-cbi2021.org" "Agenda")
 				"** TODO %^{Action}\n%?\n%a")
 			   ("tp" "CPA" entry
-				(file+headline "~/Documents/Personal/Notes/20210921201649-cpa2021.org" "Agenda")
+				(file+headline "~/Documents/Personal/org/Notes/20210921201649-cpa2021.org" "Agenda")
 				"** TODO %^{Action}\n%?\n%a")
 			   ("u" "Uni" entry
-				(file+headline "~/Documents/Personal/agenda.org" "Uni")
+				(file+headline "~/Documents/Personal/org/agenda.org" "Uni")
 				"*** TODO %^{Action}\n%?\n%a"))
 			 org-todo-keywords
 			 '((sequence "TODO(t)" "WAITING(w)" "|" "DONE(d)" "NO(n)"))
@@ -124,7 +125,7 @@
 	 (eval-after-load 'org-roam
 	   '(progn
 		  (message "Loaded org-roam")
-		  (setq org-roam-directory (file-truename "~/Documents/Personal/Notes/")
+		  (setq org-roam-directory (file-truename "~/Documents/Personal/org/Notes/")
 				org-roam-v2-ack t)
 		  (add-hook 'org-roam-mode-hook 'org-roam-db-autosync-mode)
 		  (defun mf/org-roam-filter-by-tag (tag-name)
@@ -140,7 +141,7 @@
 		  (defun mf/org-roam-refresh-agenda-files()
 			(interactive)
 			(setq org-agenda-files (mf/org-roam-list-notes-by-tag "Agenda"))
-			(add-to-list 'org-agenda-files "~/Documents/Personal/agenda.org"))
+			(add-to-list 'org-agenda-files "~/Documents/Personal/org/agenda.org"))
 		  (mf/org-roam-refresh-agenda-files)
 
 		  (defun mf/org-roam-teaching-finalize-hook()
