@@ -45,6 +45,10 @@
 				  '(:name "9front"
 						  :key ?9
 						  :query "from:9front.org OR to:9front.org"))
+	 (add-to-list 'mu4e-bookmarks
+				  '(:name "LCM"
+						  :key ?l
+						  :query "from:lcm.mi.infn.it OR from:pcteor1.mi.infn.it"))
 	 (define-key mu4e-main-mode-map (kbd "n") #'next-line)
 	 (define-key mu4e-main-mode-map (kbd "p") #'previous-line)
 	 (define-key mu4e-headers-mode-map (kbd "C-c c") 'mu4e-org-store-and-capture)
