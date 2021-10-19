@@ -41,7 +41,6 @@
 (setq inferior-lisp-program "sbcl")
 (eval-after-load 'slime
   '(progn
-	 (add-hook 'slime-repl-mode 'paredit-mode)
 	 (message "Loaded slime")))
 
 (mf/install paredit)
