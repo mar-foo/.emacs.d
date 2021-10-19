@@ -60,7 +60,8 @@
 	  (erase-buffer)
 	  (mf-dashboard-insert-title)
 	  (mf-dashboard-insert-init-info))
-	(dashboard-mode)))
+	(dashboard-mode)
+	(setq mode-line-format nil)))
 
 (defun mf-dashboard-center-line (string)
   "Center a STRING according to it's size."
