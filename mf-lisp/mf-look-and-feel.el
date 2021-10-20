@@ -118,11 +118,13 @@
 (setq ring-bell-function #'mf/visual-bell)
 
 (add-to-list 'custom-theme-load-path (concat user-emacs-directory "mf-lisp/themes/"))
-(if
-	(or (>= (string-to-number (format-time-string "%H")) 19)
-		(<= (string-to-number (format-time-string "%H")) 8))
-	(load-theme 'mf-dark t)
-  (load-theme 'mf t))
+(if window-system
+	(if
+		(or (>= (string-to-number (format-time-string "%H")) 19)
+			(<= (string-to-number (format-time-string "%H")) 8))
+		(load-theme 'mf-dark t)
+	  (load-theme 'mf t))
+  (load-theme 'mf-dark t))
 
 (provide 'mf-look-and-feel)
 ;;; mf-look-and-feel.el ends here
