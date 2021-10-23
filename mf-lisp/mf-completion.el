@@ -28,22 +28,5 @@
 	 (message "Loaded vertico")
 	 (vertico-mode 1)))
 
-(mf/install company)
-(mf/autoload-func
- :func company-mode
- :file "company")
-(eval-after-load 'lsp-mode
-  '(progn
-	 (add-hook 'lsp-mode-hook 'company-mode)
-	 (eval-after-load 'company
-	   '(progn
-		  (message "Company loaded")
-		  (define-key company-active-map (kbd "<tab>") #'company-complete-selection)
-		  (define-key lsp-mode-map (kbd "<tab>") #'company-indent-or-complete-common)
-		  (setq company-minimum-prefix-length 3
-				company-idle-delay nil)
-		  (eval-after-load 'yasnippet
-			'(define-key company-mode-map (kbd "<backtab>") 'company-yasnippet))))))
-
 (provide 'mf-completion)
 ;;; mf-completion.el ends here
