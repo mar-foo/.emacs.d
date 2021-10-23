@@ -118,7 +118,7 @@
 (setq ring-bell-function #'mf/visual-bell)
 
 (add-to-list 'custom-theme-load-path (concat user-emacs-directory "mf-lisp/themes/"))
-(if window-system
+(if (display-graphic-p)
 	(if
 		(or (>= (string-to-number (format-time-string "%H")) 19)
 			(<= (string-to-number (format-time-string "%H")) 8))
