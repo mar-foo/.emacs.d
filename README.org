@@ -1,6 +1,7 @@
 #+TITLE: Emacs configuration
 #+AUTHOR: Mar-foo
 * My Emacs - EXWM configuration
-My configuration is stored in Emacs.el. I lazy-load most packages and
-I don't use `use-package'
+My configuration is stored in Emacs.org and organized in modules
+under =mf-lisp/=.
+
 
