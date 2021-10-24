@@ -32,6 +32,7 @@
 
 (setq display-buffer-alist
 	  '(("\\*Async Shell Command\\*" (display-buffer-no-window))
+		("\\*shell" (display-buffer-pop-up-window))
 		("\\*eshell\\*"  (display-buffer-in-side-window)
 		 (side . bottom)
 		 (window-height . 0.4)
