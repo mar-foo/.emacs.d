@@ -26,7 +26,7 @@
 			 org-log-done 'time
 			 org-log-into-drawer t
 			 org-capture-templates
-			 '(("a" "Agenda" entry
+			 `(("a" "Agenda" entry
 				(file+headline "~/Documents/Personal/org/agenda.org" "Agenda")
 				"** TODO %^{Action}\nSCHEDULED: %^t\n%?")
 			   ("t" "Teaching")
@@ -36,12 +36,17 @@
 			   ("tb" "CBI" entry
 				(file+headline "~/Documents/Personal/org/Notes/20210921201618-cbi2021.org" "Agenda")
 				"** TODO %^{Action}\n%?\n%a")
-			   ("tp" "CPA" entry
-				(file+headline "~/Documents/Personal/org/Notes/20210921201649-cpa2021.org" "Agenda")
-				"** TODO %^{Action}\n%?\n%a")
-			   ("u" "Uni" entry
-				(file+headline "~/Documents/Personal/org/agenda.org" "Uni")
-				"*** TODO %^{Action}\n%?\n%a"))
+			   ("u" "Uni")
+			   ,@(cl-loop
+				  for filename in (mf/org-roam-list-notes-by-tag "Uni")
+				  while filename
+				  collect (let ((file (mf/org-roam-filename filename)))
+							`(,(concat "u" (char-to-string (elt file
+																0)))
+							  ,file
+							  entry
+							  (file+headline ,filename "Agenda")
+							  "** TODO %^{Action}\n%?\n%a"))))
 			 org-todo-keywords
 			 '((sequence "TODO(t)" "WAITING(w)" "|" "DONE(d)" "NO(n)"))
 			 org-todo-keyword-faces
