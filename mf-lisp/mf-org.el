@@ -26,28 +26,6 @@
 			 org-agenda-include-diary t
 			 org-log-done 'time
 			 org-log-into-drawer t
-			 org-capture-templates
-			 `(("a" "Agenda" entry
-				(file+headline "~/Documents/Personal/org/agenda.org" "Agenda")
-				"** TODO %^{Action}\nSCHEDULED: %^t\n%?")
-			   ("t" "Teaching")
-			   ("tt" "Teaching General" entry
-				(file+headline "~/Documents/Personal/org/Notes/20210913174909-teaching.org" "Agenda")
-				"** TODO %^{Action}\n%?\n%a")
-			   ("tb" "CBI" entry
-				(file+headline "~/Documents/Personal/org/Notes/20210921201618-cbi2021.org" "Agenda")
-				"** TODO %^{Action}\n%?\n%a")
-			   ("u" "Uni")
-			   ,@(cl-loop
-				  for filename in (mf/org-roam-list-notes-by-tag "Uni")
-				  while filename
-				  collect (let ((file (mf/org-roam-filename filename)))
-							`(,(concat "u" (char-to-string (elt file
-																0)))
-							  ,file
-							  entry
-							  (file+headline ,filename "Agenda")
-							  "** TODO %^{Action}\n%?\n%a"))))
 			 org-todo-keywords
 			 '((sequence "TODO(t)" "WAITING(w)" "|" "DONE(d)" "NO(n)"))
 			 org-todo-keyword-faces
@@ -90,7 +68,8 @@
 	   (defun mf/switch-to-buffer-other-window (orig-func &rest args)
 		 (apply #'switch-to-buffer-other-window args))
 	   (advice-add 'org-agenda-get-restriction-and-command :around #'mf/org-agenda-get-restriction-and-command)
-	   (advice-add 'org-switch-to-buffer-other-window :around #'mf/switch-to-buffer-other-window))))
+  	 (advice-add 'org-switch-to-buffer-other-window :around #'mf/switch-to-buffer-other-window))))
+
 
 (setq diary-file (file-truename "~/Documents/Personal/diary"))
 
@@ -130,6 +109,7 @@
 	  :func org-roam-db-autosync-mode
 	  :file "org-roam")
 	 (advice-add 'org-agenda :after #'(lambda (&rest r) (require 'org-roam)))  ; I use some org-roam nodes as agenda buffers so org-agenda needs org-roam to be loaded
+	 (advice-add 'org-capture :before #'(lambda (&rest r) (require 'org-roam)))
 	 (eval-after-load 'org-roam
 	   '(progn
 		  (message "Loaded org-roam")
@@ -170,7 +150,31 @@
 			 :templates
 			 '(("t" "Teaching" plain "* Agenda\n** TODO %^{Action}\n%?"
 				:if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Teaching")
-				:unnarrowed t))))))))
+				:unnarrowed t))))
+		  (defun mf/org-roam-filename (str)
+			(seq-subseq str (+ (length org-roam-directory) 15)))
+		  (setq org-capture-templates
+				`(("a" "Agenda" entry
+				   (file+headline "~/Documents/Personal/org/agenda.org" "Agenda")
+				   "** TODO %^{Action}\nSCHEDULED: %^t\n%?")
+				  ("t" "Teaching")
+				  ("tt" "Teaching General" entry
+				   (file+headline "~/Documents/Personal/org/Notes/20210913174909-teaching.org" "Agenda")
+				   "** TODO %^{Action}\n%?\n%a")
+				  ("tb" "CBI" entry
+				   (file+headline "~/Documents/Personal/org/Notes/20210921201618-cbi2021.org" "Agenda")
+				   "** TODO %^{Action}\n%?\n%a")
+				  ("u" "Uni")
+				  ,@(cl-loop
+					 for filename in (mf/org-roam-list-notes-by-tag "Uni")
+					 while filename
+					 collect (let ((file (mf/org-roam-filename filename)))
+							   `(,(concat "u" (char-to-string (elt file
+																   0)))
+								 ,file
+								 entry
+								 (file+headline ,filename "Agenda")
+								 "** TODO %^{Action}\n%?\n%a")))))))))
 
 (provide 'mf-org)
 ;;; mf-org.el ends here
