@@ -11,7 +11,8 @@
   (mf/autoload-func
    :func org-agenda
    :file "org-mode")
-(setq org-directory (file-truename "~/Documents/Personal/org/"))
+  (mf/install org-edna)
+  (setq org-directory (file-truename "~/Documents/Personal/org/"))
   (eval-after-load 'org
 	'(progn
 	   (message "Loaded org-mode")
@@ -68,6 +69,8 @@
 			 org-html-preamble nil
 			 org-html-postamble nil
 			 org-html-use-infojs nil)
+	   (eval-after-load 'org-agenda
+		 '(org-edna-mode))
 	   (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
 	   (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
 	   (add-to-list 'org-structure-template-alist '("go" . "src go"))
