@@ -11,6 +11,7 @@
 (mf/my-func-autoload mf/edit-configuration)
 (mf/my-func-autoload mf/infos)
 (mf/my-func-autoload mf/find-recentf)
+(mf/my-func-autoload mf/lcm)
 (mf/my-func-autoload mf/quit-and-kill)
 (mf/my-func-autoload mf/reload-configuration)
 (mf/my-func-autoload mf/select-completion-and-exit)
@@ -21,4 +22,4 @@
 (mf/my-func-autoload mf/youtube)
 
 (provide 'mf-autoloads)
-   ;;; mf-autoloads.el ends here
+;;; mf-autoloads.el ends here
