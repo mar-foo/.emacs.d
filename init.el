@@ -10,6 +10,8 @@
 (if (string= mf/os "Guix")
 	(add-to-list 'load-path "/home/mario/.guix-profile/share/emacs/site-lisp/"))
 
+(setq mf/use-exwm nil)
+
 (setq gc-cons-threshold most-positive-fixnum)
 
 (setq-default
