@@ -1,5 +1,8 @@
 ;;; mf-pass.el --- Configuration for the emacs frontend to GNU pass -*- lexical-binding: t -*-
-;;; Code:
+  ;;; Code:
+(mf/install pinentry)
+(pinentry-start)
+
 (mf/install password-store)
 (progn
   (mf/autoload-func
@@ -17,5 +20,5 @@
 	'(progn
 	   (message "Loaded password-store"))))
 
-(provide 'mf-pass)
-;;; mf-pass.el ends here
+  (provide 'mf-pass)
+  ;;; mf-pass.el ends here
