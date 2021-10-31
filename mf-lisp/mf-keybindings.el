@@ -10,7 +10,7 @@
 (mf/leader "i" erc)
 (mf/leader "k" kill-current-buffer)
 (mf/leader "m" mu4e)
-(mf/leader "p" mpc)
+(mf/leader "p" bongo)
 (mf/leader "r" elfeed)
 (mf/leader "s" mf/toggle-shell)
 (mf/leader "t" mf/toggle-telega)

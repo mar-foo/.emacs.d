@@ -3,6 +3,8 @@
 
 (require 'mf-autoloads)
 
+(require 'mf-bongo)
+
 (require 'mf-completion)
 
 (require 'mf-dired)
@@ -21,7 +23,7 @@
 
 (require 'mf-keybindings)
 
-(require 'mf-mpc)
+;; (require 'mf-mpc)
 
 (require 'mf-mu4e)
 
