@@ -29,6 +29,8 @@
 
 (require 'mf-pass)
 
+(require 'mf-perspective)
+
 (require 'mf-programming)
 
 (require 'mf-rss)
