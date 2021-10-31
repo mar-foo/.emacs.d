@@ -417,6 +417,25 @@ Define some autoloads for functions defined in =mf-functions.el=
   (provide 'mf-autoloads)
   ;;; mf-autoloads.el ends here
  #+end_src
+** mf-bongo.el
+   #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-config.el")
+	 (require 'mf-bongo)
+   #+end_src
+   #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-bongo.el")
+	 ;;; mf-bongo.el --- Configuration for the bongo music player -*- lexical-binding: t -*-
+	 ;;; Code:
+	 (mf/install bongo)
+	 (mf/autoload-func
+	  :func bongo
+	  :file "bongo")
+	 (eval-after-load 'bongo
+	   '(progn
+		  (message "Loaded bongo.")
+		  (setq bongo-default-directory
+				"~/Media/Music")))
+	 (provide 'mf-bongo)
+	 ;;; mf-bongo.el ends here
+   #+end_src
 ** mf-completion.el
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-config.el")
   (require 'mf-completion)
@@ -768,21 +787,28 @@ Custom functions
 	(if (string-match "shell" (buffer-name))
 		(delete-window)
 	  (let ((shell-buffers (cl-loop
-							for buf in (nreverse (buffer-list))
+							for buf in (nreverse (if persp-mode
+													 (mapcar #'get-buffer (persp-current-buffer-names))
+												   (buffer-list)))
 							if (with-current-buffer buf (derived-mode-p 'shell-mode))
 							collect buf)))
 		(cond
 		 ((eq (length shell-buffers) 1)
-		  (pop-to-buffer (pop shell-buffers)))
+		  (if (not use-generic-p)
+			  (pop-to-buffer (pop shell-buffers))))
 		 ((null shell-buffers)
-		  (shell))
+		  (if persp-mode
+			  (shell (get-buffer-create (format "*shell (%s)*" (persp-current-name))))
+			  (shell)))
 		 (t
 		  (pop-to-buffer
 		   (completing-read "Switch to Shell buffer: "
 							(mapcar #'buffer-name
 									shell-buffers)))))))
 	(if use-generic-p
-		(let ((buf-name (generate-new-buffer-name "*shell*")))
+		(let ((buf-name (if persp-mode
+							(generate-new-buffer-name (format "*shell (%s)*" (persp-current-name)))
+						  (generate-new-buffer-name "*shell*"))))
 		  (save-excursion
 			(shell (get-buffer-create buf-name)))
 		  (pop-to-buffer buf-name))))
@@ -1269,7 +1295,7 @@ Hack =org-agenda-dispatcher= behaviour to make it respect =display-buffer-alist=
    #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-config.el")
 	 (require 'mf-ibuffer)
    #+end_src
-	#+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-ibuffer.el")
+   #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-ibuffer.el")
 	  ;;; mf-ibuffer.el --- Configuration for iBuffer -*- lexical-binding: t -*-
 	  ;;; Code:
 	  (eval-after-load 'ibuffer
@@ -1289,7 +1315,9 @@ Hack =org-agenda-dispatcher= behaviour to make it respect =display-buffer-alist=
 					("Man" (name . "\\*Man "))
 					("Magit" (derived-mode . magit-mode))
 					("Dired" (mode . dired-mode))
-					("Web" (or (mode . eww-mode) (name . "^Firefox")))
+					("Web" (or (mode . eww-mode)
+							   (name . "^Firefox")
+							   (mode . elfeed-search-mode)))
 					("Emacs" (or (name . "\\*scratch\\*")
 								 (name . "\\*Messages\\*")
 								 (name . "\\*dashboard\\*")
@@ -1320,7 +1348,9 @@ Hack =org-agenda-dispatcher= behaviour to make it respect =display-buffer-alist=
 					  ("Man" (name . "\\*Man "))
 					  ("Magit" (derived-mode . magit-mode))
 					  ("Dired" (mode . dired-mode))
-					  ("Web" (or (mode . eww-mode) (name . "^Firefox")))
+					  ("Web" (or (mode . eww-mode)
+								 (name . "^Firefox")
+								 (mode . elfeed-search-mode)))
 					  ("Emacs" (or (name . "\\*scratch\\*")
 								   (name . "\\*Messages\\*")
 								   (name . "\\*dashboard\\*")
@@ -1356,7 +1386,8 @@ Configure global keybindings
   (mf/leader "i" erc)
   (mf/leader "k" kill-current-buffer)
   (mf/leader "m" mu4e)
-  (mf/leader "p" mpc)
+  (mf/leader "p" bongo)
+  (mf/leader "r" elfeed)
   (mf/leader "s" mf/toggle-shell)
   (mf/leader "t" mf/toggle-telega)
   (mf/leader "T" mf/switch-theme)
@@ -1382,7 +1413,7 @@ Configure global keybindings
  #+end_src
 ** mf-mpc.el
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-config.el")
-  (require 'mf-mpc)
+  ;; (require 'mf-mpc)
 #+end_src
 Configure the mpc music player (built-in).
 Rewrite mpc function to respect display-buffer-alist
@@ -1583,10 +1614,11 @@ Configure the mu4e mail-reader
 	:file "org-tree-slide")
    (eval-after-load 'org
 	 '(progn
-		(define-key org-mode-map (kbd "C-c p") #'org-tree-slide-mode)
+		(define-key org-mode-map (kbd "C-c M-p") #'org-tree-slide-mode)
 		(eval-after-load 'org-tree-slide
 		  '(progn
-			 (setq org-tree-slide-header nil)
+			 (setq org-tree-slide-header nil
+				   org-tree-slide-slide-in-effect nil)
 			 (define-key org-tree-slide-mode-map (kbd "n") #'org-tree-slide-move-next-tree)
 			 (define-key org-tree-slide-mode-map (kbd "p") #'org-tree-slide-move-previous-tree)
 			 (define-key org-tree-slide-mode-map (kbd "RET") #'org-tree-slide-move-next-tree)
@@ -1714,6 +1746,35 @@ Configure the mu4e mail-reader
 	(provide 'mf-pass)
 	;;; mf-pass.el ends here
  #+end_src
+** mf-perspective.el
+   Use perspective.el to tame buffer madness
+   #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-config.el")
+	 (require 'mf-perspective)
+   #+end_src
+   #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-perspective.el")
+	 ;;; mf-perspective.el --- Configuration for perspective.el -*- lexical-binding: t -*-
+	 ;;; Code:
+	 (mf/install perspective)
+	 (persp-mode)
+	 (define-key global-map (kbd "C-x b") #'persp-switch-to-buffer*)
+	 (defun mf/persp-set-buffer-ask (buffer)
+	   (interactive)
+	   (if (y-or-n-p (concat "Add " (buffer-name buffer) " to perspective?"))
+		   (persp-set-buffer buffer)))
+	 (defun mf/persp-add-buffer-by-regexp (regexp &optional ask-too)
+	   (interactive "sAdd buffers matching this regular expression: \nP")
+	   (dolist (buffer (buffer-list))
+		 (let ((name (buffer-name buffer)))
+		   (when (and name (not (string-equal name ""))
+					  (string-match regexp name))
+			 (funcall (if (not ask-too) 'mf/persp-set-buffer-ask
+						'persp-set-buffer)
+					  buffer)))))
+	 (advice-add #'shell :after #'(lambda (&rest r) (persp-set-buffer (buffer-name))))
+
+	 (provide 'mf-perspective)
+	 ;;; mf-perspective.el ends here
+   #+end_src
 ** mf-programming.el
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-config.el")
   (require 'mf-programming)
@@ -1827,6 +1888,46 @@ Configure programming experience
    (provide 'mf-programming)
    ;;; mf-programming.el ends here
  #+end_src
+** mf-rss.el
+   Use =elfeed= to read RSS feeds
+   #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-config.el")
+	 (require 'mf-rss)
+   #+end_src
+   #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-rss.el")
+	 ;;; mf-rss.el --- Configuration for RSS reading in Emacs -*- lexical-binding: t -*-
+	 ;;; Code:
+	 (mf/install elfeed)
+
+	 (mf/autoload-func
+	  :func elfeed
+	  :file "elfeed")
+	 (eval-after-load 'elfeed
+	   '(progn
+		  (message "Elfeed loaded.")
+		  (setq elfeed-feeds
+				'( ;; FSF / GNU+Linux
+				  ("https://www.fsf.org/static/fsforg/rss/news.xml" fsw)
+				  ("https://planet.gnu.org/rss20.xml" fsw)
+				  ("https://protesilaos.com/codelog.xml" fsw emacs)
+				  ("https://lukesmith.xyz/rss.xml" fsw)
+				  ;; World news
+				  ("https://rss.nytimes.com/services/xml/rss/nyt/World.xml" news world)
+				  ("https://feeds.a.dj.com/rss/RSSWorldNews.xml" news world)
+				  ("https://www.independent.co.uk/news/world/rss" news world)
+				  ;; Italia
+				  ("http://xml2.corriereobjects.it/rss/homepage.xml" news italy)
+				  ("https://www.ansa.it/sito/ansait_rss.xml" news italy)
+				  ("http://www.governo.it/feed/rss" news italy)
+				  ;; Tech
+				  ("https://www.wired.com/feed/rss" tech)
+				  ("http://rss.slashdot.org/Slashdot/slashdotMain" tech)))
+		  (setq-default elfeed-search-filter "@1-week-ago +unread")
+		  (add-hook 'elfeed-new-entry-hook
+					(elfeed-make-tagger :feed-url "youtube\\.com"
+										:add '(video)))))
+	 (provide 'mf-rss)
+	 ;;; mf-rss.el ends here
+   #+end_src
 ** mf-telega.el
    #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-config.el")
 	 (require 'mf-telega)
@@ -2178,13 +2279,13 @@ Configure programming experience
 						  ;; Highlighting faces
 						  '(bookmark-face ((t (:foreground "black" :background "#cccccc"))))
 						  '(fringe ((t (:foreground "white" :background "black"))))
-						  '(highlight ((t (:foreground "white" :background "#1e1e1e"))))
+						  '(highlight ((t (:foreground "black" :background "white"))))
 						  '(hl-line ((t (:background "#303030"))))
 						  '(isearch ((t (:foreground "#f0f0f0" :background "#006800"))))
 						  '(lazy-highlight ((t (:foreground "black" :background "#303030"))))
 						  '(linum ((t (:foreground "#f0f0f0" :slant italic))))
 						  '(match ((t (:background "green"))))
-						  '(region ((t (:extend t :foreground "white" :background "#505050"))))
+						  '(region ((t (:extend t :foreground "black" :background "white"))))
 						  '(secondary-selection ((t (:foreground: "white" :background "#303030"))))
 						  '(trailing-whitespace ((t (:background "red"))))
 
@@ -2380,6 +2481,7 @@ Configure programming experience
 						  ;; Org-mode
 						  '(org-agenda-done ((t (:foreground "ForestGreen" :underline t :slant oblique :weight bold))))
 						  '(org-agenda-structure ((t (:foreground "white"))))
+						  '(org-agenda-dimmed-todo-face ((t (:foreground "white"))))
 						  '(org-block ((t (:inherit shadow :extend t :background "#1e1e1e"))))
 						  '(org-date ((t (:underline t :foreground "#b0b0b0"))))
 						  '(org-document-info ((t (:foreground "white"))))
@@ -2413,6 +2515,9 @@ Configure programming experience
 						  '(speedbar-tag-face ((t (:foreground "#b3b3b3"))))
 						  '(speedbar-selected-face ((t (:underline "#b3b3b3" :foreground "#bababa"))))
 						  '(speedbar-highlight-face ((t (:weight bold :background "black" :foreground "white"))))
+
+						  ;; Vertico
+						  '(vertico-current ((t (:underline "white" :background "black" :foreground "white"))))
 
 						  ;; Whitespace-mode
 						  '(whitespace-empty ((t (:background unspecified :foreground "red"))))
