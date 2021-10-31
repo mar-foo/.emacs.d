@@ -28,13 +28,13 @@
 						;; Highlighting faces
 						'(bookmark-face ((t (:foreground "black" :background "#cccccc"))))
 						'(fringe ((t (:foreground "white" :background "black"))))
-						'(highlight ((t (:foreground "white" :background "#1e1e1e"))))
+						'(highlight ((t (:foreground "black" :background "white"))))
 						'(hl-line ((t (:background "#303030"))))
 						'(isearch ((t (:foreground "#f0f0f0" :background "#006800"))))
 						'(lazy-highlight ((t (:foreground "black" :background "#303030"))))
 						'(linum ((t (:foreground "#f0f0f0" :slant italic))))
 						'(match ((t (:background "green"))))
-						'(region ((t (:extend t :foreground "white" :background "#505050"))))
+						'(region ((t (:extend t :foreground "black" :background "white"))))
 						'(secondary-selection ((t (:foreground: "white" :background "#303030"))))
 						'(trailing-whitespace ((t (:background "red"))))
 
@@ -230,6 +230,7 @@
 						;; Org-mode
 						'(org-agenda-done ((t (:foreground "ForestGreen" :underline t :slant oblique :weight bold))))
 						'(org-agenda-structure ((t (:foreground "white"))))
+						'(org-agenda-dimmed-todo-face ((t (:foreground "white"))))
 						'(org-block ((t (:inherit shadow :extend t :background "#1e1e1e"))))
 						'(org-date ((t (:underline t :foreground "#b0b0b0"))))
 						'(org-document-info ((t (:foreground "white"))))
@@ -263,6 +264,9 @@
 						'(speedbar-tag-face ((t (:foreground "#b3b3b3"))))
 						'(speedbar-selected-face ((t (:underline "#b3b3b3" :foreground "#bababa"))))
 						'(speedbar-highlight-face ((t (:weight bold :background "black" :foreground "white"))))
+
+						;; Vertico
+						'(vertico-current ((t (:underline "white" :background "black" :foreground "white"))))
 
 						;; Whitespace-mode
 						'(whitespace-empty ((t (:background unspecified :foreground "red"))))
