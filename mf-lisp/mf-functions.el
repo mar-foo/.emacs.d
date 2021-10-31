@@ -88,21 +88,28 @@
   (if (string-match "shell" (buffer-name))
 	  (delete-window)
 	(let ((shell-buffers (cl-loop
-						  for buf in (nreverse (buffer-list))
+						  for buf in (nreverse (if persp-mode
+												   (mapcar #'get-buffer (persp-current-buffer-names))
+												 (buffer-list)))
 						  if (with-current-buffer buf (derived-mode-p 'shell-mode))
 						  collect buf)))
 	  (cond
 	   ((eq (length shell-buffers) 1)
-		(pop-to-buffer (pop shell-buffers)))
+		(if (not use-generic-p)
+			(pop-to-buffer (pop shell-buffers))))
 	   ((null shell-buffers)
-		(shell))
+		(if persp-mode
+			(shell (get-buffer-create (format "*shell (%s)*" (persp-current-name))))
+			(shell)))
 	   (t
 		(pop-to-buffer
 		 (completing-read "Switch to Shell buffer: "
 						  (mapcar #'buffer-name
 								  shell-buffers)))))))
   (if use-generic-p
-	  (let ((buf-name (generate-new-buffer-name "*shell*")))
+	  (let ((buf-name (if persp-mode
+						  (generate-new-buffer-name (format "*shell (%s)*" (persp-current-name)))
+						(generate-new-buffer-name "*shell*"))))
 		(save-excursion
 		  (shell (get-buffer-create buf-name)))
 		(pop-to-buffer buf-name))))
