@@ -11,6 +11,7 @@
 (mf/leader "k" kill-current-buffer)
 (mf/leader "m" mu4e)
 (mf/leader "p" mpc)
+(mf/leader "r" elfeed)
 (mf/leader "s" mf/toggle-shell)
 (mf/leader "t" mf/toggle-telega)
 (mf/leader "T" mf/switch-theme)

@@ -31,6 +31,8 @@
 
 (require 'mf-programming)
 
+(require 'mf-rss)
+
 (require 'mf-telega)
 
 ;; Startup time and garbage collection
