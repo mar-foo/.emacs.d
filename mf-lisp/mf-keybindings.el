@@ -1,5 +1,5 @@
 ;; mf-keybindings.el --- Keybinding configuration -*- lexical-binding: t -*-
-  ;;; Code:
+	;;; Code:
 (defmacro mf/leader (key func)
   `(define-key global-map (kbd (concat "C-c " ,key)) #',func))
 
@@ -25,7 +25,9 @@
 (mf/leader "n i" org-roam-node-insert)
 (mf/leader "n t" mf/org-roam-find-teaching)
 
+
 (define-key global-map (kbd "C-x C-b") (lambda () (interactive) (ibuffer t)))
+(define-key global-map (kbd "C-x M-f") #'mf/executable-find-file)
 ;; Quit help buffers and kill the window at the same time
 (eval-after-load 'help-mode
   '(define-key help-mode-map (kbd "q") #'kill-current-buffer))
@@ -33,4 +35,4 @@
 (define-key lisp-mode-map (kbd "C-M-d") #'mf/delete-sexp)
 
 (provide 'mf-keybindings)
-  ;;; mf-keybindings.el ends here
+	;;; mf-keybindings.el ends here
