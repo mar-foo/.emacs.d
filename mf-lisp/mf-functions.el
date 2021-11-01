@@ -28,6 +28,14 @@
   (find-file (concat user-emacs-directory "Emacs.el")))
 
 ;;;###autoload
+(defun mf/executable-find-file (prog)
+  "Find executable in $PATH and open it in a buffer."
+  (interactive
+   (list
+	(read-shell-command "Program: ")))
+  (find-file (executable-find prog)))
+
+;;;###autoload
 (defun mf/find-recentf()
   "Open a recent file list"
   (interactive)

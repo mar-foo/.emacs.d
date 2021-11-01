@@ -9,6 +9,7 @@
 (mf/my-func-autoload mf/bookmarks)
 (mf/my-func-autoload mf/delete-sexp)
 (mf/my-func-autoload mf/edit-configuration)
+(mf/my-func-autoload mf/executable-find-file)
 (mf/my-func-autoload mf/infos)
 (mf/my-func-autoload mf/find-recentf)
 (mf/my-func-autoload mf/lcm)
