@@ -3,6 +3,7 @@
 (mf/install perspective)
 (persp-mode)
 (define-key global-map (kbd "C-x b") #'persp-switch-to-buffer*)
+(define-key global-map (kbd "C-x x TAB") #'persp-switch-last)
 (defun mf/persp-set-buffer-ask (buffer)
   (interactive)
   (if (y-or-n-p (concat "Add " (buffer-name buffer) " to perspective?"))
