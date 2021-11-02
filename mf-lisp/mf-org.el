@@ -24,6 +24,7 @@
 			 org-agenda-skip-archived-trees t
 			 org-agenda-start-with-log-mode t
 			 org-agenda-include-diary t
+			 org-agenda-todo-list-sublevels nil
 			 org-log-done 'time
 			 org-log-into-drawer t
 			 org-todo-keywords
@@ -68,7 +69,7 @@
 	   (defun mf/switch-to-buffer-other-window (orig-func &rest args)
 		 (apply #'switch-to-buffer-other-window args))
 	   (advice-add 'org-agenda-get-restriction-and-command :around #'mf/org-agenda-get-restriction-and-command)
-  	 (advice-add 'org-switch-to-buffer-other-window :around #'mf/switch-to-buffer-other-window))))
+	 (advice-add 'org-switch-to-buffer-other-window :around #'mf/switch-to-buffer-other-window))))
 
 
 (setq diary-file (file-truename "~/Documents/Personal/diary"))
