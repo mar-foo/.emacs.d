@@ -42,10 +42,6 @@
 						  :key ?T
 						  :query "from:latracciabg.it OR to:latracciabg.it"))
 	 (add-to-list 'mu4e-bookmarks
-				  '(:name "9front"
-						  :key ?9
-						  :query "from:9front.org OR to:9front.org"))
-	 (add-to-list 'mu4e-bookmarks
 				  '(:name "LCM"
 						  :key ?l
 						  :query "from:lcm.mi.infn.it OR from:pcteor1.mi.infn.it"))
