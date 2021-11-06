@@ -23,10 +23,12 @@
 	  '((file (styles partial-completion initials basic))))
 
 (mf/install vertico)
+(mf/install vertico-posframe)
 (eval-after-load 'minibuffer
   '(progn
 	 (message "Loaded vertico")
-	 (vertico-mode 1)))
+	 (vertico-mode 1)
+	 (vertico-posframe-mode 1)))
 
 (provide 'mf-completion)
-;;; mf-completion.el ends here
+  ;;; mf-completion.el ends here
