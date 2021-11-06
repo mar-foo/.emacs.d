@@ -3,7 +3,12 @@
 (require 'cl-lib)
 
 ;;;###autoload
-(defun mf/big-font(&optional use-generic-p)
+(defun mf/alsamixer ()
+  (interactive)
+  (ansi-term (executable-find "alsamixer")))
+
+;;;###autoload
+(defun mf/big-font (&optional use-generic-p)
   (interactive "P")
   (if use-generic-p
 	  (text-scale-decrease 4)
@@ -16,13 +21,13 @@
 	(split-string (buffer-string))))
 
 ;;;###autoload
-(defun mf/delete-sexp()
+(defun mf/delete-sexp ()
   (interactive)
   (mark-sexp)
   (delete-active-region))
 
 ;;;###autoload
-(defun mf/edit-configuration()
+(defun mf/edit-configuration ()
   "Edit emacs configuration"
   (interactive)
   (find-file (concat user-emacs-directory "Emacs.el")))
@@ -36,13 +41,13 @@
   (find-file (executable-find prog)))
 
 ;;;###autoload
-(defun mf/find-recentf()
+(defun mf/find-recentf ()
   "Open a recent file list"
   (interactive)
   (find-file (completing-read "Recent File: " recentf-list nil t)))
 
 ;;;###autoload
-(defun mf/infos()
+(defun mf/infos ()
   (interactive)
   (shell-command (executable-find "infos")))
 
@@ -54,18 +59,18 @@
 	(shell)))
 
 ;;;###autoload
-(defun mf/quit-and-kill()
+(defun mf/quit-and-kill ()
   (interactive)
   (quit-window t))
 
 ;;;###autoload
-(defun mf/reload-configuration()
+(defun mf/reload-configuration ()
   "Reloads configuration"
   (interactive)
   (load-file (concat user-emacs-directory "init.el")))
 
 ;;;###autoload
-(defun mf/select-completion-and-exit()
+(defun mf/select-completion-and-exit ()
   (interactive)
   (icomplete-force-complete)
   (icomplete-ret))
@@ -73,13 +78,13 @@
 ;;;###autoload
 (defun mf/switch-theme ()
   (interactive)
-  (if (string= (car custom-enabled-themes) "mf")
+  (if (string= (car custom-enabled-themes) "modus-operandi")
 	  (progn
-		(load-theme 'mf-dark t)
-		(disable-theme 'mf))
+		(load-theme 'modus-vivendi t)
+		(disable-theme 'modus-operandi))
 	(progn
-	  (load-theme 'mf)
-	  (disable-theme 'mf-dark))))
+	  (load-theme 'modus-operandi)
+	  (disable-theme 'modus-vivendi))))
 
 	;;;###autoload
 (defun mf/toggle-eshell ()
@@ -136,12 +141,12 @@
 		  (switch-to-buffer "*Telega Root*"))
 	  (telega))))
 
-(defun mf/yank-to-string()
+(defun mf/yank-to-string ()
   (rotate-yank-pointer 0)
   (car kill-ring-yank-pointer))
 
 ;;;###autoload
-(defun mf/mpv(&optional url)
+(defun mf/mpv (&optional url)
   "Plays url in mpv"
   (interactive)
   (if (called-interactively-p)
