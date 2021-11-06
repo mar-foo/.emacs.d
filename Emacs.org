@@ -94,6 +94,9 @@ Load look and feel configuration from mf-look-and-feel.el as early as possible
 			(side . bottom)
 			(window-height . 0.4)
 			(slot . 1))
+		   ("\\*elfeed-entry\\*" (display-buffer-in-side-window)
+			(side . bottom)
+			(window-height . 0.7))
 		   ("\\*Flymake diagnostics for" (display-buffer-below-selected)
 			(window-height . 0.2))
 		   ("\\*slime-repl " (display-buffer-below-selected)
@@ -180,13 +183,14 @@ Load look and feel configuration from mf-look-and-feel.el as early as possible
  Load light theme from 08:00 to 19:00, dark theme otherwise
  #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-look-and-feel.el")
    (add-to-list 'custom-theme-load-path (concat user-emacs-directory "mf-lisp/themes/"))
+   (setq modus-themes-no-mixed-fonts t)	;; I want monospace fonts everywhere
    (if (display-graphic-p)
 	   (if
 		   (or (>= (string-to-number (format-time-string "%H")) 19)
 			   (<= (string-to-number (format-time-string "%H")) 8))
-		   (load-theme 'mf-dark t)
-		 (load-theme 'mf t))
-	 (load-theme 'mf-dark t))
+		   (load-theme 'modus-vivendi t)
+		 (load-theme modus-operandi t))
+	 (load-theme 'modus-vivendi t))
  #+end_src
  #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-look-and-feel.el")
 	 (provide 'mf-look-and-feel)
@@ -398,10 +402,12 @@ Define a macro to help autoloading
 #+end_src
 Define some autoloads for functions defined in =mf-functions.el=
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-autoloads.el")
+  (mf/my-func-autoload mf/alsamixer)
   (mf/my-func-autoload mf/big-font)
   (mf/my-func-autoload mf/bookmarks)
   (mf/my-func-autoload mf/delete-sexp)
   (mf/my-func-autoload mf/edit-configuration)
+  (mf/my-func-autoload mf/executable-find-file)
   (mf/my-func-autoload mf/infos)
   (mf/my-func-autoload mf/find-recentf)
   (mf/my-func-autoload mf/lcm)
@@ -469,13 +475,15 @@ Configure the completion framework
 *** Vertico
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-completion.el")
   (mf/install vertico)
+  (mf/install vertico-posframe)
   (eval-after-load 'minibuffer
 	'(progn
 	   (message "Loaded vertico")
-	   (vertico-mode 1)))
+	   (vertico-mode 1)
+	   (vertico-posframe-mode 1)))
 
   (provide 'mf-completion)
-  ;;; mf-completion.el ends here
+	;;; mf-completion.el ends here
 #+end_src
 ** mf-dired.el
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-config.el")
@@ -702,7 +710,12 @@ Custom functions
   (require 'cl-lib)
 
   ;;;###autoload
-  (defun mf/big-font(&optional use-generic-p)
+  (defun mf/alsamixer ()
+	(interactive)
+	(ansi-term (executable-find "alsamixer")))
+
+  ;;;###autoload
+  (defun mf/big-font (&optional use-generic-p)
 	(interactive "P")
 	(if use-generic-p
 		(text-scale-decrease 4)
@@ -715,25 +728,33 @@ Custom functions
 	  (split-string (buffer-string))))
 
   ;;;###autoload
-  (defun mf/delete-sexp()
+  (defun mf/delete-sexp ()
 	(interactive)
 	(mark-sexp)
 	(delete-active-region))
 
   ;;;###autoload
-  (defun mf/edit-configuration()
+  (defun mf/edit-configuration ()
 	"Edit emacs configuration"
 	(interactive)
 	(find-file (concat user-emacs-directory "Emacs.el")))
 
   ;;;###autoload
-  (defun mf/find-recentf()
+  (defun mf/executable-find-file (prog)
+	"Find executable in $PATH and open it in a buffer."
+	(interactive
+	 (list
+	  (read-shell-command "Program: ")))
+	(find-file (executable-find prog)))
+
+  ;;;###autoload
+  (defun mf/find-recentf ()
 	"Open a recent file list"
 	(interactive)
 	(find-file (completing-read "Recent File: " recentf-list nil t)))
 
   ;;;###autoload
-  (defun mf/infos()
+  (defun mf/infos ()
 	(interactive)
 	(shell-command (executable-find "infos")))
 
@@ -745,18 +766,18 @@ Custom functions
 	  (shell)))
 
   ;;;###autoload
-  (defun mf/quit-and-kill()
+  (defun mf/quit-and-kill ()
 	(interactive)
 	(quit-window t))
 
   ;;;###autoload
-  (defun mf/reload-configuration()
+  (defun mf/reload-configuration ()
 	"Reloads configuration"
 	(interactive)
 	(load-file (concat user-emacs-directory "init.el")))
 
   ;;;###autoload
-  (defun mf/select-completion-and-exit()
+  (defun mf/select-completion-and-exit ()
 	(interactive)
 	(icomplete-force-complete)
 	(icomplete-ret))
@@ -764,13 +785,13 @@ Custom functions
   ;;;###autoload
   (defun mf/switch-theme ()
 	(interactive)
-	(if (string= (car custom-enabled-themes) "mf")
+	(if (string= (car custom-enabled-themes) "modus-operandi")
 		(progn
-		  (load-theme 'mf-dark t)
-		  (disable-theme 'mf))
+		  (load-theme 'modus-vivendi t)
+		  (disable-theme 'modus-operandi))
 	  (progn
-		(load-theme 'mf)
-		(disable-theme 'mf-dark))))
+		(load-theme 'modus-operandi)
+		(disable-theme 'modus-vivendi))))
 
 	  ;;;###autoload
   (defun mf/toggle-eshell ()
@@ -827,12 +848,12 @@ Custom functions
 			(switch-to-buffer "*Telega Root*"))
 		(telega))))
 
-  (defun mf/yank-to-string()
+  (defun mf/yank-to-string ()
 	(rotate-yank-pointer 0)
 	(car kill-ring-yank-pointer))
 
   ;;;###autoload
-  (defun mf/mpv(&optional url)
+  (defun mf/mpv (&optional url)
 	"Plays url in mpv"
 	(interactive)
 	(if (called-interactively-p)
@@ -858,7 +879,6 @@ Custom functions
   (provide 'mf-functions)
   ;;; mf-functions.el ends here
  #+end_src
- 
 ** mf-git.el
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-dired.el")
   (require 'mf-git)
@@ -1375,7 +1395,7 @@ autoloads to be defined
 Configure global keybindings
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-keybindings.el")
   ;; mf-keybindings.el --- Keybinding configuration -*- lexical-binding: t -*-
-	;;; Code:
+	  ;;; Code:
   (defmacro mf/leader (key func)
 	`(define-key global-map (kbd (concat "C-c " ,key)) #',func))
 
@@ -1401,7 +1421,9 @@ Configure global keybindings
   (mf/leader "n i" org-roam-node-insert)
   (mf/leader "n t" mf/org-roam-find-teaching)
 
+
   (define-key global-map (kbd "C-x C-b") (lambda () (interactive) (ibuffer t)))
+  (define-key global-map (kbd "C-x M-f") #'mf/executable-find-file)
   ;; Quit help buffers and kill the window at the same time
   (eval-after-load 'help-mode
 	'(define-key help-mode-map (kbd "q") #'kill-current-buffer))
@@ -1409,7 +1431,7 @@ Configure global keybindings
   (define-key lisp-mode-map (kbd "C-M-d") #'mf/delete-sexp)
 
   (provide 'mf-keybindings)
-	;;; mf-keybindings.el ends here
+	  ;;; mf-keybindings.el ends here
  #+end_src
 ** mf-mpc.el
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-config.el")
@@ -1509,10 +1531,6 @@ Configure the mu4e mail-reader
 							:key ?T
 							:query "from:latracciabg.it OR to:latracciabg.it"))
 	   (add-to-list 'mu4e-bookmarks
-					'(:name "9front"
-							:key ?9
-							:query "from:9front.org OR to:9front.org"))
-	   (add-to-list 'mu4e-bookmarks
 					'(:name "LCM"
 							:key ?l
 							:query "from:lcm.mi.infn.it OR from:pcteor1.mi.infn.it"))
@@ -1556,6 +1574,7 @@ Configure the mu4e mail-reader
 			   org-agenda-skip-archived-trees t
 			   org-agenda-start-with-log-mode t
 			   org-agenda-include-diary t
+			   org-agenda-todo-list-sublevels nil
 			   org-log-done 'time
 			   org-log-into-drawer t
 			   org-todo-keywords
@@ -1600,7 +1619,7 @@ Configure the mu4e mail-reader
 		 (defun mf/switch-to-buffer-other-window (orig-func &rest args)
 		   (apply #'switch-to-buffer-other-window args))
 		 (advice-add 'org-agenda-get-restriction-and-command :around #'mf/org-agenda-get-restriction-and-command)
-  	   (advice-add 'org-switch-to-buffer-other-window :around #'mf/switch-to-buffer-other-window))))
+	   (advice-add 'org-switch-to-buffer-other-window :around #'mf/switch-to-buffer-other-window))))
 
 
   (setq diary-file (file-truename "~/Documents/Personal/diary"))
@@ -1621,6 +1640,7 @@ Configure the mu4e mail-reader
 				   org-tree-slide-slide-in-effect nil)
 			 (define-key org-tree-slide-mode-map (kbd "n") #'org-tree-slide-move-next-tree)
 			 (define-key org-tree-slide-mode-map (kbd "p") #'org-tree-slide-move-previous-tree)
+			 (define-key org-tree-slide-mode-map (kbd "q") #'org-tree-slide-mode)
 			 (define-key org-tree-slide-mode-map (kbd "RET") #'org-tree-slide-move-next-tree)
 			 (define-key org-tree-slide-mode-map (kbd "+") #'mf/big-font)
 			 (define-key org-tree-slide-mode-map (kbd "-") #'(lambda() (interactive) (mf/big-font t)))))))
@@ -1701,6 +1721,16 @@ Configure the mu4e mail-reader
 					 ("tb" "CBI" entry
 					  (file+headline "~/Documents/Personal/org/Notes/20210921201618-cbi2021.org" "Agenda")
 					  "** TODO %^{Action}\n%?\n%a")
+					 ("r" "Ripetizioni")
+					 ("rc" "Chiara" entry
+					  (file+olp "~/Documents/Personal/org/Notes/20211102143135-ripetizioni.org" "Agenda" "Chiara")
+					  "*** TODO %^{Action}\n%?\n%a")
+					 ("rf" "Federico" entry
+					  (file+olp "~/Documents/Personal/org/Notes/20211102143135-ripetizioni.org" "Agenda" "Federico")
+					  "*** TODO %^{Action}\n%?\n%a")
+					 ("rm" "Migara" entry
+					  (file+olp "~/Documents/Personal/org/Notes/20211102143135-ripetizioni.org" "Agenda" "Migara")
+					  "*** TODO %^{Action}\n%?\n%a")
 					 ("u" "Uni")
 					 ,@(cl-loop
 						for filename in (mf/org-roam-list-notes-by-tag "Uni")
@@ -1920,7 +1950,9 @@ Configure programming experience
 				  ("http://www.governo.it/feed/rss" news italy)
 				  ;; Tech
 				  ("https://www.wired.com/feed/rss" tech)
-				  ("http://rss.slashdot.org/Slashdot/slashdotMain" tech)))
+				  ("http://rss.slashdot.org/Slashdot/slashdotMain" tech)
+				  ("https://wiki.gnome.org/action/rss_rc/RecentChanges?action=rss_rc&unique=1&ddiffs=1" tech kiss))
+				elfeed-show-entry-switch #'display-buffer)
 		  (setq-default elfeed-search-filter "@1-week-ago +unread")
 		  (add-hook 'elfeed-new-entry-hook
 					(elfeed-make-tagger :feed-url "youtube\\.com"
