@@ -159,7 +159,7 @@
 		  (setq org-capture-templates
 				`(("a" "Agenda" entry
 				   (file+headline "~/Documents/Personal/org/agenda.org" "Agenda")
-				   "** TODO %^{Action}\nSCHEDULED: %^t\n%?")
+				   "** TODO %^{Action}\n%?")
 				  ("t" "Teaching")
 				  ("tt" "Teaching General" entry
 				   (file+headline "~/Documents/Personal/org/Notes/20210913174909-teaching.org" "Agenda")
@@ -167,6 +167,16 @@
 				  ("tb" "CBI" entry
 				   (file+headline "~/Documents/Personal/org/Notes/20210921201618-cbi2021.org" "Agenda")
 				   "** TODO %^{Action}\n%?\n%a")
+				  ("r" "Ripetizioni")
+				  ("rc" "Chiara" entry
+				   (file+olp "~/Documents/Personal/org/Notes/20211102143135-ripetizioni.org" "Agenda" "Chiara")
+				   "*** TODO %^{Action}\n%?\n%a")
+				  ("rf" "Federico" entry
+				   (file+olp "~/Documents/Personal/org/Notes/20211102143135-ripetizioni.org" "Agenda" "Federico")
+				   "*** TODO %^{Action}\n%?\n%a")
+				  ("rm" "Migara" entry
+				   (file+olp "~/Documents/Personal/org/Notes/20211102143135-ripetizioni.org" "Agenda" "Migara")
+				   "*** TODO %^{Action}\n%?\n%a")
 				  ("u" "Uni")
 				  ,@(cl-loop
 					 for filename in (mf/org-roam-list-notes-by-tag "Uni")
