@@ -88,6 +88,7 @@
 				org-tree-slide-slide-in-effect nil)
 		  (define-key org-tree-slide-mode-map (kbd "n") #'org-tree-slide-move-next-tree)
 		  (define-key org-tree-slide-mode-map (kbd "p") #'org-tree-slide-move-previous-tree)
+		  (define-key org-tree-slide-mode-map (kbd "q") #'org-tree-slide-mode)
 		  (define-key org-tree-slide-mode-map (kbd "RET") #'org-tree-slide-move-next-tree)
 		  (define-key org-tree-slide-mode-map (kbd "+") #'mf/big-font)
 		  (define-key org-tree-slide-mode-map (kbd "-") #'(lambda() (interactive) (mf/big-font t)))))))
