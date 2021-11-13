@@ -131,7 +131,11 @@
 
 		  (defun mf/org-roam-refresh-agenda-files()
 			(interactive)
-			(setq org-agenda-files (mf/org-roam-list-notes-by-tag "Agenda"))
+			(setq org-agenda-files
+				  (cl-loop
+							  for i in '("Uni" "Teaching" "Kiss")
+							  while i
+							  append (mf/org-roam-list-notes-by-tag i)))
 			(add-to-list 'org-agenda-files "~/Documents/Personal/org/agenda.org"))
 		  (mf/org-roam-refresh-agenda-files)
 
@@ -160,6 +164,16 @@
 				`(("a" "Agenda" entry
 				   (file+headline "~/Documents/Personal/org/agenda.org" "Agenda")
 				   "** TODO %^{Action}\n%?")
+				  ("k" "KISS")
+				  ("ku" "Update package" entry
+				   (file+headline "~/Documents/Personal/org/Notes/20211031165258-kiss.org" "Agenda")
+				   "** TODO %^{Package}: %^{Old} -> %^{New}\n%?\n")
+				  ("kf" "Fix package" entry
+				   (file+headline "~/Documents/Personal/org/Notes/20211031165258-kiss.org" "Agenda")
+				   "** TODO %^{Package}: fix %^{File|build|depends|patch}\n%?\n")
+				  ("kp" "Kiss pull request" entry
+				   (file+headline "~/Documents/Personal/org/Notes/20211031165258-kiss.org" "Agenda")
+				   "** TODO %^{Package}: submit pull request\n%?\n")
 				  ("t" "Teaching")
 				  ("tt" "Teaching General" entry
 				   (file+headline "~/Documents/Personal/org/Notes/20210913174909-teaching.org" "Agenda")
