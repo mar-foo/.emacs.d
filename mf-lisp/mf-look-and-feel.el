@@ -127,13 +127,7 @@
 
 (add-to-list 'custom-theme-load-path (concat user-emacs-directory "mf-lisp/themes/"))
 (setq modus-themes-no-mixed-fonts t)	;; I want monospace fonts everywhere
-(if (display-graphic-p)
-	(if
-		(or (>= (string-to-number (format-time-string "%H")) 19)
-			(<= (string-to-number (format-time-string "%H")) 8))
-		(load-theme 'modus-vivendi t)
-	  (load-theme modus-operandi t))
-  (load-theme 'modus-vivendi t))
+(load-theme 'modus-vivendi t)
 
 (provide 'mf-look-and-feel)
 ;;; mf-look-and-feel.el ends here
