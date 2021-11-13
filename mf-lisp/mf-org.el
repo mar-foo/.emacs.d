@@ -28,7 +28,7 @@
 			 org-log-done 'time
 			 org-log-into-drawer t
 			 org-todo-keywords
-			 '((sequence "TODO(t)" "WAITING(w)" "|" "DONE(d)" "NO(n)"))
+			 '((sequence "TODO(t)" "NEXT(n)" "WAITING(w)" "|" "DONE(d)" "NO(N)"))
 			 org-todo-keyword-faces
 			 '(("TODO" . org-todo)
 			   ("WAITING" . (:inherit org-todo :foreground "#b0b0b0"))
