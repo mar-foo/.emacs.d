@@ -13,12 +13,11 @@
 
 (setq-default default-frame-alist
 			  (append (list
-					   '(font . "Go Mono:style=medium:size=12")
+					   '(font . "Cousine:style=medium:size=12")
 					   '(tool-bar-lines . 0)
 					   '(menu-bar-lines . 0)
 					   '(right-fringe . 5)
 					   '(left-fringe . 5)
-					   '(alpha . (90 . 90))
 					   '(vertical-scroll-bars . nil)))
 			  fringes-outside-margins t
 			  window-resize-pixelwise t
