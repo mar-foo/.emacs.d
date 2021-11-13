@@ -54,6 +54,8 @@
 		 (window-height . 0.2))
 		("\\*sldb " (display-buffer-below-selected)
 		 (window-height . 0.3))
+		("\\*ielm\\*" (display-buffer-below-selected)
+		 (window-height . 0.3))
 		("\\*Packages\\*" (display-buffer-in-side-window)
 		 (side . bottom)
 		 (window-height . 0.4))
