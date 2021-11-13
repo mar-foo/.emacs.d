@@ -49,7 +49,7 @@
 	 (define-key mu4e-main-mode-map (kbd "p") #'previous-line)
 	 (define-key mu4e-headers-mode-map (kbd "C-c c") 'mu4e-org-store-and-capture)
 	 (define-key mu4e-view-mode-map (kbd "C-c c") 'mu4e-org-store-and-capture)
-	 (add-hook 'message-send-mail-hook #'mml-secure-message-sign-pgp)))
+	 (add-hook 'mu4e-compose-mode-hook #'mml-secure-message-sign-pgp)))
 
 (provide 'mf-mu4e)
   ;;; mf-mu4e.el ends here
