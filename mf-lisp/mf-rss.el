@@ -24,7 +24,9 @@
 			 ("http://www.governo.it/feed/rss" news italy)
 			 ;; Tech
 			 ("https://www.wired.com/feed/rss" tech)
-			 ("http://rss.slashdot.org/Slashdot/slashdotMain" tech))
+			 ("http://rss.slashdot.org/Slashdot/slashdotMain" tech)
+			 ("https://wiki.gnome.org/action/rss_rc/RecentChanges?action=rss_rc&unique=1&ddiffs=1" tech kiss)
+			 ("https://kisslinux.org/rss/tidbits.rss" tech kiss))
 		   elfeed-show-entry-switch #'display-buffer)
 	 (setq-default elfeed-search-filter "@1-week-ago +unread")
 	 (add-hook 'elfeed-new-entry-hook
