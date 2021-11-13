@@ -1,15 +1,18 @@
 ;;; mf-look-and-feel.el --- Look and feel configuration -*- lexical-binding: t -*-
 ;;; Code:
-(setq inhibit-startup-message 1)
-;; (scroll-bar-mode -1)                    ; Disable scroll bar
-;; (tool-bar-mode -1)                      ; Disable toolbar
-(tooltip-mode -1)                       ; Disable tooltips
-;; (menu-bar-mode -1)                      ; Disable menu bar
-(blink-cursor-mode -1)		            ; Disable cursor blinking
-(global-hl-line-mode 1)			        ; Highlight current line
-(show-paren-mode 1)
-(setq show-paren-delay 0)		        ; Highlight matching parentheses
-;; (fringe-mode)
+(defmacro mf/enable-if-bound (symbol enable)
+  `(if (fboundp #',symbol)
+	   (,symbol ,(if (not enable) -1))))
+(mf/enable-if-bound scroll-bar-mode nil)	; Scroll bars are awful
+(mf/enable-if-bound tool-bar-mode nil)
+(mf/enable-if-bound menu-bar-mode nil)		; I don't need menus, I have 300 keybindings in my head
+(mf/enable-if-bound fringe-mode t)			; Give me some breathing room
+(setq inhibit-startup-message 1)			; No default startup message
+(tooltip-mode -1)							; Disable tooltips
+(blink-cursor-mode -1)						; Disable cursor blinking
+(global-hl-line-mode)						; Highlight current line
+(show-paren-mode)
+(setq show-paren-delay 0)					; Highlight matching parentheses
 
 (setq-default default-frame-alist
 			  (append (list
