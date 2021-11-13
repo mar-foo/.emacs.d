@@ -1,15 +1,15 @@
 ;;; mf-look-and-feel.el --- Look and feel configuration -*- lexical-binding: t -*-
 ;;; Code:
 (setq inhibit-startup-message 1)
-(scroll-bar-mode -1)                    ; Disable scroll bar
-(tool-bar-mode -1)                      ; Disable toolbar
+;; (scroll-bar-mode -1)                    ; Disable scroll bar
+;; (tool-bar-mode -1)                      ; Disable toolbar
 (tooltip-mode -1)                       ; Disable tooltips
-(menu-bar-mode -1)                      ; Disable menu bar
+;; (menu-bar-mode -1)                      ; Disable menu bar
 (blink-cursor-mode -1)		            ; Disable cursor blinking
 (global-hl-line-mode 1)			        ; Highlight current line
 (show-paren-mode 1)
 (setq show-paren-delay 0)		        ; Highlight matching parentheses
-(fringe-mode)
+;; (fringe-mode)
 
 (setq-default default-frame-alist
 			  (append (list
