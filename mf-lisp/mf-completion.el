@@ -28,7 +28,8 @@
   '(progn
 	 (message "Loaded vertico")
 	 (vertico-mode 1)
-	 (vertico-posframe-mode 1)))
+   (if (display-graphic-p)
+	 (vertico-posframe-mode 1))))
 
 (provide 'mf-completion)
   ;;; mf-completion.el ends here
