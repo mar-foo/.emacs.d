@@ -50,26 +50,25 @@ Load look and feel configuration from mf-look-and-feel.el as early as possible
 	;;; mf-look-and-feel.el --- Look and feel configuration -*- lexical-binding: t -*-
 	;;; Code:
 	(setq inhibit-startup-message 1)
-	(scroll-bar-mode -1)                    ; Disable scroll bar
-	(tool-bar-mode -1)                      ; Disable toolbar
+	;; (scroll-bar-mode -1)                    ; Disable scroll bar
+	;; (tool-bar-mode -1)                      ; Disable toolbar
 	(tooltip-mode -1)                       ; Disable tooltips
-	(menu-bar-mode -1)                      ; Disable menu bar
+	;; (menu-bar-mode -1)                      ; Disable menu bar
 	(blink-cursor-mode -1)		            ; Disable cursor blinking
 	(global-hl-line-mode 1)			        ; Highlight current line
 	(show-paren-mode 1)
 	(setq show-paren-delay 0)		        ; Highlight matching parentheses
-	(fringe-mode)
+	;; (fringe-mode)
  #+end_src
 *** default-frame-alist
  #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-look-and-feel.el")
    (setq-default default-frame-alist
 				 (append (list
-						  '(font . "Go Mono:style=medium:size=12")
+						  '(font . "Cousine:style=medium:size=12")
 						  '(tool-bar-lines . 0)
 						  '(menu-bar-lines . 0)
 						  '(right-fringe . 5)
 						  '(left-fringe . 5)
-						  '(alpha . (90 . 90))
 						  '(vertical-scroll-bars . nil)))
 				 fringes-outside-margins t
 				 window-resize-pixelwise t
@@ -90,13 +89,15 @@ Load look and feel configuration from mf-look-and-feel.el as early as possible
 			(side . bottom)
 			(window-height . 0.4)
 			(slot . 0))
+		   ("\\*Calendar\\*" (display-buffer-below-selected)
+			(window-height . 0.2))
 		   ("\\*compilation\\*" (display-buffer-in-side-window)
 			(side . bottom)
 			(window-height . 0.4)
 			(slot . 1))
 		   ("\\*elfeed-entry\\*" (display-buffer-in-side-window)
-			(side . bottom)
-			(window-height . 0.7))
+			(side . right)
+			(window-width . 0.6))
 		   ("\\*Flymake diagnostics for" (display-buffer-below-selected)
 			(window-height . 0.2))
 		   ("\\*slime-repl " (display-buffer-below-selected)
@@ -104,6 +105,8 @@ Load look and feel configuration from mf-look-and-feel.el as early as possible
 		   ("\\*inferior-lisp\\*" (display-buffer-below-selected)
 			(window-height . 0.2))
 		   ("\\*sldb " (display-buffer-below-selected)
+			(window-height . 0.3))
+		   ("\\*ielm\\*" (display-buffer-below-selected)
 			(window-height . 0.3))
 		   ("\\*Packages\\*" (display-buffer-in-side-window)
 			(side . bottom)
@@ -184,13 +187,7 @@ Load look and feel configuration from mf-look-and-feel.el as early as possible
  #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-look-and-feel.el")
    (add-to-list 'custom-theme-load-path (concat user-emacs-directory "mf-lisp/themes/"))
    (setq modus-themes-no-mixed-fonts t)	;; I want monospace fonts everywhere
-   (if (display-graphic-p)
-	   (if
-		   (or (>= (string-to-number (format-time-string "%H")) 19)
-			   (<= (string-to-number (format-time-string "%H")) 8))
-		   (load-theme 'modus-vivendi t)
-		 (load-theme modus-operandi t))
-	 (load-theme 'modus-vivendi t))
+   (load-theme 'modus-vivendi t)
  #+end_src
  #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-look-and-feel.el")
 	 (provide 'mf-look-and-feel)
@@ -480,7 +477,8 @@ Configure the completion framework
 	'(progn
 	   (message "Loaded vertico")
 	   (vertico-mode 1)
-	   (vertico-posframe-mode 1)))
+	 (if (display-graphic-p)
+	   (vertico-posframe-mode 1))))
 
   (provide 'mf-completion)
 	;;; mf-completion.el ends here
@@ -906,19 +904,19 @@ Custom functions
 #+end_src
 Configure gnus, the built-in news reader
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-gnus.el")
- ;;; mf-gnus.el --- Configuration for gnus -*- lexical-binding: t -*-
- ;;; Code:
- (progn
-   (mf/autoload-func
-	:func gnus
-	:file "gnus")
-   (eval-after-load 'gnus
-	 '(progn
-		(setq gnus-select-method '(nntp "news.gwene.org"))
-		(add-hook 'gnus-group-mode-hook 'gnus-topic-mode))))
+  ;;; mf-gnus.el --- Configuration for gnus -*- lexical-binding: t -*-
+  ;;; Code:
+  (progn
+	(mf/autoload-func
+	 :func gnus
+	 :file "gnus")
+	(eval-after-load 'gnus
+	  '(progn
+		 (setq gnus-select-method '(nntp "news.gwene.org"))
+		 (add-hook 'gnus-group-mode-hook 'gnus-topic-mode))))
 
- (provide 'mf-gnus)
- ;;; mf-gnus.el ends here
+  (provide 'mf-gnus)
+  ;;; mf-gnus.el ends here
 #+end_src
 ** mf-hacks.el
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-config.el")
@@ -1316,75 +1314,79 @@ Hack =org-agenda-dispatcher= behaviour to make it respect =display-buffer-alist=
 	 (require 'mf-ibuffer)
    #+end_src
    #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-ibuffer.el")
-	  ;;; mf-ibuffer.el --- Configuration for iBuffer -*- lexical-binding: t -*-
-	  ;;; Code:
-	  (eval-after-load 'ibuffer
-		'(progn
-		   (setq ibuffer-saved-filter-groups
-				 '(("default"
-					("EXWM" (mode . exwm-mode))
-					("Programming" (derived-mode . prog-mode))
-					("Mail" (derived-mode . mu4e-compose-mode))
-					("Org" (name . "^.*org$"))
-					("Org-roam" (name . "[0-9]+-.*.org"))
-					("Telegram" (or (mode . telega-chat-mode)
-									(name . "\\*Telega Root\\*")))
-					("Shell" (or (mode . eshell-mode) (name . "^st-256color")))
-					("PDF" (name . "^.*pdf$"))
-					("IRC" (mode . erc-mode))
-					("Man" (name . "\\*Man "))
-					("Magit" (derived-mode . magit-mode))
-					("Dired" (mode . dired-mode))
-					("Web" (or (mode . eww-mode)
-							   (name . "^Firefox")
-							   (mode . elfeed-search-mode)))
-					("Emacs" (or (name . "\\*scratch\\*")
-								 (name . "\\*Messages\\*")
-								 (name . "\\*dashboard\\*")
-								 (name . "\\*Completions\\*")
-								 (name . "\\*Warnings\\*")
-								 (name . "\\*Backtrace\\*")))
-					("Compilation" (derived-mode . compilation-mode))))
+	 ;;; mf-ibuffer.el --- Configuration for iBuffer -*- lexical-binding: t -*-
+	 ;;; Code:
+	 (eval-after-load 'ibuffer
+	   '(progn
+		  (setq ibuffer-saved-filter-groups
+				'(("default"
+				   ("EXWM" (mode . exwm-mode))
+				   ("Programming" (derived-mode . prog-mode))
+				   ("Mail" (derived-mode . mu4e-compose-mode))
+				   ("Org" (name . "^.*org$"))
+				   ("Org-roam" (name . "[0-9]+-.*.org"))
+				   ("Telegram" (or (mode . telega-chat-mode)
+								   (name . "\\*Telega Root\\*")))
+				   ("Shell" (or (mode . eshell-mode)
+								(mode . shell-mode)
+								(name . "^st-256color")))
+				   ("PDF" (name . "^.*pdf$"))
+				   ("IRC" (mode . erc-mode))
+				   ("Man" (name . "\\*Man "))
+				   ("Magit" (derived-mode . magit-mode))
+				   ("Dired" (mode . dired-mode))
+				   ("Web" (or (mode . eww-mode)
+							  (name . "^Firefox")
+							  (mode . elfeed-search-mode)))
+				   ("Emacs" (or (name . "\\*scratch\\*")
+								(name . "\\*Messages\\*")
+								(name . "\\*dashboard\\*")
+								(name . "\\*Completions\\*")
+								(name . "\\*Warnings\\*")
+								(name . "\\*Backtrace\\*")))
+				   ("Compilation" (derived-mode . compilation-mode))))
 
-				 ibuffer-show-empty-filter-groups nil
-				 ibuffer-expert t)
-		   (eval-after-load 'org-agenda
-			 '(setq ibuffer-saved-filter-groups
-					'(("default"
-					  ("EXWM" (mode . exwm-mode))
-					  ("Programming" (derived-mode . prog-mode))
-					  ("Mail" (derived-mode . mu4e-compose-mode))
-					  ("Agenda" (or (name . "diary")
-									(name . "agenda.org")
-									(name . "\\*Org Agenda\\*")
-									(predicate -contains-p org-agenda-files (buffer-file-name))))
-					  ("Org" (name . "^.*org$"))
-					  ("Org-roam" (name . "[0-9]+-.*.org"))
-					  ("Telegram" (or (mode . telega-chat-mode)
-									  (name . "\\*Telega Root\\*")))
-					  ("Shell" (or (mode . eshell-mode) (name . "^st-256color")))
-					  ("PDF" (name . "^.*pdf$"))
-					  ("IRC" (mode . erc-mode))
-					  ("Man" (name . "\\*Man "))
-					  ("Magit" (derived-mode . magit-mode))
-					  ("Dired" (mode . dired-mode))
-					  ("Web" (or (mode . eww-mode)
-								 (name . "^Firefox")
-								 (mode . elfeed-search-mode)))
-					  ("Emacs" (or (name . "\\*scratch\\*")
-								   (name . "\\*Messages\\*")
-								   (name . "\\*dashboard\\*")
-								   (name . "\\*Completions\\*")
-								   (name . "\\*Warnings\\*")
-								   (name . "\\*Backtrace\\*")))
-					  ("Compilation" (derived-mode . compilation-mode))))))
-		   (add-hook 'ibuffer-mode-hook
-					 (lambda ()
-					   (ibuffer-auto-mode 1)
-					   (ibuffer-switch-to-saved-filter-groups "default")))))
+				ibuffer-show-empty-filter-groups nil
+				ibuffer-expert t)
+		  (eval-after-load 'org-agenda
+			'(setq ibuffer-saved-filter-groups
+				   '(("default"
+					 ("EXWM" (mode . exwm-mode))
+					 ("Programming" (derived-mode . prog-mode))
+					 ("Mail" (derived-mode . mu4e-compose-mode))
+					 ("Agenda" (or (name . "diary")
+								   (name . "agenda.org")
+								   (name . "\\*Org Agenda\\*")
+								   (predicate -contains-p org-agenda-files (buffer-file-name))))
+					 ("Org" (name . "^.*org$"))
+					 ("Org-roam" (name . "[0-9]+-.*.org"))
+					 ("Telegram" (or (mode . telega-chat-mode)
+									 (name . "\\*Telega Root\\*")))
+					 ("Shell" (or (mode . eshell-mode)
+								  (mode . shell-mode)
+								  (name . "^st-256color")))
+					 ("PDF" (name . "^.*pdf$"))
+					 ("IRC" (mode . erc-mode))
+					 ("Man" (name . "\\*Man "))
+					 ("Magit" (derived-mode . magit-mode))
+					 ("Dired" (mode . dired-mode))
+					 ("Web" (or (mode . eww-mode)
+								(name . "^Firefox")
+								(mode . elfeed-search-mode)))
+					 ("Emacs" (or (name . "\\*scratch\\*")
+								  (name . "\\*Messages\\*")
+								  (name . "\\*dashboard\\*")
+								  (name . "\\*Completions\\*")
+								  (name . "\\*Warnings\\*")
+								  (name . "\\*Backtrace\\*")))
+					 ("Compilation" (derived-mode . compilation-mode))))))
+		  (add-hook 'ibuffer-mode-hook
+					(lambda ()
+					  (ibuffer-auto-mode 1)
+					  (ibuffer-switch-to-saved-filter-groups "default")))))
 
-	  (provide 'mf-ibuffer)
-	  ;;; mf-ibuffer.el ends here
+	 (provide 'mf-ibuffer)
+	 ;;; mf-ibuffer.el ends here
 	#+end_src
 ** mf-keybindings.el
 =mf-keybindings= has to be loaded after everything else, it needs some
@@ -1537,7 +1539,8 @@ Configure the mu4e mail-reader
 	   (define-key mu4e-main-mode-map (kbd "n") #'next-line)
 	   (define-key mu4e-main-mode-map (kbd "p") #'previous-line)
 	   (define-key mu4e-headers-mode-map (kbd "C-c c") 'mu4e-org-store-and-capture)
-	   (define-key mu4e-view-mode-map (kbd "C-c c") 'mu4e-org-store-and-capture)))
+	   (define-key mu4e-view-mode-map (kbd "C-c c") 'mu4e-org-store-and-capture)
+	   (add-hook 'mu4e-compose-mode-hook #'mml-secure-message-sign-pgp)))
 
   (provide 'mf-mu4e)
 	;;; mf-mu4e.el ends here
@@ -1578,7 +1581,7 @@ Configure the mu4e mail-reader
 			   org-log-done 'time
 			   org-log-into-drawer t
 			   org-todo-keywords
-			   '((sequence "TODO(t)" "WAITING(w)" "|" "DONE(d)" "NO(n)"))
+			   '((sequence "TODO(t)" "NEXT(n)" "WAITING(w)" "|" "DONE(d)" "NO(N)"))
 			   org-todo-keyword-faces
 			   '(("TODO" . org-todo)
 				 ("WAITING" . (:inherit org-todo :foreground "#b0b0b0"))
@@ -1685,7 +1688,11 @@ Configure the mu4e mail-reader
 
 			 (defun mf/org-roam-refresh-agenda-files()
 			   (interactive)
-			   (setq org-agenda-files (mf/org-roam-list-notes-by-tag "Agenda"))
+			   (setq org-agenda-files
+					 (cl-loop
+								 for i in '("Uni" "Teaching" "Kiss")
+								 while i
+								 append (mf/org-roam-list-notes-by-tag i)))
 			   (add-to-list 'org-agenda-files "~/Documents/Personal/org/agenda.org"))
 			 (mf/org-roam-refresh-agenda-files)
 
@@ -1713,7 +1720,17 @@ Configure the mu4e mail-reader
 			 (setq org-capture-templates
 				   `(("a" "Agenda" entry
 					  (file+headline "~/Documents/Personal/org/agenda.org" "Agenda")
-					  "** TODO %^{Action}\nSCHEDULED: %^t\n%?")
+					  "** TODO %^{Action}\n%?")
+					 ("k" "KISS")
+					 ("ku" "Update package" entry
+					  (file+headline "~/Documents/Personal/org/Notes/20211031165258-kiss.org" "Agenda")
+					  "** TODO %^{Package}: %^{Old} -> %^{New}\n%?\n")
+					 ("kf" "Fix package" entry
+					  (file+headline "~/Documents/Personal/org/Notes/20211031165258-kiss.org" "Agenda")
+					  "** TODO %^{Package}: fix %^{File|build|depends|patch}\n%?\n")
+					 ("kp" "Kiss pull request" entry
+					  (file+headline "~/Documents/Personal/org/Notes/20211031165258-kiss.org" "Agenda")
+					  "** TODO %^{Package}: submit pull request\n%?\n")
 					 ("t" "Teaching")
 					 ("tt" "Teaching General" entry
 					  (file+headline "~/Documents/Personal/org/Notes/20210913174909-teaching.org" "Agenda")
@@ -1787,6 +1804,7 @@ Configure the mu4e mail-reader
 	 (mf/install perspective)
 	 (persp-mode)
 	 (define-key global-map (kbd "C-x b") #'persp-switch-to-buffer*)
+	 (define-key global-map (kbd "C-x x TAB") #'persp-switch-last)
 	 (defun mf/persp-set-buffer-ask (buffer)
 	   (interactive)
 	   (if (y-or-n-p (concat "Add " (buffer-name buffer) " to perspective?"))
@@ -1888,77 +1906,60 @@ Configure programming experience
 	#+end_src
 *** Yasnippet
 #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-programming.el")
-;; Yasnippet
-   (mf/install yasnippet)
-   (mf/autoload-func
-	:func yas-minor-mode
-	:file "yasnippet")
-   (eval-after-load 'yasnippet
-	 '(progn
-		(setq yas-snippet-dirs '("~/.emacs.d/snippets"))))
-#+end_src
-*** Lsp
-#+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-programming.el")
-   ;;; LSP
-   (mf/install lsp-mode)
-   (mf/autoload-func
-	:func lsp
-	:file "lsp-mode")
-   (eval-after-load 'lsp-mode
-	 '(progn
-		(message "Lsp-mode loaded")
-		(setq read-process-output-max (* 1024 1024)
-			  lsp-idle-delay 0.5
-			  lsp-headerline-breadcrumb-enable nil
-			  lsp-lens-enable nil
-			  lsp-modeline-diagnostics-enable nil
-			  lsp-clangd-binary-path (executable-find "clangd")
-			  lsp-enable-snippet nil)))
+  ;; Yasnippet
+	 (mf/install yasnippet)
+	 (mf/autoload-func
+	  :func yas-minor-mode
+	  :file "yasnippet")
+	 (eval-after-load 'yasnippet
+	   '(progn
+		  (setq yas-snippet-dirs '("~/.emacs.d/snippets"))))
 
    (provide 'mf-programming)
    ;;; mf-programming.el ends here
- #+end_src
+   #+end_src
 ** mf-rss.el
    Use =elfeed= to read RSS feeds
    #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-config.el")
 	 (require 'mf-rss)
    #+end_src
    #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-rss.el")
-	 ;;; mf-rss.el --- Configuration for RSS reading in Emacs -*- lexical-binding: t -*-
-	 ;;; Code:
-	 (mf/install elfeed)
+		  ;;; mf-rss.el --- Configuration for RSS reading in Emacs -*- lexical-binding: t -*-
+		  ;;; Code:
+		  (mf/install elfeed)
 
-	 (mf/autoload-func
-	  :func elfeed
-	  :file "elfeed")
-	 (eval-after-load 'elfeed
-	   '(progn
-		  (message "Elfeed loaded.")
-		  (setq elfeed-feeds
-				'( ;; FSF / GNU+Linux
-				  ("https://www.fsf.org/static/fsforg/rss/news.xml" fsw)
-				  ("https://planet.gnu.org/rss20.xml" fsw)
-				  ("https://protesilaos.com/codelog.xml" fsw emacs)
-				  ("https://lukesmith.xyz/rss.xml" fsw)
-				  ;; World news
-				  ("https://rss.nytimes.com/services/xml/rss/nyt/World.xml" news world)
-				  ("https://feeds.a.dj.com/rss/RSSWorldNews.xml" news world)
-				  ("https://www.independent.co.uk/news/world/rss" news world)
-				  ;; Italia
-				  ("http://xml2.corriereobjects.it/rss/homepage.xml" news italy)
-				  ("https://www.ansa.it/sito/ansait_rss.xml" news italy)
-				  ("http://www.governo.it/feed/rss" news italy)
-				  ;; Tech
-				  ("https://www.wired.com/feed/rss" tech)
-				  ("http://rss.slashdot.org/Slashdot/slashdotMain" tech)
-				  ("https://wiki.gnome.org/action/rss_rc/RecentChanges?action=rss_rc&unique=1&ddiffs=1" tech kiss))
-				elfeed-show-entry-switch #'display-buffer)
-		  (setq-default elfeed-search-filter "@1-week-ago +unread")
-		  (add-hook 'elfeed-new-entry-hook
-					(elfeed-make-tagger :feed-url "youtube\\.com"
-										:add '(video)))))
-	 (provide 'mf-rss)
-	 ;;; mf-rss.el ends here
+		  (mf/autoload-func
+		   :func elfeed
+		   :file "elfeed")
+		  (eval-after-load 'elfeed
+			'(progn
+			   (message "Elfeed loaded.")
+			   (setq elfeed-feeds
+					 '( ;; FSF / GNU+Linux
+					   ("https://www.fsf.org/static/fsforg/rss/news.xml" fsw)
+					   ("https://planet.gnu.org/rss20.xml" fsw)
+					   ("https://protesilaos.com/codelog.xml" fsw emacs)
+					   ("https://lukesmith.xyz/rss.xml" fsw)
+					   ;; World news
+					   ("https://rss.nytimes.com/services/xml/rss/nyt/World.xml" news world)
+					   ("https://feeds.a.dj.com/rss/RSSWorldNews.xml" news world)
+					   ("https://www.independent.co.uk/news/world/rss" news world)
+					   ;; Italia
+					   ("http://xml2.corriereobjects.it/rss/homepage.xml" news italy)
+					   ("https://www.ansa.it/sito/ansait_rss.xml" news italy)
+					   ("http://www.governo.it/feed/rss" news italy)
+					   ;; Tech
+					   ("https://www.wired.com/feed/rss" tech)
+					   ("http://rss.slashdot.org/Slashdot/slashdotMain" tech)
+					   ("https://wiki.gnome.org/action/rss_rc/RecentChanges?action=rss_rc&unique=1&ddiffs=1" tech kiss)
+					   ("https://kisslinux.org/rss/tidbits.rss" tech kiss))
+					 elfeed-show-entry-switch #'display-buffer)
+			   (setq-default elfeed-search-filter "@1-week-ago +unread")
+			   (add-hook 'elfeed-new-entry-hook
+						 (elfeed-make-tagger :feed-url "youtube\\.com"
+											 :add '(video)))))
+		  (provide 'mf-rss)
+		  ;;; mf-rss.el ends here
    #+end_src
 ** mf-telega.el
    #+begin_src emacs-lisp :tangle (concat user-emacs-directory "mf-lisp/mf-config.el")
