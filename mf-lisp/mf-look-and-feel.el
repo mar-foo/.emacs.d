@@ -13,6 +13,8 @@
 (global-hl-line-mode)						; Highlight current line
 (show-paren-mode)
 (setq show-paren-delay 0)					; Highlight matching parentheses
+(unless (display-graphic-p)
+  (set-terminal-coding-system 'utf-8-unix)) ; Use utf-8 in terminal emacs
 
 (setq-default default-frame-alist
 			  (append (list
