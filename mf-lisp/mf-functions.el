@@ -100,19 +100,15 @@
 	(start-process-shell-command "mpv" nil (concat "mpv --ytdl-format='bestvideo[height<=1080]+bestaudio/best' " url))))
 
 ;;;###autoload
-(defun mf/youtube(title)
+(defun mf/youtube (title)
   (interactive (list (read-string "Query: ")))
-  (let* ((json (shell-command-to-string (concat "echo " title " | eyt")))
-		 (resp-plist (json-parse-string json :object-type 'plist))
-		 (videos (plist-get resp-plist :videos))
-		 (ids (seq-map (lambda (vid)
-						 (format "%s -$- %s"
-								 (plist-get vid :title)
-								 (plist-get vid :id)))
-					   videos))
-		 (chosen-id (cdr (split-string (completing-read "Title: " ids) " -$- " t)))
-		 (url (concat "https://www.youtube.com/watch?v=" (car chosen-id))))
-	(mf/mpv url)))
+  (let* ((choice (completing-read "Title: "
+			 (split-string
+			  (shell-command-to-string
+			   (concat "echo " title " | eyt"))
+			  "\n" t)))
+		 (id (cadr (split-string choice " -$- " t))))
+  (mf/mpv (concat "https://www.youtube.com/watch?v=" id))))
 
 (provide 'mf-functions)
 ;;; mf-functions.el ends here

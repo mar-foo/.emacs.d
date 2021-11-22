@@ -9,5 +9,4 @@ response="$(curl -s "https://www.youtube.com/results?search_query=$squery") |\
 sed 's|\\.||g')"
 vgrep='"videoRenderer":{"videoId":"\K.{11}".+?"text":".+?[^\\](?=")'
 videoids="$(getResults $vgrep)"
-partialJSON="$(echo -e "$videoids" | awk -F'	' '{ print "{\"id\": \"" $1 "\", \"title\": \"" $2 "\"}," }')"
-echo "{\"videos\": [$partialJSON]}" | sed 's|,]|]|'
+echo -e "$videoids" | awk -F'	' '{print $2 " -$- " $1}'
