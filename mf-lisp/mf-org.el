@@ -35,6 +35,11 @@
 			   ("DONE" . org-done)
 			   ("NO" . error))
 			 org-use-fast-todo-selection 'expert
+			 org-agenda-files (mapcar #'(lambda (name)
+										   (concat org-directory name))
+									  '("inbox.org"
+										"agenda.org"
+										"projects.org"))
 			 org-agenda-custom-commands
 			 '(("a" "Agenda for current week or day"
 				((agenda "")
