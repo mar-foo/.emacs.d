@@ -40,6 +40,22 @@
 									  '("inbox.org"
 										"agenda.org"
 										"projects.org"))
+			 org-capture-templates
+			 `(("a" "Agenda" entry
+				(file+headline "~/Documents/Personal/org/agenda.org" "Agenda")
+				"** TODO %?\n/Entered on/ %U")
+			   ("i" "Inbox" entry
+				(file "inbox.org")
+				"* TODO %?\n/Entered on/ %U")
+			   ("@" "Inbox [mu4e]" entry
+				(file "inbox.org")
+				"* TODO Process \"%a\" %?\n/Entered on/ %U")
+			   ("m" "Meeting" entry
+				(file+headline "agenda.org" "Future")
+				"* %? :meeting:\n<%<%Y-%m-%d %a %H:%M>>")
+			   ("n" "Notes" entry
+				(file "notes.org")
+				"* Note (%a)\n/Entered on/ %U\n\n%?"))
 			 org-agenda-custom-commands
 			 '(("a" "Agenda for current week or day"
 				((agenda "")
