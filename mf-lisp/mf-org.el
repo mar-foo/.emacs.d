@@ -35,6 +35,12 @@
 			   ("DONE" . org-done)
 			   ("NO" . error))
 			 org-use-fast-todo-selection 'expert
+			 org-agenda-hide-tags-regexp "."
+			 org-agenda-prefix-format
+			 '((agenda . "%i %-12:c%?-12t% s")
+			   (todo   . "")
+			   (tags   . "%i %-12:c")
+			   (search . "%i %-12:c"))
 			 org-agenda-files (mapcar #'(lambda (name)
 										   (concat org-directory name))
 									  '("inbox.org"
