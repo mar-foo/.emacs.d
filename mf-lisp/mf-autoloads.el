@@ -18,10 +18,16 @@
 (mf/my-func-autoload mf/reload-configuration)
 (mf/my-func-autoload mf/select-completion-and-exit)
 (mf/my-func-autoload mf/switch-theme)
-(mf/my-func-autoload mf/toggle-eshell)
-(mf/my-func-autoload mf/toggle-shell)
-(mf/my-func-autoload mf/toggle-telega)
+(mf/autoload-func
+ :func mf/toggle-eshell
+ :file "mf-shell")
+(mf/autoload-func
+ :func mf/toggle-shell
+ :file "mf-shell")
+(mf/autoload-func
+ :func mf/toggle-telega
+ :file "mf-telega")
 (mf/my-func-autoload mf/youtube)
 
 (provide 'mf-autoloads)
-;;; mf-autoloads.el ends here
+	;;; mf-autoloads.el ends here
