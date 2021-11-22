@@ -17,7 +17,7 @@
 	'(progn
 	   (message "Loaded org-mode")
 	   (require 'org-tempo)
-	   (setq org-archive-location (concat org-directory "agenda.org::* Archive")
+	   (setq org-archive-location (concat org-directory "projects.org::* Past")
 			 org-agenda-window-setup 'other-window
 			 org-agenda-restore-windows-after-quit nil
 			 org-agenda-sticky nil
