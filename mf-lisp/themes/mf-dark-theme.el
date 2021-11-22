@@ -19,10 +19,16 @@
 ;; Works with Emacs 28.
 
 (deftheme mf-dark
-  "White on black theme4 for your focused hacking sessions during the night.")
+  "White on black theme for your focused hacking sessions during the night.")
+
+(defvar mf-background
+  (if (display-graphic-p)
+	  '(:background "black")
+	'(:background 'unspecified-bg))
+  "Default background color.")
 
 (custom-theme-set-faces 'mf-dark
-						'(default ((t (:foreground "white" :background "black"))))
+						'(default ((t `(:foreground "white" ,@mf-background))))
 						'(cursor ((t (:background "white"))))
 
 						;; Highlighting faces
@@ -191,7 +197,7 @@
 						;; Mode line faces
 						'(mode-line ((t (:background "#1e1e1e" :foreground "white"
 													 :box (:line-width 4 :color "#1e1e1e" :style flat-button)))))
-						'(mode-line-inactive ((t (:background "black" :foreground "#808080"
+						'(mode-line-inactive ((t `(,@mf-background :foreground "#808080"
 															  :box (:line-width 4 :color "black")))))
 
 						;; Mini- modeline
