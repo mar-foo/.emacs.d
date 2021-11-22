@@ -158,97 +158,12 @@
 	 (mf/autoload-func
 	  :func org-roam-db-autosync-mode
 	  :file "org-roam")
-	 (advice-add 'org-agenda :after #'(lambda (&rest r) (require 'org-roam)))  ; I use some org-roam nodes as agenda buffers so org-agenda needs org-roam to be loaded
-	 (advice-add 'org-capture :before #'(lambda (&rest r) (require 'org-roam)))
 	 (eval-after-load 'org-roam
 	   '(progn
 		  (message "Loaded org-roam")
 		  (setq org-roam-directory (file-truename "~/Documents/Personal/org/Notes/")
 				org-roam-v2-ack t)
-		  (add-hook 'org-roam-mode-hook 'org-roam-db-autosync-mode)
-		  (defun mf/org-roam-filter-by-tag (tag-name)
-			(lambda (node)
-			  (member tag-name (org-roam-node-tags node))))
-
-		  (defun mf/org-roam-list-notes-by-tag (tag-name)
-			(mapcar #'org-roam-node-file
-					(seq-filter
-					 (mf/org-roam-filter-by-tag tag-name)
-					 (org-roam-node-list))))
-
-		  (defun mf/org-roam-refresh-agenda-files()
-			(interactive)
-			(setq org-agenda-files
-				  (cl-loop
-							  for i in '("Uni" "Teaching" "Kiss")
-							  while i
-							  append (mf/org-roam-list-notes-by-tag i)))
-			(add-to-list 'org-agenda-files "~/Documents/Personal/org/agenda.org"))
-		  (mf/org-roam-refresh-agenda-files)
-
-		  (defun mf/org-roam-teaching-finalize-hook()
-			"Adds the captured project file to `org-agenda-files' if the
-  capture was not aborted"
-			(remove-hook 'org-capture-after-finalize-hook 'mf/org-roam-teaching-finalize-hook)
-			(unless org-note-abort
-			  (with-current-buffer (org-capture-get :buffer)
-				(add-to-list 'org-agenda-files (buffer-file-name)))))
-
-		  (defun mf/org-roam-find-teaching()
-			(interactive)
-			(add-hook 'org-capture-after 'mf/org-roam-teaching-finalize-hook)
-			(org-roam-node-find
-			 nil
-			 nil
-			 (mf/org-roam-filter-by-tag "Teaching")
-			 :templates
-			 '(("t" "Teaching" plain "* Agenda\n** TODO %^{Action}\n%?"
-				:if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Teaching")
-				:unnarrowed t))))
-		  (defun mf/org-roam-filename (str)
-			(seq-subseq str (+ (length org-roam-directory) 15)))
-		  (setq org-capture-templates
-				`(("a" "Agenda" entry
-				   (file+headline "~/Documents/Personal/org/agenda.org" "Agenda")
-				   "** TODO %^{Action}\n%?")
-				  ("k" "KISS")
-				  ("ku" "Update package" entry
-				   (file+headline "~/Documents/Personal/org/Notes/20211031165258-kiss.org" "Agenda")
-				   "** TODO %^{Package}: %^{Old} -> %^{New}\n%?\n")
-				  ("kf" "Fix package" entry
-				   (file+headline "~/Documents/Personal/org/Notes/20211031165258-kiss.org" "Agenda")
-				   "** TODO %^{Package}: fix %^{File|build|depends|patch}\n%?\n")
-				  ("kp" "Kiss pull request" entry
-				   (file+headline "~/Documents/Personal/org/Notes/20211031165258-kiss.org" "Agenda")
-				   "** TODO %^{Package}: submit pull request\n%?\n")
-				  ("t" "Teaching")
-				  ("tt" "Teaching General" entry
-				   (file+headline "~/Documents/Personal/org/Notes/20210913174909-teaching.org" "Agenda")
-				   "** TODO %^{Action}\n%?\n%a")
-				  ("tb" "CBI" entry
-				   (file+headline "~/Documents/Personal/org/Notes/20210921201618-cbi2021.org" "Agenda")
-				   "** TODO %^{Action}\n%?\n%a")
-				  ("r" "Ripetizioni")
-				  ("rc" "Chiara" entry
-				   (file+olp "~/Documents/Personal/org/Notes/20211102143135-ripetizioni.org" "Agenda" "Chiara")
-				   "*** TODO %^{Action}\n%?\n%a")
-				  ("rf" "Federico" entry
-				   (file+olp "~/Documents/Personal/org/Notes/20211102143135-ripetizioni.org" "Agenda" "Federico")
-				   "*** TODO %^{Action}\n%?\n%a")
-				  ("rm" "Migara" entry
-				   (file+olp "~/Documents/Personal/org/Notes/20211102143135-ripetizioni.org" "Agenda" "Migara")
-				   "*** TODO %^{Action}\n%?\n%a")
-				  ("u" "Uni")
-				  ,@(cl-loop
-					 for filename in (mf/org-roam-list-notes-by-tag "Uni")
-					 while filename
-					 collect (let ((file (mf/org-roam-filename filename)))
-							   `(,(concat "u" (char-to-string (elt file
-																   0)))
-								 ,file
-								 entry
-								 (file+headline ,filename "Agenda")
-								 "** TODO %^{Action}\n%?\n%a")))))))))
+		  (add-hook 'org-roam-mode-hook 'org-roam-db-autosync-mode)))))
 
 (provide 'mf-org)
 ;;; mf-org.el ends here
