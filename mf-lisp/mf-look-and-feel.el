@@ -132,8 +132,7 @@
 (add-to-list 'custom-theme-load-path (concat user-emacs-directory "mf-lisp/themes/"))
 (if (version< emacs-version "28")
 	(mf/install modus-themes))
- (setq modus-themes-no-mixed-fonts t)	;; I want monospace fonts everywhere
- (load-theme 'modus-vivendi t)
+(load-theme 'mf-acme t)
 
 (provide 'mf-look-and-feel)
 ;;; mf-look-and-feel.el ends here
