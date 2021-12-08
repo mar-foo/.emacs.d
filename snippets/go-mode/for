@@ -1,4 +1,5 @@
 # name: for
+# key: for
 # type: snippet
 # --
 for $1;$2;$3{

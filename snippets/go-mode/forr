@@ -1,4 +1,5 @@
 # name: forr
+# key: forr
 # type: snippet
 # --
 for $1 := range $2 {

@@ -1,4 +1,5 @@
 # name: eq
+# key: eq
 # type: snippet
 # --
 \begin{equation}\ref{eq:$1}

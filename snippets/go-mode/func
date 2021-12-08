@@ -1,4 +1,5 @@
 # name: func
+# key: func
 # type: snippet
 # --
 // $2($3) ${5:...}

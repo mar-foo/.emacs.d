@@ -1,4 +1,5 @@
 # name: int
+# key: int
 # type: snippet
 # --
 \int $1\, \mathrm{d}${2:x} $0
