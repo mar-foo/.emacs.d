@@ -18,7 +18,7 @@
 
 (setq-default default-frame-alist
 			  (append (list
-					   '(font . "Cousine:style=medium:size=12")
+					   '(font . "Cousine:style=medium:size=18")
 					   '(tool-bar-lines . 0)
 					   '(menu-bar-lines . 0)
 					   '(right-fringe . 5)
@@ -130,8 +130,6 @@
 (setq ring-bell-function #'mf/visual-bell)
 
 (add-to-list 'custom-theme-load-path (concat user-emacs-directory "mf-lisp/themes/"))
-(if (version< emacs-version "28")
-	(mf/install modus-themes))
 (load-theme 'mf-acme t)
 
 (provide 'mf-look-and-feel)
