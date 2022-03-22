@@ -10,9 +10,28 @@
    :func gofmt-before-save
    :file "go-mode")
   (eval-after-load 'go-mode
-	'(progn
-	   (message "Loaded go-mode")
-	   (add-hook 'go-mode-hook #'gofmt-before-save))))
+    '(progn
+       (message "Loaded go-mode")
+       (add-hook 'go-mode-hook #'gofmt-before-save)
+       (defun mf/go-sort-imports (orig-func &rest args)
+	 "Sort import section. This function is meant to be added
+as advice to `go-import-add'"
+	 (if (eq major-mode 'go-mode)
+	     (save-excursion
+	       (goto-char (point-min))
+	       (let ((beg (progn
+			    (search-forward "import")
+			    (next-line)
+			    (beginning-of-line)
+			    (point)))
+		     (end (progn
+			    (search-forward ")")
+			    (previous-line)
+			    (end-of-line)
+			    (point))))
+		 (sort-lines nil beg end)))))
+
+       (advice-add 'go-import-add :after #'mf/go-sort-imports))))
 
 (mf/install haskell-mode)
 (mf/install hindent)
