@@ -6,6 +6,7 @@
 (mf/leader "C-SPC" execute-extended-command)
 (mf/leader "d" dired)
 (mf/leader "e" mf/toggle-eshell)
+(mf/leader "f" fzf-git-files)
 (mf/leader "g" magit-status)
 (mf/leader "i" erc)
 (mf/leader "k" kill-current-buffer)
