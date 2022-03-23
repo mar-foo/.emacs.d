@@ -94,7 +94,7 @@ as advice to `go-import-add'"
 (eval-after-load 'yasnippet
   '(progn
      (setq yas-snippet-dirs '("~/.emacs.d/snippets"))
-     (add-hook 'c-mode-hook #'yas-minor-mode-on)))
+     (yas-reload-all)))
 
 (mf/install lsp-mode)
 (mf/autoload-func
@@ -103,12 +103,17 @@ as advice to `go-import-add'"
 (eval-after-load 'lsp-mode
   '(progn
      (message "Lsp module loaded")
+     (add-hook 'lsp-mode-hook #'yas-minor-mode)
+     (add-hook 'c-mode-hook #'lsp)
      (setq read-process-output-max (* 1024 1024)
 	   lsp-idle-delay 0.5
 	   lsp-headerline-breadcrumb-enable nil
 	   lsp-lens-enable t
 	   lsp-modeline-diagnostics-enable nil
-	   lsp-enable-snippet t)))
+	   lsp-enable-snippet t
+	   lsp-keymap-prefix "C-c l")))
+
+
 
 (provide 'mf-programming)
  ;;; mf-programming.el ends here
