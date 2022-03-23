@@ -6,8 +6,8 @@
  :file "bongo")
 (eval-after-load 'bongo
   '(progn
-	 (message "Loaded bongo.")
-	 (setq bongo-default-directory
-		   "~/Media/Music")))
+     (message "Loaded bongo.")
+     (setq bongo-default-directory
+	   "~/music")))
 (provide 'mf-bongo)
 ;;; mf-bongo.el ends here
