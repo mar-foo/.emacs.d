@@ -73,14 +73,18 @@ as advice to `go-import-add'"
      (eval-after-load 'slime
        '(add-hook 'slime-repl-mode #'paredit-mode))))
 
+(mf/install lsp-latex)
+(eval-after-load "tex-mode"
+  '(progn
+     (require 'lsp-latex)
+     (add-hook 'tex-mode-hook 'lsp)
+     (add-hook 'latex-mode-hook 'lsp)
+     (add-hook 'latex-mode-hook 'reftex-mode)
+     (add-hook 'tex-mode-hook 'reftex-mode)))
+
 (setq c-default-style '((java-mode . "java")
 			(awk-mode . "awk")
 			(other . "linux")))
-
-(eval-after-load 'flymake
-  '(progn
-     (message "Loaded flymake")
-     (add-hook 'flymake-mode-hook #'flymake-show-diagnostics-buffer)))
 
 ;; Yasnippet
 (mf/install yasnippet)
