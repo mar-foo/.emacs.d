@@ -17,16 +17,16 @@
   (set-terminal-coding-system 'utf-8-unix)) ; Use utf-8 in terminal emacs
 
 (setq-default default-frame-alist
-			  (append (list
-					   '(font . "Cousine:style=medium:size=12")
-					   '(tool-bar-lines . 0)
-					   '(menu-bar-lines . 0)
-					   '(right-fringe . 5)
-					   '(left-fringe . 5)
-					   '(vertical-scroll-bars . nil)))
-			  fringes-outside-margins t
-			  window-resize-pixelwise t
-			  frame-resize-pixelwise t)
+	      (append (list
+		       '(font . "Fira Code:style=medium:size=14")
+		       '(tool-bar-lines . 0)
+		       '(menu-bar-lines . 0)
+		       '(right-fringe . 5)
+		       '(left-fringe . 5)
+		       '(vertical-scroll-bars . nil)))
+	      fringes-outside-margins t
+	      window-resize-pixelwise t
+	      frame-resize-pixelwise t)
 (setq-default initial-frame-alist default-frame-alist)
 (add-hook 'window-configuration-change-hook
 	  (lambda()
