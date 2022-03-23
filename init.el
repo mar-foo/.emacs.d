@@ -31,8 +31,8 @@
 (recentf-mode 1)                         ; Keep recent file list
 (load-file custom-file)
 
-(require 'mf-dashboard)
-(mf-dashboard-setup-startup-hook)
+(mf/install wgrep)
+(mf/install multiple-cursors)
 
 (defmacro mf/autoload-func (&rest body)
   `(unless
