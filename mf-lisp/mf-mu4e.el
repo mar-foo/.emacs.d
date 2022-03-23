@@ -15,11 +15,7 @@
 	 (setq user-mail-address "mario.forzanini@studenti.unimi.it"
 		       user-full-name "Mario Forzanini"
 		       mu4e-get-mail-command "mbsync -c ~/.config/mutt/mbsyncrc -a mario.forzanini@studenti.unimi.it"
-		       mu4e-compose-signature
-		       (concat
-			"----------\n"
-			"Mario Forzanini\n"
-			"http://www.marioforzanini.com")
+		       mu4e-compose-signature "Mario"
 		       message-send-mail-function 'smtpmail-send-it
 		       starttls-use-gnutls nil
 		       smtpmail-auth-credentials '(("smtp.unimi.it" 465 "mario.forzanini@studenti.unimi.it" nil))
