@@ -16,7 +16,7 @@
 
 (setq-default
  tab-always-indent 'complete		    ; First tab indents, second one completes
- tab-width 4				            ; Smaller width for tab characters
+ tab-width 8
  sentence-end-double-space nil		    ; Use a single space after dots
  mouse-yank-at-point t			        ; Yank at point rather than pointer
  help-window-select t			        ; Focus newly spawned help windows
