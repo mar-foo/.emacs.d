@@ -1,7 +1,9 @@
 # name: header
+# key: header
 # tipe: snippet
 # --
 `comment-start`
 `comment-start` Author: Mario Forzanini <mario.forzanini@studenti.unimi.it>
-`comment-start` Date: `(format-time-string "%d %b")`
+`comment-start` Date: `(format-time-string "%d %b %Y")`
 `comment-start`
+`comment-start` Copyright (c) Mario Forzanini `(format-time-string "%Y")`
