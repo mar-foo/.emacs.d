@@ -1,35 +1,35 @@
 ;;; mf-completion.el --- Configuration for the completion framework -*- lexical-binding: t -*-
-  ;;; Code:
+      ;;; Code:
 (setq tab-always-indent 'complete)
 (autoload 'ffap-file-at-point "ffap")
 (defun complete-path-at-point+ ()
-  "Return completion data for UNIX path at point."
-  (let ((fn (ffap-file-at-point))
+      "Return completion data for UNIX path at point."
+      (let ((fn (ffap-file-at-point))
 		(fap (thing-at-point 'filename)))
 	(when (and (or fn (equal "/" fap))
-			   (save-excursion
+			       (save-excursion
 				 (search-backward fap (line-beginning-position) t)))
-	  (list (match-beginning 0)
+	      (list (match-beginning 0)
 			(match-end 0)
 			#'completion-file-name-table :exclusive 'no))))
 (add-hook 'completion-at-point-functions
-		  #'complete-path-at-point+
-		  'append)
+		      #'complete-path-at-point+
+		      'append)
 
 (mf/install orderless)
 ;; (setq completion-styles '(substring partial-completion initials flex)
 (setq completion-styles '(orderless)
-	  completion-category-overrides
-	  '((file (styles partial-completion initials basic))))
+	      completion-category-overrides
+	      '((file (styles partial-completion initials basic))))
 
 (mf/install vertico)
-(mf/install vertico-posframe)
 (eval-after-load 'minibuffer
-  '(progn
+      '(progn
 	 (message "Loaded vertico")
-	 (vertico-mode 1)
-   (if (display-graphic-p)
-	 (vertico-posframe-mode 1))))
+	 (vertico-mode 1)))
+
+(mf/install corfu)
+(mf/install fzf)
 
 (provide 'mf-completion)
-  ;;; mf-completion.el ends here
+      ;;; mf-completion.el ends here
