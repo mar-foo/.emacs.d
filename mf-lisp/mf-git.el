@@ -9,7 +9,7 @@
    :func magit-status
    :file "magit")
   (eval-after-load 'magit
-	'(message "Loaded magit")))
+    '(message "Loaded magit")))
 
 (provide 'mf-git)
 ;;; mf-git.el ends here

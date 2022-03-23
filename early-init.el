@@ -5,7 +5,7 @@
 
 (defmacro mf/install (package)
   (unless
-	  (package-installed-p package)
-	(package-install package)))
+      (package-installed-p package)
+    (package-install package)))
 
 (require 'mf-look-and-feel)

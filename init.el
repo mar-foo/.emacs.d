@@ -1,14 +1,14 @@
 ;; init.el --- Emacs initalization file -*- lexical-binding: t -*-
 (setq mf/os
-	  (cond
-	   ((string= (shell-command-to-string "uname") "Linux\n")
-		(if (not (null (executable-find "guix")))
-			"Guix"
-		  "Linux"))
-	   (t
-		(shell-command-to-string "uname"))))
+      (cond
+       ((string= (shell-command-to-string "uname") "Linux\n")
+	(if (not (null (executable-find "guix")))
+	    "Guix"
+	  "Linux"))
+       (t
+	(shell-command-to-string "uname"))))
 (if (string= mf/os "Guix")
-	(add-to-list 'load-path "/home/mario/.guix-profile/share/emacs/site-lisp/"))
+    (add-to-list 'load-path "/home/mario/.guix-profile/share/emacs/site-lisp/"))
 
 (setq mf/use-exwm nil)
 
@@ -36,8 +36,8 @@
 
 (defmacro mf/autoload-func (&rest body)
   `(unless
-	   (fboundp #',(plist-get body :func))
-	 (autoload #',(plist-get body :func) ,(plist-get body :file) nil t)))
+       (fboundp #',(plist-get body :func))
+     (autoload #',(plist-get body :func) ,(plist-get body :file) nil t)))
 
 (require 'mf-config)
 
