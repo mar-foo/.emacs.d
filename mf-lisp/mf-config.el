@@ -13,10 +13,6 @@
 
 (require 'mf-eww)
 
-;;  (require 'mf-exwm)
-
-(require 'mf-gnus)
-
 (require 'mf-hacks)
 
 (require 'mf-ibuffer)
