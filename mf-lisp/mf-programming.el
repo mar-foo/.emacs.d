@@ -87,9 +87,46 @@ as advice to `go-import-add'"
      (add-hook 'latex-mode-hook 'reftex-mode)
      (add-hook 'tex-mode-hook 'reftex-mode)))
 
+(c-add-style
+ "linux-kernel"
+ '((c-basic-offset . 8)
+   (c-label-minimum-indentation . 0)
+   (c-offsets-alist . ((arglist-intro         . +)
+		       (topmost-intro         . 0)
+		       (topmost-intro-cont    . 0)
+		       (brace-list-intro      . +)
+                       (c                     . c-lineup-C-comments)
+                       (case-label            . 0)
+                       (comment-intro         . c-lineup-comment)
+                       (cpp-define-intro      . +)
+                       (cpp-macro             . -1000)
+                       (cpp-macro-cont        . +)
+		       (defun-open            . 0)
+                       (defun-block-intro     . +)
+		       (defun-close           . 0)
+                       (else-clause           . 0)
+                       (func-decl-cont        . +)
+                       (inclass               . +)
+                       (inher-cont            . c-lineup-multi-inher)
+                       (knr-argdecl-intro     . 0)
+                       (label                 . -1000)
+                       (statement             . 0)
+                       (statement-block-intro . +)
+                       (statement-case-intro  . +)
+                       (statement-cont        . +)
+                       (substatement          . +)))
+   (c-cleanup-list nil)))
+
 (setq c-default-style '((java-mode . "java")
 			(awk-mode . "awk")
-			(other . "linux")))
+			(other . "linux-kernel")))
+
+(defun mf/c-mode-hook ()
+  (lsp)
+  (lsp-managed-mode -1)
+  (local-set-key (kbd "C-c C-c") #'compile))
+
+(add-hook 'c-mode-hook #'mf/c-mode-hook)
 
 ;; Yasnippet
 (mf/install yasnippet)
@@ -109,7 +146,6 @@ as advice to `go-import-add'"
   '(progn
      (message "Lsp module loaded")
      (add-hook 'lsp-mode-hook #'yas-minor-mode)
-     (add-hook 'c-mode-hook #'lsp)
      (setq read-process-output-max (* 1024 1024)
 	   lsp-idle-delay 0.5
 	   lsp-headerline-breadcrumb-enable nil
@@ -117,8 +153,6 @@ as advice to `go-import-add'"
 	   lsp-modeline-diagnostics-enable nil
 	   lsp-enable-snippet t
 	   lsp-keymap-prefix "C-c l")))
-
-
 
 (provide 'mf-programming)
  ;;; mf-programming.el ends here
