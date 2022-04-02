@@ -59,6 +59,11 @@ as advice to `go-import-add'"
        (add-hook 'haskell-mode-hook 'lsp)
        (setq hindent-reformat-buffer-on-save t))))
 
+(mf/install tuareg)
+(mf/install merlin)
+(add-hook 'merlin-mode-hook #'corfu-mode)
+(add-hook 'tuareg-mode-hook #'merlin-mode)
+
 (mf/install slime)
 (setq inferior-lisp-program "sbcl")
 (eval-after-load 'slime
