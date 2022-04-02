@@ -76,15 +76,17 @@
   (icomplete-ret))
 
 ;;;###autoload
-(defun mf/switch-theme ()
-  (interactive)
-  (if (string= (car custom-enabled-themes) "modus-operandi")
-      (progn
-	(load-theme 'modus-vivendi t)
-	(disable-theme 'modus-operandi))
-    (progn
-      (load-theme 'modus-operandi)
-      (disable-theme 'modus-vivendi))))
+(defun mf/switch-theme (theme)
+  (interactive
+   (list
+    (intern (completing-read "Load custom theme: "
+                             (mapcar #'symbol-name
+				     (custom-available-themes))))))
+  (save-window-excursion
+    (unless (null theme)
+	(dolist (theme custom-enabled-themes)
+	  (disable-theme theme))
+	(load-theme theme t))))
 
 (defun mf/yank-to-string ()
   (rotate-yank-pointer 0)
