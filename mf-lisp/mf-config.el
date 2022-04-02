@@ -19,8 +19,6 @@
 
 (require 'mf-keybindings)
 
-;; (require 'mf-mpc)
-
 (require 'mf-mu4e)
 
 (require 'mf-org)
