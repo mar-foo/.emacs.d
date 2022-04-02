@@ -12,7 +12,7 @@
    :func org-agenda
    :file "org-mode")
   (mf/install org-edna)
-  (setq org-directory (file-truename "~/Documents/Personal/org/"))
+  (setq org-directory (file-truename "~/doc/pers/org/"))
   (eval-after-load 'org
     '(progn
        (message "Loaded org-mode")
@@ -48,7 +48,7 @@
 					"projects.org"))
 	     org-capture-templates
 	     `(("a" "Agenda" entry
-		(file+headline "~/Documents/Personal/org/agenda.org" "Agenda")
+		(file+headline "agenda.org" "Agenda")
 		"** TODO %?\n/Entered on/ %U")
 	       ("i" "Inbox" entry
 		(file "inbox.org")
@@ -131,7 +131,6 @@ https://github.com/rougier/emacs-gtd#Activating-tasks"
        (advice-add 'org-switch-to-buffer-other-window :around #'mf/switch-to-buffer-other-window))))
 
 
-(setq diary-file (file-truename "~/Documents/Personal/diary"))
 
 ;; Org tree slide
 (mf/install org-tree-slide)
@@ -176,6 +175,7 @@ https://github.com/rougier/emacs-gtd#Activating-tasks"
 	  (setq org-roam-directory (file-truename "~/Documents/Personal/org/Notes/")
 		org-roam-v2-ack t)
 	  (add-hook 'org-roam-mode-hook 'org-roam-db-autosync-mode)))))
+(setq diary-file (file-truename "~/doc/pers/diary"))
 
 (provide 'mf-org)
 ;;; mf-org.el ends here
