@@ -11,5 +11,3 @@
 
 (provide 'mf-dired)
 ;;; mf-dired.el ends here
-
-(require 'mf-git)
