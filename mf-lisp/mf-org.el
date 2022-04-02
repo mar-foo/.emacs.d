@@ -131,26 +131,6 @@ https://github.com/rougier/emacs-gtd#Activating-tasks"
        (advice-add 'org-switch-to-buffer-other-window :around #'mf/switch-to-buffer-other-window))))
 
 
-
-;; Org tree slide
-(mf/install org-tree-slide)
-(mf/autoload-func
- :func org-tree-slide-mode
- :file "org-tree-slide")
-(eval-after-load 'org
-  '(progn
-     (define-key org-mode-map (kbd "C-c M-p") #'org-tree-slide-mode)
-     (eval-after-load 'org-tree-slide
-       '(progn
-	  (setq org-tree-slide-header nil
-		org-tree-slide-slide-in-effect nil)
-	  (define-key org-tree-slide-mode-map (kbd "n") #'org-tree-slide-move-next-tree)
-	  (define-key org-tree-slide-mode-map (kbd "p") #'org-tree-slide-move-previous-tree)
-	  (define-key org-tree-slide-mode-map (kbd "q") #'org-tree-slide-mode)
-	  (define-key org-tree-slide-mode-map (kbd "RET") #'org-tree-slide-move-next-tree)
-	  (define-key org-tree-slide-mode-map (kbd "+") #'mf/big-font)
-	  (define-key org-tree-slide-mode-map (kbd "-") #'(lambda() (interactive) (mf/big-font t)))))))
-
 (eval-after-load 'org
   '(progn
      (mf/install org-roam)
