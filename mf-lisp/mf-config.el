@@ -29,8 +29,6 @@
 
 (require 'mf-programming)
 
-(require 'mf-rss)
-
 (require 'mf-shell)
 
 (require 'mf-telega)
