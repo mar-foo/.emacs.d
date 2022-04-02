@@ -12,7 +12,7 @@
 (defun mf/toggle-shell (&optional use-generic-p)
   "Toggle shell window."
   (interactive "P")
-  (if (string-match "shell" (buffer-name))
+  (if (string-match "\\*shell" (buffer-name))
       (delete-window)
     (let ((shell-buffers (cl-loop
 			  for buf in (nreverse (if persp-mode
