@@ -14,6 +14,7 @@
 (mf/my-func-autoload mf/infos)
 (mf/my-func-autoload mf/find-recentf)
 (mf/my-func-autoload mf/lcm)
+(mf/my-func-autoload mf/open-emacsd)
 (mf/my-func-autoload mf/quit-and-kill)
 (mf/my-func-autoload mf/reload-configuration)
 (mf/my-func-autoload mf/select-completion-and-exit)

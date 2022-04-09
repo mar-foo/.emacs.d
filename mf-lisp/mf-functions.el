@@ -59,6 +59,12 @@
     (shell)))
 
 ;;;###autoload
+(defun mf/open-emacsd ()
+  (interactive)
+  (cd user-emacs-directory)
+  (consult-project-buffer))
+
+;;;###autoload
 (defun mf/quit-and-kill ()
   (interactive)
   (quit-window t))
