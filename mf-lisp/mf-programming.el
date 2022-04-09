@@ -31,7 +31,11 @@ as advice to `go-import-add'"
 			    (point))))
 		 (sort-lines nil beg end)))))
 
-       (advice-add 'go-import-add :after #'mf/go-sort-imports))))
+       (advice-add 'go-import-add :after #'mf/go-sort-imports)
+       (defun mf/go-packages-go-list ()
+	 "Return a list of go packages using `go list'."
+	 (process-lines go-command "list" "..."))
+       (setq go-packages-function #'mf/go-packages-go-list))))
 
 (mf/install haskell-mode)
 (mf/install hindent)
