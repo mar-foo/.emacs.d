@@ -18,7 +18,7 @@
 (mf/leader "m" mu4e)
 (mf/leader "p" bongo)
 (mf/leader "s" mf/toggle-shell)
-(mf/leader "S" mf/switch-theme)
+(mf/leader "S" consult-theme)
 (mf/leader "t" mf/toggle-telega)
 (mf/leader "T" modus-themes-toggle)
 (mf/leader "w" eww)

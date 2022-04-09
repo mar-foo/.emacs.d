@@ -1,5 +1,5 @@
 ;;; mf-completion.el --- Configuration for the completion framework -*- lexical-binding: t -*-
-      ;;; Code:
+;;; Code:
 (setq tab-always-indent 'complete)
 (autoload 'ffap-file-at-point "ffap")
 (defun complete-path-at-point+ ()
@@ -29,7 +29,33 @@
 	 (vertico-mode 1)))
 
 (mf/install corfu)
-(mf/install fzf)
+
+(mf/install consult)
+(global-set-key (kbd "C-x b") 'consult-buffer)
+(global-set-key (kbd "C-x 4 b") 'consult-buffer-other-window)
+(global-set-key (kbd "M-y") 'consult-yank-from-kill-ring)
+(global-set-key (kbd "C-x r b") 'consult-bookmark)
+(global-set-key (kbd "C-x p b") 'consult-project-buffer)
+(eval-after-load 'consult
+  '(progn
+     (message "Loaded consult")
+     (setq consult-narrow-key (kbd "<"))
+     (define-key consult-narrow-map (vconcat consult-narrow-key "?") #'consult-narrow-help)
+
+     ;; hide full buffer list (still available with "b")
+     (consult-customize consult--source-buffer :hidden t :default nil)
+
+     ;; set consult-workspace buffer list
+     (defvar consult--source-workspace
+       (list :name     "Workspace Buffers"
+             :narrow   ?w
+             :category 'buffer
+             :state    #'consult--buffer-state
+             :default  t
+             :items    #'persp-current-buffer-names
+	     :action   #'consult--buffer-action)
+       "Set workspace buffer list for consult-buffer.")
+     (push consult--source-workspace consult-buffer-sources)))
 
 (provide 'mf-completion)
-      ;;; mf-completion.el ends here
+;;; mf-completion.el ends here
