@@ -134,6 +134,7 @@ https://github.com/rougier/emacs-gtd#Activating-tasks"
 (eval-after-load 'org
   '(progn
      (mf/install org-roam)
+     (mf/install consult-org-roam)
      (mf/autoload-func
       :func org-roam-find-node
       :file "org-roam")
@@ -152,7 +153,7 @@ https://github.com/rougier/emacs-gtd#Activating-tasks"
      (eval-after-load 'org-roam
        '(progn
 	  (message "Loaded org-roam")
-	  (setq org-roam-directory (file-truename "~/Documents/Personal/org/Notes/")
+	  (setq org-roam-directory (file-truename "~/doc/pers/org/Notes/")
 		org-roam-v2-ack t)
 	  (add-hook 'org-roam-mode-hook 'org-roam-db-autosync-mode)))))
 (setq diary-file (file-truename "~/doc/pers/diary"))
