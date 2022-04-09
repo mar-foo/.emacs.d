@@ -112,5 +112,9 @@
 	 (id (cadr (split-string choice " -$- " t))))
     (mf/mpv (concat "https://www.youtube.com/watch?v=" id))))
 
+; keybindings
+(mf/leader "f" mf/executable-find-file)
+(mf/leader "y" mf/youtube)
+
 (provide 'mf-functions)
 ;;; mf-functions.el ends here

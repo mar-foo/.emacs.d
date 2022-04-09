@@ -3,6 +3,8 @@
 
 (require 'mf-autoloads)
 
+(require 'mf-keybindings)
+
 (require 'mf-completion)
 
 (require 'mf-dired)
@@ -16,8 +18,6 @@
 (require 'mf-hacks)
 
 (require 'mf-ibuffer)
-
-(require 'mf-keybindings)
 
 (require 'mf-mu4e)
 

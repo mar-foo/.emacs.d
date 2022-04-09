@@ -17,5 +17,8 @@
 	     '(("irc.libera.chat" "#emacs")
 	       ("localhost" "&bitlbee"))))))
 
+; keybindings
+(mf/leader "i" erc)
+
 (provide 'mf-erc)
 ;;; mf-erc.el ends here

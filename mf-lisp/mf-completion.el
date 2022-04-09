@@ -31,11 +31,6 @@
 (mf/install corfu)
 
 (mf/install consult)
-(global-set-key (kbd "C-x b") 'consult-buffer)
-(global-set-key (kbd "C-x 4 b") 'consult-buffer-other-window)
-(global-set-key (kbd "M-y") 'consult-yank-from-kill-ring)
-(global-set-key (kbd "C-x r b") 'consult-bookmark)
-(global-set-key (kbd "C-x p b") 'consult-project-buffer)
 (eval-after-load 'consult
   '(progn
      (message "Loaded consult")
@@ -56,6 +51,14 @@
 	     :action   #'consult--buffer-action)
        "Set workspace buffer list for consult-buffer.")
      (push consult--source-workspace consult-buffer-sources)))
+
+; keybindings
+(mf/leader "S" consult-theme)
+(global-set-key (kbd "C-x b") 'consult-buffer)
+(global-set-key (kbd "C-x 4 b") 'consult-buffer-other-window)
+(global-set-key (kbd "M-y") 'consult-yank-from-kill-ring)
+(global-set-key (kbd "C-x r b") 'consult-bookmark)
+(global-set-key (kbd "C-x p b") 'consult-project-buffer)
 
 (provide 'mf-completion)
 ;;; mf-completion.el ends here

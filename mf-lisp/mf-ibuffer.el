@@ -69,5 +69,8 @@
 		 (ibuffer-auto-mode 1)
 		 (ibuffer-switch-to-saved-filter-groups "default")))))
 
+; keybindings
+(define-key global-map (kbd "C-x C-b") (lambda () (interactive) (ibuffer t)))
+
 (provide 'mf-ibuffer)
 ;;; mf-ibuffer.el ends here

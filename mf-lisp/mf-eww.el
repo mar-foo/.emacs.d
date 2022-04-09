@@ -16,5 +16,8 @@ To be used by `eww-after-render-hook'."
      (advice-add 'eww-back-url :after #'mf/eww--rename-buffer)
      (advice-add 'eww-forward-url :after #'mf/eww--rename-buffer)))
 
+; keybindings
+(mf/leader "w" eww)
+
 (provide 'mf-eww)
 ;;; mf-eww.el ends here

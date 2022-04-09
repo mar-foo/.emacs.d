@@ -9,5 +9,8 @@
      (add-hook 'dired-mode-hook 'dired-filter-mode)
      (define-key dired-mode-map (kbd "q") #'(lambda() (interactive (quit-window t))))))
 
+; keybindings
+(mf/leader "d" dired)
+
 (provide 'mf-dired)
 ;;; mf-dired.el ends here

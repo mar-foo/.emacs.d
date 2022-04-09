@@ -130,7 +130,6 @@ https://github.com/rougier/emacs-gtd#Activating-tasks"
        (advice-add 'org-agenda-get-restriction-and-command :around #'mf/org-agenda-get-restriction-and-command)
        (advice-add 'org-switch-to-buffer-other-window :around #'mf/switch-to-buffer-other-window))))
 
-
 (eval-after-load 'org
   '(progn
      (mf/install org-roam)
@@ -157,6 +156,12 @@ https://github.com/rougier/emacs-gtd#Activating-tasks"
 		org-roam-v2-ack t)
 	  (add-hook 'org-roam-mode-hook 'org-roam-db-autosync-mode)))))
 (setq diary-file (file-truename "~/doc/pers/diary"))
+
+; keybindings
+(mf/leader "c" org-capture)
+(mf/leader "a" org-agenda)
+(mf/leader "n f" consult-org-roam-node-find)
+(mf/leader "n i" org-roam-node-insert)
 
 (provide 'mf-org)
 ;;; mf-org.el ends here

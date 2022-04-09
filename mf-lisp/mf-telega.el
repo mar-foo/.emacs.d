@@ -21,5 +21,8 @@
 		  (switch-to-buffer "*Telega Root*"))
 	  (telega))))
 
+; keybindings
+(mf/leader "t" mf/toggle-telega)
+
 (provide 'mf-telega)
 ;;; mf-telega.el ends here

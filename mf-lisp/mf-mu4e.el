@@ -47,5 +47,8 @@
 	 (define-key mu4e-view-mode-map (kbd "C-c c") 'mu4e-org-store-and-capture)
 	 (add-hook 'mu4e-compose-mode-hook #'mml-secure-message-sign-pgp)))
 
+; keybindings
+(mf/leader "m" mu4e)
+
 (provide 'mf-mu4e)
-      ;;; mf-mu4e.el ends here
+;;; mf-mu4e.el ends here

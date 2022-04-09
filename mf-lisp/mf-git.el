@@ -11,5 +11,8 @@
   (eval-after-load 'magit
     '(message "Loaded magit")))
 
+; keybindings
+(mf/leader "g" magit-status)
+
 (provide 'mf-git)
 ;;; mf-git.el ends here

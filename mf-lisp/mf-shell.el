@@ -68,5 +68,9 @@ That can fail if the process sentinel is reset by some other function."
 
 (add-hook 'shell-mode-hook 'my-shell-mode-hook)
 
+; keybindings
+(mf/leader "e" mf/toggle-eshell)
+(mf/leader "s" mf/toggle-shell)
+
 (provide 'mf-shell)
 ;;; mf-shell.el ends here
