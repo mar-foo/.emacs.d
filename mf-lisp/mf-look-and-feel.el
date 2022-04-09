@@ -136,5 +136,9 @@
 (mf/install mood-line)
 (mood-line-mode)
 
+(mf/install marginalia)
+(eval-after-load 'vertico
+  '(marginalia-mode))
+
 (provide 'mf-look-and-feel)
 ;;; mf-look-and-feel.el ends here
