@@ -17,7 +17,7 @@
     '(progn
        (message "Loaded org-mode")
        (require 'org-tempo)
-       (setq org-archive-location (concat org-directory "projects.org::* Past")
+       (setq org-archive-location (concat org-directory "agenda.org::* Past")
 	     org-agenda-window-setup 'other-window
 	     org-agenda-restore-windows-after-quit nil
 	     org-agenda-sticky nil
@@ -89,7 +89,7 @@
 		 (tags "CLOSED=\"<today>\""
 		       ((org-agenda-overriding-header "\nCompleted today\n"))))))
 	     org-refile-targets
-	     '(("projects.org" :regexp . "\\(?:\\(?:Note\\|Task\\)s\\)"))
+	     '(("projects.org" :level . 2))
 	     org-refile-use-outline-path 'file
 	     org-outline-path-complete-in-steps nil
 	     org-confirm-babel-evaluate nil
@@ -160,7 +160,7 @@ https://github.com/rougier/emacs-gtd#Activating-tasks"
 ; keybindings
 (mf/leader "c" org-capture)
 (mf/leader "a" org-agenda)
-(mf/leader "n f" consult-org-roam-node-find)
+(mf/leader "n f" consult-org-roam-file-find)
 (mf/leader "n i" org-roam-node-insert)
 
 (provide 'mf-org)
