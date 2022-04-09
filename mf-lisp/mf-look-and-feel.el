@@ -129,10 +129,10 @@
 
 (setq ring-bell-function #'mf/visual-bell)
 
+(mf/install doom-themes)
 (add-to-list 'custom-theme-load-path (concat user-emacs-directory "mf-lisp/themes/"))
-(if (version< emacs-version "28")
-    (mf/install doom-themes))
-(load-theme 'doom-gruvbox t)
+(load-theme 'doom-one t)
+
 (mf/install mood-line)
 (mood-line-mode)
 
