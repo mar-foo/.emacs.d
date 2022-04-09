@@ -3,8 +3,6 @@
 
 (require 'mf-autoloads)
 
-(require 'mf-bongo)
-
 (require 'mf-completion)
 
 (require 'mf-dired)
