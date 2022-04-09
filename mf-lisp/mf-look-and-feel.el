@@ -133,6 +133,8 @@
 (if (version< emacs-version "28")
     (mf/install doom-themes))
 (load-theme 'doom-gruvbox t)
+(mf/install mood-line)
+(mood-line-mode)
 
 (provide 'mf-look-and-feel)
 ;;; mf-look-and-feel.el ends here
