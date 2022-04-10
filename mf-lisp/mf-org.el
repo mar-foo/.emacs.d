@@ -35,7 +35,6 @@
 	       ("DONE" . org-done)
 	       ("NO" . error))
 	     org-use-fast-todo-selection 'expert
-	     org-agenda-hide-tags-regexp "."
 	     org-agenda-prefix-format
 	     '((agenda . "%i %-12:c%?-12t% s")
 	       (todo   . "")
