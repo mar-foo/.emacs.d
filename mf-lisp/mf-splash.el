@@ -183,7 +183,7 @@
         (save-excursion (insert-text-button " [a] Agenda "
                                             'action (lambda (_)
 						      (funcall-interactively #'org-agenda nil "g"))
-                                            'help-echo "Visit setup directory"
+                                            'help-echo "Open org agenda"
                                             'face 'warning
                                             'follow-link t))
         (goto-line 12)
