@@ -41,6 +41,11 @@
 
 (require 'mf-config)
 
+; keybindings
+(global-set-key (kbd "C->") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+(global-set-key (kbd "C-.") 'mc/mark-all-like-this)
+
 (mf/install gcmh)
 (gcmh-mode 1)
 ;;; init.el ends here
