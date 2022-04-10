@@ -146,6 +146,7 @@ as advice to `go-import-add'"
 (mf/autoload-func
  :func lsp
  :file "lsp-mode")
+(setq lsp-keymap-prefix "C-c l")
 (eval-after-load 'lsp-mode
   '(progn
      (message "Lsp module loaded")
@@ -155,8 +156,7 @@ as advice to `go-import-add'"
 	   lsp-headerline-breadcrumb-enable nil
 	   lsp-lens-enable t
 	   lsp-modeline-diagnostics-enable nil
-	   lsp-enable-snippet t
-	   lsp-keymap-prefix "C-c l")))
+	   lsp-enable-snippet t)))
 
 (provide 'mf-programming)
- ;;; mf-programming.el ends here
+;;; mf-programming.el ends here
