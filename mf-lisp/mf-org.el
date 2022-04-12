@@ -72,21 +72,14 @@
 			(org-agenda-prefix-format " %i %-12:c [%e] ")
 			(org-agenda-overriding-header "\nTasks\n")))
 		 (agenda ""
-			 ((org-agenda-skip-function
-			   '(org-agenda-skip-entry-if 'deadline))
-			  (org-deadline-warning-days 0)))
-		 (agenda ""
-			 ((org-agenda-entry-types '(:deadline))
-			  (org-agenda-format-date "")
-			  (org-deadline-warning-days 7)
+			 ((org-deadline-warning-days 7)
+			  (org-agenda-span 'day)
+			  (org-agenda-include-diary nil)
 			  (org-agenda-skip-function
-			   '(org-agenda-skip-entry-if 'notregexp "\\* NEXT"))
-			  (org-agenda-overriding-header "\nDeadlines")))
+			   '(org-agenda-skip-entry-if 'regexp "\\* \\(DONE\\|NO\\)"))))
 		 (tags-todo "inbox"
 			    ((org-agenda-prefix-format " %?-12t% s")
-			     (org-agenda-overriding-header "\nInbox\n")))
-		 (tags "CLOSED=\"<today>\""
-		       ((org-agenda-overriding-header "\nCompleted today\n"))))))
+			     (org-agenda-overriding-header "\nInbox\n"))))))
 	     org-refile-targets
 	     '(("projects.org" :level . 2))
 	     org-refile-use-outline-path 'file
