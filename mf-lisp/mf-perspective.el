@@ -19,5 +19,17 @@
 		 buffer)))))
 (advice-add #'shell :after #'(lambda (&rest r) (persp-set-buffer (buffer-name))))
 
+(mf/install f)
+(require 'f)
+(defun mf/project-find-file-and-persp ()
+  (interactive)
+  (let* ((pr (project-current t))
+	 (dirs (list (project-root pr))))
+    (persp-switch (f-base (cdr pr)))
+    (project-find-file-in (thing-at-point 'filename) dirs pr)))
+
+; keybindings
+(global-set-key (kbd "C-x p f") #'mf/project-find-file-and-persp)
+
 (provide 'mf-perspective)
 ;;; mf-perspective.el ends here

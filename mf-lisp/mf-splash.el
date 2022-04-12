@@ -209,14 +209,14 @@
         (goto-line 15)
 	(end-of-line)
         (save-excursion (insert-text-button " [n] Notes "
-                                            'action (lambda (_)  (consult-org-roam-file-find))
+                                            'action (lambda (_)  (org-roam-node-find))
                                             'help-echo "Visit org roam notes"
                                             'face 'warning
                                             'follow-link t))
         (goto-line 16)
 	(end-of-line)
         (save-excursion (insert-text-button " [p] Projects "
-                                            'action (lambda (_)  (consult-project-buffer))
+                                            'action (lambda (_)  (mf/project-find-file-and-persp))
                                             'help-echo "Open project & workspace"
                                             'face 'warning
                                             'follow-link t))
@@ -261,7 +261,7 @@
     (define-key map (kbd "f") 'find-file)
     (define-key map (kbd "m") 'mu4e)
     (define-key map (kbd "n") 'org-roam-node-find)
-    (define-key map (kbd "p") 'consult-project-buffer)
+    (define-key map (kbd "p") 'mf/project-find-file-and-persp)
     (define-key map (kbd "t") 'mf/toggle-telega)
     (define-key map (kbd "q") 'splash-screen-kill)
     map)
