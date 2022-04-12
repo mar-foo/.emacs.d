@@ -181,8 +181,7 @@
         (goto-line 11)
 	(end-of-line)
         (save-excursion (insert-text-button " [a] Agenda "
-                                            'action (lambda (_)
-						      (funcall-interactively #'org-agenda nil "g"))
+                                            'action (lambda (_) (mf/agenda))
                                             'help-echo "Open org agenda"
                                             'face 'warning
                                             'follow-link t))
@@ -257,7 +256,7 @@
 ;; Custom splash screen
 (defvar emacs-splash-mode-map
   (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "a") 'org-agenda)
+    (define-key map (kbd "a") 'mf/agenda)
     (define-key map (kbd "c") 'mf/open-emacsd)
     (define-key map (kbd "f") 'find-file)
     (define-key map (kbd "m") 'mu4e)

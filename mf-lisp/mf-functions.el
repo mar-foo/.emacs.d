@@ -8,6 +8,14 @@
   (ansi-term (executable-find "alsamixer")))
 
 ;;;###autoload
+(defun mf/agenda ()
+  (interactive)
+  (let ((agenda (get-buffer "*Org Agenda*")))
+	(if (null agenda)
+	    (org-agenda)
+	  (display-buffer agenda))))
+
+;;;###autoload
 (defun mf/big-font (&optional use-generic-p)
   (interactive "P")
   (if use-generic-p

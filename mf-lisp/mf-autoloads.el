@@ -6,6 +6,7 @@
 	(autoload #',func "mf-functions" nil t)))
 
 (mf/my-func-autoload mf/alsamixer)
+(mf/my-func-autoload mf/agenda)
 (mf/my-func-autoload mf/big-font)
 (mf/my-func-autoload mf/bookmarks)
 (mf/my-func-autoload mf/delete-sexp)

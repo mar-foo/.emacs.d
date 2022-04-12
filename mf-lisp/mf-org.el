@@ -158,8 +158,8 @@ https://github.com/rougier/emacs-gtd#Activating-tasks"
 
 ; keybindings
 (mf/leader "c" org-capture)
-(mf/leader "a" org-agenda)
-(mf/leader "n f" consult-org-roam-file-find)
+(mf/leader "a" mf/agenda)
+(mf/leader "n f" org-roam-node-find)
 (mf/leader "n i" org-roam-node-insert)
 
 (provide 'mf-org)
