@@ -6,15 +6,15 @@
 (mf/enable-if-bound scroll-bar-mode nil)	; Scroll bars are awful
 (mf/enable-if-bound tool-bar-mode nil)
 (mf/enable-if-bound menu-bar-mode nil)		; I don't need menus, I have 300 keybindings in my head
-(mf/enable-if-bound fringe-mode t)			; Give me some breathing room
-(setq inhibit-startup-message 1)			; No default startup message
-(tooltip-mode -1)							; Disable tooltips
-(blink-cursor-mode -1)						; Disable cursor blinking
-(global-hl-line-mode)						; Highlight current line
+(mf/enable-if-bound fringe-mode t)		; Give me some breathing room
+(setq inhibit-startup-message 1)		; No default startup message
+(tooltip-mode -1)				; Disable tooltips
+(blink-cursor-mode -1)				; Disable cursor blinking
+(global-hl-line-mode)				; Highlight current line
 (show-paren-mode)
-(setq show-paren-delay 0)					; Highlight matching parentheses
+(setq show-paren-delay 0)			; Highlight matching parentheses
 (unless (display-graphic-p)
-  (set-terminal-coding-system 'utf-8-unix)) ; Use utf-8 in terminal emacs
+  (set-terminal-coding-system 'utf-8-unix))     ; Use utf-8 in terminal emacs
 
 (setq-default default-frame-alist
 	      (append (list
@@ -47,9 +47,6 @@
 	 (side . bottom)
 	 (window-height . 0.4)
 	 (slot . 1))
-	;; ("\\*elfeed-entry\\*" (display-buffer-in-side-window)
-	;;  (side . right)
-	;;  (window-width . 0.6))
 	("\\*Flymake diagnostics for" (display-buffer-below-selected)
 	 (window-height . 0.2))
 	;; ("\\*slime-repl " (display-buffer-below-selected)
@@ -99,8 +96,7 @@
 	 (side . bottom)
 	 (window-height . 0.4)
 	 (slot . 1))
-	("\\*Org Agenda\\*" (display-buffer-in-side-window)
-	 (side . bottom)
+	("\\*Org Agenda\\*" (display-buffer-below-selected)
 	 (window-height . 0.4))
 	("\\*Org Todo\\*" (display-buffer-in-side-window)
 	 (side . bottom)
