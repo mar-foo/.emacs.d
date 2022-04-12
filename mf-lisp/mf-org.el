@@ -28,7 +28,7 @@
 	     org-log-done 'time
 	     org-log-into-drawer t
 	     org-todo-keywords
-	     '((sequence "TODO(t)" "NEXT(n)" "WAITING(w)" "|" "DONE(d)" "NO(N)"))
+	     '((sequence "TODO(t)" "NEXT(n!)" "WAITING(w@/!)" "|" "DONE(d)" "NO(N@)"))
 	     org-todo-keyword-faces
 	     '(("TODO" . org-todo)
 	       ("WAITING" . (:inherit org-todo :foreground "#b0b0b0"))
@@ -109,13 +109,6 @@
 	  (awk . t)
 	  (go . t)
 	  (C . t)))
-       (defun log-todo-next-creation-date (&rest ignore)
-	 "Log NEXT creation time in the property drawer under the key 'ACTIVATED'.
-https://github.com/rougier/emacs-gtd#Activating-tasks"
-	 (when (and (string= (org-get-todo-state) "NEXT")
-		    (not (org-entry-get nil "ACTIVATED")))
-	   (org-entry-put nil "ACTIVATED" (format-time-string "[%d-%m-%Y]"))))
-       (add-hook 'org-after-todo-state-change-hook #'log-todo-next-creation-date)
        ;; I like my display-buffer-alist and would like it to be respected
        (defun mf/switch-to-buffer-other-window (orig-func &rest args)
 	 (apply #'switch-to-buffer-other-window args))
@@ -125,7 +118,6 @@ https://github.com/rougier/emacs-gtd#Activating-tasks"
 (eval-after-load 'org
   '(progn
      (mf/install org-roam)
-     (mf/install consult-org-roam)
      (mf/autoload-func
       :func org-roam-find-node
       :file "org-roam")
