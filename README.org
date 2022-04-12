@@ -1,7 +1,29 @@
 #+TITLE: Emacs configuration
 #+AUTHOR: Mar-foo
-* My Emacs - EXWM configuration
-My configuration is stored in Emacs.org and organized in modules
-under =mf-lisp/=.
+* My Emacs configuration
+  [[./splash.png]]
 
+My configuration organized in thematically organized modules loaded in
+[[./mf-lisp/mf-config.el][mf-config.el]].
 
+** Features
+- Very quick load time due to lazy loading of packages
+- No use package, autoloads are setup manually and packages are
+  installed with built-in *package.el* functions
+- Custom monochrome themes *mf*, *mf-dark* and *mf-acme* (inspired by
+  [[https://acme.cat-v.org][Acme]])
+- Custom functions to toggle shell buffers (+ integration with
+  [[http://github.com/nex3/perspective-el][perspective.el]])
+- A working GTD workflow built around [[https://orgmode.org][org-mode]] (inspired by
+  [[https://github.com/rougier/emacs-gtd][rougier/emacs-gtd]])
+- Completion with [[https://github.com/minad/vertico][vertico]], [[https://github.com/oantolin/orderless][orderless]] and [[https://github.com/minad/consult][consult]]
+- Simple integration between [[https://elpa.gnu.org/packages/project.html][project.el]] (builtin for Emacs 28+) and
+  [[http://github.com/nex3/perspective-el][perspective.el]]
+
+** Screenshots
+*** mf-dark - Dark theme
+[[./mf-dark.png]]
+*** mf - Light theme
+[[./mf.png]]
+*** mf-acme - Acme theme
+[[./mf-acme.png]]
