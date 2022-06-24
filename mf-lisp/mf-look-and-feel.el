@@ -127,7 +127,12 @@
 
 (mf/install doom-themes)
 (add-to-list 'custom-theme-load-path (concat user-emacs-directory "mf-lisp/themes/"))
-(load-theme 'doom-one t)
+(let ((current (with-temp-buffer
+		 (insert-file-contents (concat (getenv "HOME") "/.cache/themechange/current"))
+		 (buffer-string))))
+  (if (string= current "dark\n")
+      (load-theme 'mf-dark t)
+    (load-theme 'mf t)))
 
 (mf/install mood-line)
 (mood-line-mode)
