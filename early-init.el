@@ -9,4 +9,3 @@
     (package-install package)))
 
 (require 'mf-look-and-feel)
-(require 'mf-splash)
