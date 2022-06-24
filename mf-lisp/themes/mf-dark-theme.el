@@ -22,10 +22,10 @@
   "White on black theme for your focused hacking sessions during the night.")
 
 (defvar mf-dark-default-bg
-  "#222222")
+  "#000000")
 
 (defvar mf-dark-default-fg
-  "white")
+  "#ffffff")
 
 (defvar mf-medium-grey
   "#808080")
@@ -98,13 +98,13 @@
 
 			;; Font lock faces
 			'(font-lock-builtin-face ((t (:foreground "#bababa"))))
-			'(font-lock-comment-face ((t (:slant italic :foreground "#b3b3b3"))))
-			'(font-lock-constant-face ((t (:weight bold :foreground "#bababa"))))
-			`(font-lock-function-name-face ((t (:foreground ,mf-dark-default-fg :weight semi-bold))))
-			`(font-lock-keyword-face ((t (:weight bold :foreground ,mf-dark-default-fg))))
+			`(font-lock-comment-face ((t (:weight bold :slant italic :foreground ,mf-dark-default-fg))))
+			'(font-lock-constant-face ((t (:foreground "#bababa"))))
+			`(font-lock-function-name-face ((t (:foreground ,mf-dark-default-fg))))
+			`(font-lock-keyword-face ((t (:foreground ,mf-dark-default-fg))))
 			`(font-lock-string-face ((t (:foreground ,mf-medium-grey))))
-			'(font-lock-type-face ((t (:weight bold :foreground "#bababa"))))
-			`(font-lock-variable-name-face ((t (:weight bold :foreground ,mf-medium-grey :slant oblique))))
+			'(font-lock-type-face ((t (:foreground "#bababa"))))
+			`(font-lock-variable-name-face ((t (:foreground ,mf-dark-default-fg :slant oblique))))
 			'(font-lock-warning-face ((t (:foreground "#b0b0b0" :underline (:color foreground-color :style wave)))))
 
 			;; Gnus faces
@@ -201,10 +201,8 @@
 			`(completions-first-difference ((t (:underline ,mf-dark-default-fg :weight semi-bold))))
 
 			;; Mode line faces
-			`(mode-line ((t (:background ,mf-dark-default-bg :foreground ,mf-dark-default-fg
-						     :box (:line-width 4 :color ,mf-dark-default-bg :style flat-button)))))
-			`(mode-line-inactive ((t (:background ,mf-dark-default-bg :foreground ,mf-medium-grey
-							      :box (:line-width 4 :color ,mf-dark-default-bg)))))
+			`(mode-line ((t (:background ,mf-dark-grey :foreground ,mf-dark-default-fg))))
+			`(mode-line-inactive ((t (:background ,mf-dark-default-bg :foreground ,mf-medium-grey))))
 
 			;; Mini- modeline
 			`(mini-modeline-mode-line ((t (:height 0.14 :background ,mf-dark-default-fg))))
@@ -247,7 +245,7 @@
 			'(org-date ((t (:underline t :foreground "#b0b0b0"))))
 			`(org-document-info ((t (:foreground ,mf-dark-default-fg))))
 			`(org-document-title ((t (:foreground ,mf-dark-default-fg :weight bold))))
-			'(org-done ((t (:foreground "green" :underline t :slant oblique :weight bold))))
+			'(org-done ((t (:foregrounpd "green" :underline t :slant oblique :weight bold))))
 			'(org-headline-done ((t (:extend t))))
 			'(org-level-1 ((t (:bold t :foreground "#bababa" :height 1.5))))
 			`(org-level-2 ((t (:extend nil :foreground ,mf-dark-default-fg :weight normal :height 1.2))))
