@@ -68,19 +68,23 @@ as advice to `go-import-add'"
 (add-hook 'merlin-mode-hook #'corfu-mode)
 (add-hook 'tuareg-mode-hook #'merlin-mode)
 
-(mf/install slime)
+(mf/install sly)
 (setq inferior-lisp-program "sbcl")
-(eval-after-load 'slime
+(eval-after-load 'sly
   '(progn
-     (message "Loaded slime")))
+     (message "Loaded sly")))
+
+(mf/install geiser-racket)
+(mf/install geiser-guile)
+(mf/install geiser-gambit)
 
 (mf/install paredit)
 (add-hook 'lisp-mode-hook #'paredit-mode)
 (eval-after-load 'paredit
   '(progn
      (message "Loaded paredit")
-     (eval-after-load 'slime
-       '(add-hook 'slime-repl-mode #'paredit-mode))))
+     (eval-after-load 'sly
+       '(add-hook 'sly-mrepl-mode #'paredit-mode))))
 
 (mf/install lsp-latex)
 (eval-after-load "tex-mode"
