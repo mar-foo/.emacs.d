@@ -15,11 +15,11 @@
 
 (require 'mf-git)
 
+(require 'mf-gnus)
+
 (require 'mf-hacks)
 
 (require 'mf-ibuffer)
-
-(require 'mf-mu4e)
 
 (require 'mf-org)
 
@@ -28,8 +28,6 @@
 (require 'mf-programming)
 
 (require 'mf-shell)
-
-(require 'mf-telega)
 
 ;; Startup time and garbage collection
 (add-hook 'emacs-startup-hook
