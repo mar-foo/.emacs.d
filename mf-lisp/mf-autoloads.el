@@ -21,6 +21,7 @@
 (mf/my-func-autoload mf/reload-configuration)
 (mf/my-func-autoload mf/select-completion-and-exit)
 (mf/my-func-autoload mf/switch-theme)
+(mf/my-func-autoload mf/themes-toggle)
 (mf/autoload-func
  :func mf/toggle-eshell
  :file "mf-shell")

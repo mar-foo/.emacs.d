@@ -116,6 +116,13 @@
     (start-process-shell-command "mpv" nil (concat "mpv --ytdl-format='bestvideo[height<=1080]+bestaudio/best' " url))))
 
 ;;;###autoload
+(defun mf/themes-toggle ()
+  (interactive)
+  (pcase (car custom-enabled-themes)
+    ('mf-dark (mf/switch-theme 'mf))
+    ('mf (mf/switch-theme 'mf-dark))))
+
+;;;###autoload
 (defun mf/youtube (title)
   (interactive (list (read-string "Query: ")))
   (let* ((choice (completing-read "Title: "
