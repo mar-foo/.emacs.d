@@ -130,8 +130,6 @@ as advice to `go-import-add'"
 			(other . "linux-kernel")))
 
 (defun mf/c-mode-hook ()
-  (lsp)
-  (lsp-managed-mode -1)
   (local-set-key (kbd "C-c C-c") #'compile))
 
 (add-hook 'c-mode-hook #'mf/c-mode-hook)
