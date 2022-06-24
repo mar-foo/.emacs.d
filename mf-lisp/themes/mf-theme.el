@@ -208,10 +208,8 @@
 			`(mini-modeline-mode-line-inactive ((t (:height 0.14 :background ,mf-default-bg))))
 
 			;; Mode line faces
-			`(mode-line ((t (:background ,mf-default-bg :foreground ,mf-default-fg
-						     :box (:line-width 4 :color ,mf-default-bg :style flat-button)))))
-			`(mode-line-inactive ((t (:background ,mf-default-bg :foreground "#808080"
-							      :box (:line-width 4 :color "white" :style flat-button)))))
+			`(mode-line ((t (:background ,mf-light-grey :foreground ,mf-default-fg))))
+			`(mode-line-inactive ((t (:background ,mf-default-bg :foreground "#808080"))))
 
 			;; MuMaMo
 			`(mumamo-background-chunk-major ((t (:background ,mf-default-bg))))
