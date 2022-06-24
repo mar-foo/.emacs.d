@@ -1,8 +1,10 @@
 ;;; mf-perspective.el --- Configuration for perspective.el -*- lexical-binding: t -*-
 ;;; Code:
 (mf/install perspective)
+(setq
+ persp-mode-prefix-key (kbd (concat mf/leader-prefix-key " x"))
+ persp-state-default-file (concat user-emacs-directory "persp-state"))
 (persp-mode)
-;; (define-key global-map (kbd "C-x b") #'persp-switch-to-buffer*)
 (define-key global-map (kbd "C-x x TAB") #'persp-switch-last)
 (defun mf/persp-set-buffer-ask (buffer)
   (interactive)
@@ -17,7 +19,11 @@
 	(funcall (if (not ask-too) 'mf/persp-set-buffer-ask
 		   'persp-set-buffer)
 		 buffer)))))
+(defun mf/persp-load-default-file ()
+  (persp-state-load persp-state-default-file))
+
 (advice-add #'shell :after #'(lambda (&rest r) (persp-set-buffer (buffer-name))))
+(advice-add #'kill-emacs :before #'(lambda (&rest r) (persp-state-save persp-state-default-file nil)))
 
 (mf/install f)
 (require 'f)
