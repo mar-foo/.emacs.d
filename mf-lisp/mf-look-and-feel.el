@@ -18,7 +18,7 @@
 
 (setq-default default-frame-alist
 	      (append (list
-		       '(font . "Fira Code:style=medium:size=14")
+		       '(font . "IBM Plex Mono:style=Italic:size=14")
 		       '(tool-bar-lines . 0)
 		       '(menu-bar-lines . 0)
 		       '(right-fringe . 5)
